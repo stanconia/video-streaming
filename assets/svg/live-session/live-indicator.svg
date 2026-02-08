@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="24" viewBox="0 0 48 24" fill="none">
+  <rect x="1" y="4" width="46" height="16" rx="4" fill="#EF4444" stroke="#DC2626" stroke-width="2"/>
+  <circle cx="12" cy="12" r="3" fill="white">
+    <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <text x="22" y="16" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="10">LIVE</text>
+</svg>

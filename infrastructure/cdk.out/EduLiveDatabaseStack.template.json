@@ -1,0 +1,462 @@
+{
+ "Description": "EduLive Database Infrastructure - RDS PostgreSQL, ElastiCache Redis",
+ "Resources": {
+  "DatabaseCredentials8547B3E7": {
+   "Type": "AWS::SecretsManager::Secret",
+   "Properties": {
+    "Description": "Database credentials for EduLive",
+    "GenerateSecretString": {
+     "ExcludePunctuation": true,
+     "GenerateStringKey": "password",
+     "PasswordLength": 32,
+     "SecretStringTemplate": "{\"username\":\"edulive_admin\"}"
+    },
+    "Name": "EduLive/dev/database/credentials",
+    "Tags": [
+     {
+      "Key": "Application",
+      "Value": "EduLive"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/DatabaseCredentials/Resource"
+   }
+  },
+  "DatabaseCredentialsAttachment7BAB329F": {
+   "Type": "AWS::SecretsManager::SecretTargetAttachment",
+   "Properties": {
+    "SecretId": {
+     "Ref": "DatabaseCredentials8547B3E7"
+    },
+    "TargetId": {
+     "Ref": "DatabaseB269D8BB"
+    },
+    "TargetType": "AWS::RDS::DBInstance"
+   },
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/DatabaseCredentials/Attachment/Resource"
+   }
+  },
+  "DatabaseSubnetGroup": {
+   "Type": "AWS::RDS::DBSubnetGroup",
+   "Properties": {
+    "DBSubnetGroupDescription": "Subnet group for EduLive database",
+    "DBSubnetGroupName": "edulive-dev-db-subnet-group",
+    "SubnetIds": [
+     {
+      "Fn::ImportValue": "EduLiveNetworkStack:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+     },
+     {
+      "Fn::ImportValue": "EduLiveNetworkStack:ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Application",
+      "Value": "EduLive"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/DatabaseSubnetGroup/Default"
+   }
+  },
+  "DatabaseParameterGroupC9757D64": {
+   "Type": "AWS::RDS::DBParameterGroup",
+   "Properties": {
+    "Description": "Parameter group for EduLive database",
+    "Family": "postgres15",
+    "Parameters": {
+     "log_statement": "all",
+     "log_min_duration_statement": "1000",
+     "shared_preload_libraries": "pg_stat_statements"
+    },
+    "Tags": [
+     {
+      "Key": "Application",
+      "Value": "EduLive"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/DatabaseParameterGroup/Resource"
+   }
+  },
+  "DatabaseMonitoringRole576991DA": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "monitoring.rds.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Application",
+      "Value": "EduLive"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/Database/MonitoringRole/Resource"
+   }
+  },
+  "DatabaseB269D8BB": {
+   "Type": "AWS::RDS::DBInstance",
+   "Properties": {
+    "AllocatedStorage": "20",
+    "AutoMinorVersionUpgrade": true,
+    "BackupRetentionPeriod": 7,
+    "CopyTagsToSnapshot": true,
+    "DBInstanceClass": "db.t4g.micro",
+    "DBInstanceIdentifier": "edulive-dev-postgres",
+    "DBName": "edulive",
+    "DBParameterGroupName": {
+     "Ref": "DatabaseParameterGroupC9757D64"
+    },
+    "DBSubnetGroupName": {
+     "Ref": "DatabaseSubnetGroup"
+    },
+    "DeletionProtection": false,
+    "EnableCloudwatchLogsExports": [
+     "postgresql",
+     "upgrade"
+    ],
+    "EnablePerformanceInsights": false,
+    "Engine": "postgres",
+    "EngineVersion": "15",
+    "MasterUserPassword": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "DatabaseCredentials8547B3E7"
+       },
+       ":SecretString:password::}}"
+      ]
+     ]
+    },
+    "MasterUsername": {
+     "Fn::Join": [
+      "",
+      [
+       "{{resolve:secretsmanager:",
+       {
+        "Ref": "DatabaseCredentials8547B3E7"
+       },
+       ":SecretString:username::}}"
+      ]
+     ]
+    },
+    "MaxAllocatedStorage": 100,
+    "MonitoringInterval": 60,
+    "MonitoringRoleArn": {
+     "Fn::GetAtt": [
+      "DatabaseMonitoringRole576991DA",
+      "Arn"
+     ]
+    },
+    "MultiAZ": false,
+    "PreferredBackupWindow": "03:00-04:00",
+    "PreferredMaintenanceWindow": "Sun:04:00-Sun:05:00",
+    "PubliclyAccessible": false,
+    "StorageEncrypted": true,
+    "StorageType": "gp3",
+    "Tags": [
+     {
+      "Key": "Application",
+      "Value": "EduLive"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     }
+    ],
+    "VPCSecurityGroups": [
+     {
+      "Fn::ImportValue": "EduLiveNetworkStack:ExportsOutputFnGetAttDatabaseSecurityGroup7319C0F6GroupId72A1B827"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/Database/Resource"
+   }
+  },
+  "CacheSubnetGroup": {
+   "Type": "AWS::ElastiCache::SubnetGroup",
+   "Properties": {
+    "CacheSubnetGroupName": "EduLive-dev-cache-subnet-group",
+    "Description": "Subnet group for EduLive cache",
+    "SubnetIds": [
+     {
+      "Fn::ImportValue": "EduLiveNetworkStack:ExportsOutputRefVPCIsolatedSubnet1SubnetEBD00FC6298E81EF"
+     },
+     {
+      "Fn::ImportValue": "EduLiveNetworkStack:ExportsOutputRefVPCIsolatedSubnet2Subnet4B1C8CAAD8B83B81"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Application",
+      "Value": "EduLive"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/CacheSubnetGroup"
+   }
+  },
+  "CacheCluster": {
+   "Type": "AWS::ElastiCache::CacheCluster",
+   "Properties": {
+    "AutoMinorVersionUpgrade": true,
+    "CacheNodeType": "cache.t4g.micro",
+    "CacheSubnetGroupName": "EduLive-dev-cache-subnet-group",
+    "ClusterName": "EduLive-dev-redis",
+    "Engine": "redis",
+    "EngineVersion": "7.0",
+    "NumCacheNodes": 1,
+    "Port": 6379,
+    "PreferredMaintenanceWindow": "Sun:05:00-Sun:06:00",
+    "SnapshotRetentionLimit": 1,
+    "SnapshotWindow": "04:00-05:00",
+    "Tags": [
+     {
+      "Key": "Application",
+      "Value": "EduLive"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     }
+    ],
+    "VpcSecurityGroupIds": [
+     {
+      "Fn::ImportValue": "EduLiveNetworkStack:ExportsOutputFnGetAttDatabaseSecurityGroup7319C0F6GroupId72A1B827"
+     }
+    ]
+   },
+   "DependsOn": [
+    "CacheSubnetGroup"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/CacheCluster"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12QwQ7CIBBEv8U7RVOjd62J8aRR72ZLV6UWathFDw3/LlhNqqdh5w3LhFzm07mcjOBJmapuWaNL2R0Y1E1E69QRKodMBixc0EX0nkVxtp9TL0dwF+QFx4tXg3YQ+CdBuIriHl9a5LVr/T1lV8uhsQMHBhndgP95K2AogXBjicEq7EPfKQgNRnb7tnmDpEFgA8RaxR4ou9Tvt0KRQNF4im+EkJyt57uPhW1boaxp/Mhnchb/qiatM+cta4Ny3+sLwIEpLUgBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "EduLiveDatabaseStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "DatabaseEndpoint": {
+   "Description": "RDS Database Endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "DatabaseB269D8BB",
+     "Endpoint.Address"
+    ]
+   },
+   "Export": {
+    "Name": "EduLive-dev-db-endpoint"
+   }
+  },
+  "DatabasePort": {
+   "Description": "RDS Database Port",
+   "Value": {
+    "Fn::GetAtt": [
+     "DatabaseB269D8BB",
+     "Endpoint.Port"
+    ]
+   }
+  },
+  "DatabaseSecretArn": {
+   "Description": "Database Credentials Secret ARN",
+   "Value": {
+    "Ref": "DatabaseCredentials8547B3E7"
+   },
+   "Export": {
+    "Name": "EduLive-dev-db-secret-arn"
+   }
+  },
+  "CacheEndpoint": {
+   "Description": "ElastiCache Redis Endpoint",
+   "Value": {
+    "Fn::GetAtt": [
+     "CacheCluster",
+     "RedisEndpoint.Address"
+    ]
+   },
+   "Export": {
+    "Name": "EduLive-dev-cache-endpoint"
+   }
+  },
+  "CachePort": {
+   "Description": "ElastiCache Redis Port",
+   "Value": {
+    "Fn::GetAtt": [
+     "CacheCluster",
+     "RedisEndpoint.Port"
+    ]
+   }
+  },
+  "ExportsOutputFnGetAttDatabaseB269D8BBEndpointAddressA4DBD059": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DatabaseB269D8BB",
+     "Endpoint.Address"
+    ]
+   },
+   "Export": {
+    "Name": "EduLiveDatabaseStack:ExportsOutputFnGetAttDatabaseB269D8BBEndpointAddressA4DBD059"
+   }
+  },
+  "ExportsOutputFnGetAttDatabaseB269D8BBEndpointPort3ACB3F51": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DatabaseB269D8BB",
+     "Endpoint.Port"
+    ]
+   },
+   "Export": {
+    "Name": "EduLiveDatabaseStack:ExportsOutputFnGetAttDatabaseB269D8BBEndpointPort3ACB3F51"
+   }
+  },
+  "ExportsOutputFnGetAttCacheClusterRedisEndpointAddress6BA75CE1": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CacheCluster",
+     "RedisEndpoint.Address"
+    ]
+   },
+   "Export": {
+    "Name": "EduLiveDatabaseStack:ExportsOutputFnGetAttCacheClusterRedisEndpointAddress6BA75CE1"
+   }
+  },
+  "ExportsOutputFnGetAttCacheClusterRedisEndpointPort7464DEE2": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CacheCluster",
+     "RedisEndpoint.Port"
+    ]
+   },
+   "Export": {
+    "Name": "EduLiveDatabaseStack:ExportsOutputFnGetAttCacheClusterRedisEndpointPort7464DEE2"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

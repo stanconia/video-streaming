@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <!-- Background circle -->
+  <circle cx="24" cy="24" r="22" fill="#6366F1"/>
+
+  <!-- Play button -->
+  <polygon points="18,14 18,34 34,24" fill="white"/>
+
+  <!-- Graduation cap hint -->
+  <path d="M24 8l-8 4 8 4 8-4-8-4z" fill="#4F46E5"/>
+  <circle cx="24" cy="12" r="2" fill="white"/>
+</svg>

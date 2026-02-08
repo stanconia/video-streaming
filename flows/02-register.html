@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - EduLive</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .register-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .register-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 40px;
+    }
+
+    .register-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .register-header h1 {
+      font-size: 1.75rem;
+      margin-bottom: 8px;
+    }
+
+    .register-header p {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+    }
+
+    .user-type-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .user-type-card {
+      padding: 20px;
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .user-type-card:hover {
+      border-color: var(--primary-light);
+    }
+
+    .user-type-card.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .user-type-card svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      color: var(--gray-500);
+    }
+
+    .user-type-card.active svg {
+      color: var(--primary);
+    }
+
+    .user-type-card h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .user-type-card p {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .grade-select {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .grade-option {
+      padding: 10px 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      text-align: center;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .grade-option:hover {
+      border-color: var(--primary);
+    }
+
+    .grade-option.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--white);
+    }
+
+    .terms-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 24px;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .terms-check input {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+    }
+
+    .register-footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gray-300);
+    }
+
+    .step-dot.active {
+      background: var(--primary);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .teacher-fields, .student-fields {
+      display: none;
+    }
+
+    .teacher-fields.show, .student-fields.show {
+      display: block;
+    }
+
+    .subject-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .subject-chip {
+      padding: 8px 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .subject-chip:hover {
+      border-color: var(--primary);
+    }
+
+    .subject-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--white);
+    }
+  </style>
+</head>
+<body>
+  <div class="register-page">
+    <div class="register-container">
+      <div class="register-card">
+        <div class="register-header">
+          <h1>Create Account</h1>
+          <p>Join thousands of learners and educators</p>
+        </div>
+
+        <div class="step-indicator">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+
+        <!-- User Type Selection -->
+        <div class="user-type-cards">
+          <div class="user-type-card active" data-type="student">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
+            </svg>
+            <h3>Student</h3>
+            <p>Learn from expert teachers</p>
+          </div>
+          <div class="user-type-card" data-type="teacher">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="7" r="4"/>
+              <path d="M5.5 21v-2a4 4 0 0 1 4-4h5a4 4 0 0 1 4 4v2"/>
+              <path d="M17 3l2 2-2 2"/>
+              <line x1="19" y1="5" x2="15" y2="5"/>
+            </svg>
+            <h3>Teacher</h3>
+            <p>Share your knowledge</p>
+          </div>
+        </div>
+
+        <!-- Registration Form -->
+        <form>
+          <!-- Basic Info -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" placeholder="John">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" placeholder="Doe">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="john@example.com">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-input" placeholder="johndoe123">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-input" placeholder="Min. 8 characters">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" class="form-input" placeholder="Confirm password">
+            </div>
+          </div>
+
+          <!-- Student-specific fields -->
+          <div class="student-fields show">
+            <div class="form-group">
+              <label class="form-label">Select Your Grade Level</label>
+              <div class="grade-select">
+                <div class="grade-option">K</div>
+                <div class="grade-option">1st</div>
+                <div class="grade-option">2nd</div>
+                <div class="grade-option">3rd</div>
+                <div class="grade-option active">4th</div>
+                <div class="grade-option">5th</div>
+                <div class="grade-option">6th</div>
+                <div class="grade-option">7th</div>
+                <div class="grade-option">8th</div>
+                <div class="grade-option">9th</div>
+                <div class="grade-option">10th</div>
+                <div class="grade-option">11th</div>
+                <div class="grade-option">12th</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Subjects You're Interested In</label>
+              <div class="subject-chips">
+                <div class="subject-chip active">Math</div>
+                <div class="subject-chip active">Science</div>
+                <div class="subject-chip">English</div>
+                <div class="subject-chip">Coding</div>
+                <div class="subject-chip">History</div>
+                <div class="subject-chip">Art</div>
+                <div class="subject-chip">Music</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Teacher-specific fields -->
+          <div class="teacher-fields">
+            <div class="form-group">
+              <label class="form-label">Subjects You Teach</label>
+              <div class="subject-chips">
+                <div class="subject-chip">Math</div>
+                <div class="subject-chip">Science</div>
+                <div class="subject-chip">English</div>
+                <div class="subject-chip">Coding</div>
+                <div class="subject-chip">History</div>
+                <div class="subject-chip">Art</div>
+                <div class="subject-chip">Music</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Grade Levels You Teach</label>
+              <div class="grade-select">
+                <div class="grade-option">K-2</div>
+                <div class="grade-option">3-5</div>
+                <div class="grade-option">6-8</div>
+                <div class="grade-option">9-12</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Brief Bio</label>
+              <textarea class="form-input" rows="3" placeholder="Tell students about your teaching experience..."></textarea>
+            </div>
+          </div>
+
+          <div class="terms-check">
+            <input type="checkbox" id="terms">
+            <label for="terms">
+              I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg w-full">
+            Create Account
+          </button>
+        </form>
+
+        <div class="register-footer">
+          Already have an account? <a href="01-login.html">Sign in</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // User type toggle
+    document.querySelectorAll('.user-type-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.user-type-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+
+        const type = this.dataset.type;
+        document.querySelector('.student-fields').classList.toggle('show', type === 'student');
+        document.querySelector('.teacher-fields').classList.toggle('show', type === 'teacher');
+      });
+    });
+
+    // Grade option toggle
+    document.querySelectorAll('.grade-option').forEach(opt => {
+      opt.addEventListener('click', function() {
+        const parent = this.parentElement;
+        if (parent.classList.contains('grade-select')) {
+          parent.querySelectorAll('.grade-option').forEach(o => o.classList.remove('active'));
+        }
+        this.classList.toggle('active');
+      });
+    });
+
+    // Subject chip toggle
+    document.querySelectorAll('.subject-chip').forEach(chip => {
+      chip.addEventListener('click', function() {
+        this.classList.toggle('active');
+      });
+    });
+  </script>
+</body>
+</html>

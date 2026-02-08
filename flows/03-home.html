@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - EduLive</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .home-page {
+      min-height: 100vh;
+      background: var(--gray-50);
+      padding-bottom: 80px;
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+      padding: 32px 24px 48px;
+      color: var(--white);
+    }
+
+    .hero-greeting {
+      margin-bottom: 20px;
+    }
+
+    .hero-greeting h1 {
+      color: var(--white);
+      font-size: 1.5rem;
+    }
+
+    .hero-greeting p {
+      opacity: 0.9;
+      font-size: 0.875rem;
+    }
+
+    .hero-search {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-search input {
+      flex: 1;
+      border: none;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .hero-search .search-icon {
+      color: var(--gray-400);
+    }
+
+    .hero-search .filter-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--gray-100);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-600);
+      cursor: pointer;
+    }
+
+    .content-section {
+      padding: 24px;
+      margin-top: -24px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-header h2 {
+      font-size: 1.125rem;
+    }
+
+    .section-header a {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Grade Filter Pills */
+    .grade-filter {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .grade-filter h3 {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      margin-bottom: 12px;
+    }
+
+    .grade-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .grade-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Subject Scroll */
+    .subjects-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+
+    .subjects-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .subject-card {
+      flex-shrink: 0;
+      width: 100px;
+      padding: 16px 12px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .subject-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .subject-card.active {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .subject-card svg {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 8px;
+    }
+
+    .subject-card span {
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Live Now Section */
+    .live-now-scroll {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+
+    .live-now-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .live-card {
+      flex-shrink: 0;
+      width: 280px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .live-card-preview {
+      height: 140px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .live-card-preview .live-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--danger);
+      color: var(--white);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.625rem;
+      font-weight: 600;
+    }
+
+    .live-card-preview .live-badge .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--white);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    .live-card-preview .viewers {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0,0,0,0.5);
+      color: var(--white);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.625rem;
+    }
+
+    .live-card-preview .play-overlay {
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .live-card-body {
+      padding: 14px;
+    }
+
+    .live-card-title {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+      color: var(--gray-800);
+    }
+
+    .live-card-teacher {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .live-card-teacher .avatar {
+      width: 24px;
+      height: 24px;
+      font-size: 0.625rem;
+    }
+
+    .live-card-teacher span {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+    }
+
+    .live-card-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 0.625rem;
+      color: var(--gray-500);
+    }
+
+    .live-card-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Session Grid */
+    .sessions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .session-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .session-card:hover {
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .session-card-image {
+      height: 120px;
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 2rem;
+    }
+
+    .session-card-image .time-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.6);
+      color: var(--white);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.625rem;
+    }
+
+    .session-card-body {
+      padding: 14px;
+    }
+
+    .session-card-subject {
+      display: inline-block;
+      padding: 4px 8px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 4px;
+      font-size: 0.625rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .session-card-title {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+      color: var(--gray-800);
+    }
+
+    .session-card-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .session-card-teacher {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .session-card-teacher .avatar {
+      width: 20px;
+      height: 20px;
+      font-size: 0.5rem;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      padding: 8px 0 20px;
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+
+    .bottom-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      color: var(--gray-400);
+      font-size: 0.625rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .bottom-nav-item.active {
+      color: var(--primary);
+    }
+
+    .bottom-nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="home-page">
+    <!-- Hero Section with Search -->
+    <div class="hero-section">
+      <div class="hero-greeting">
+        <h1>Hello, Alex!</h1>
+        <p>Ready to learn something new today?</p>
+      </div>
+      <div class="hero-search">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" placeholder="Search topics, teachers, sessions...">
+        <div class="filter-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <!-- Grade Filter -->
+      <div class="grade-filter">
+        <h3>Your Grade Level</h3>
+        <div class="grade-pills">
+          <div class="grade-pill">K</div>
+          <div class="grade-pill">1st</div>
+          <div class="grade-pill">2nd</div>
+          <div class="grade-pill">3rd</div>
+          <div class="grade-pill active">4th</div>
+          <div class="grade-pill">5th</div>
+          <div class="grade-pill">6th</div>
+          <div class="grade-pill">7th</div>
+          <div class="grade-pill">8th</div>
+          <div class="grade-pill">9th</div>
+          <div class="grade-pill">10th</div>
+          <div class="grade-pill">11th</div>
+          <div class="grade-pill">12th</div>
+        </div>
+      </div>
+
+      <!-- Subjects -->
+      <div class="section-header">
+        <h2>Subjects</h2>
+        <a href="#">View All</a>
+      </div>
+      <div class="subjects-scroll">
+        <div class="subject-card active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>Math</span>
+        </div>
+        <div class="subject-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 3h6v7l4 9H5l4-9V3z"/>
+            <line x1="9" y1="3" x2="15" y2="3"/>
+          </svg>
+          <span>Science</span>
+        </div>
+        <div class="subject-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+          </svg>
+          <span>English</span>
+        </div>
+        <div class="subject-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+          <span>Coding</span>
+        </div>
+        <div class="subject-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+          <span>History</span>
+        </div>
+        <div class="subject-card">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="13.5" cy="6.5" r="2.5"/>
+            <circle cx="6" cy="12" r="2"/>
+            <circle cx="10" cy="18" r="2"/>
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10"/>
+          </svg>
+          <span>Art</span>
+        </div>
+      </div>
+
+      <!-- Live Now -->
+      <div class="section-header">
+        <h2>Live Now</h2>
+        <a href="#">See All</a>
+      </div>
+      <div class="live-now-scroll">
+        <div class="live-card" onclick="window.location.href='06-live-session.html'">
+          <div class="live-card-preview">
+            <div class="live-badge">
+              <span class="dot"></span>
+              LIVE
+            </div>
+            <div class="viewers">234 watching</div>
+            <div class="play-overlay">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+          <div class="live-card-body">
+            <div class="live-card-title">Multiplication Tables Made Easy!</div>
+            <div class="live-card-teacher">
+              <div class="avatar">MS</div>
+              <span>Ms. Sarah Johnson</span>
+            </div>
+            <div class="live-card-meta">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                </svg>
+                3rd-4th Grade
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Math
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="live-card">
+          <div class="live-card-preview" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+            <div class="live-badge">
+              <span class="dot"></span>
+              LIVE
+            </div>
+            <div class="viewers">156 watching</div>
+            <div class="play-overlay">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+          <div class="live-card-body">
+            <div class="live-card-title">Creative Writing Workshop</div>
+            <div class="live-card-teacher">
+              <div class="avatar">JB</div>
+              <span>Mr. James Brown</span>
+            </div>
+            <div class="live-card-meta">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                </svg>
+                4th-5th Grade
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5"/>
+                </svg>
+                English
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="live-card">
+          <div class="live-card-preview" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+            <div class="live-badge">
+              <span class="dot"></span>
+              LIVE
+            </div>
+            <div class="viewers">89 watching</div>
+            <div class="play-overlay">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </div>
+          </div>
+          <div class="live-card-body">
+            <div class="live-card-title">Fun with Fractions</div>
+            <div class="live-card-teacher">
+              <div class="avatar">LW</div>
+              <span>Ms. Lisa Wang</span>
+            </div>
+            <div class="live-card-meta">
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                </svg>
+                4th Grade
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Math
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Sessions -->
+      <div class="section-header">
+        <h2>Upcoming Sessions</h2>
+        <a href="#">See All</a>
+      </div>
+      <div class="sessions-grid">
+        <div class="session-card">
+          <div class="session-card-image" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polyline points="16 18 22 12 16 6"/>
+              <polyline points="8 6 2 12 8 18"/>
+            </svg>
+            <div class="time-badge">Today, 3:00 PM</div>
+          </div>
+          <div class="session-card-body">
+            <span class="session-card-subject">Coding</span>
+            <div class="session-card-title">Introduction to Scratch Programming</div>
+            <div class="session-card-info">
+              <div class="session-card-teacher">
+                <div class="avatar">TM</div>
+                <span>Mr. Thomas</span>
+              </div>
+              <span class="badge badge-primary">4th Grade</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <div class="session-card-image" style="background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 3h6v7l4 9H5l4-9V3z"/>
+            </svg>
+            <div class="time-badge">Tomorrow, 10:00 AM</div>
+          </div>
+          <div class="session-card-body">
+            <span class="session-card-subject">Science</span>
+            <div class="session-card-title">The Water Cycle Explained</div>
+            <div class="session-card-info">
+              <div class="session-card-teacher">
+                <div class="avatar">DR</div>
+                <span>Dr. Roberts</span>
+              </div>
+              <span class="badge badge-primary">4th Grade</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="session-card">
+          <div class="session-card-image" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <div class="time-badge">Wed, 2:00 PM</div>
+          </div>
+          <div class="session-card-body">
+            <span class="session-card-subject">History</span>
+            <div class="session-card-title">American Revolution for Kids</div>
+            <div class="session-card-info">
+              <div class="session-card-teacher">
+                <div class="avatar">PH</div>
+                <span>Prof. Harris</span>
+              </div>
+              <span class="badge badge-primary">4th-5th Grade</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <div class="bottom-nav-item active">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        Home
+      </div>
+      <div class="bottom-nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Explore
+      </div>
+      <div class="bottom-nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        Schedule
+      </div>
+      <div class="bottom-nav-item" onclick="window.location.href='05-student-profile.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="8" r="5"/>
+          <path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/>
+        </svg>
+        Profile
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Grade pill toggle
+    document.querySelectorAll('.grade-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        document.querySelectorAll('.grade-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Subject card toggle
+    document.querySelectorAll('.subject-card').forEach(card => {
+      card.addEventListener('click', function() {
+        document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

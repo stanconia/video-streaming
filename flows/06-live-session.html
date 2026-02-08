@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Session - EduLive</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .live-session-page {
+      min-height: 100vh;
+      background: var(--gray-900);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Video Section */
+    .video-section {
+      position: relative;
+      background: #000;
+      aspect-ratio: 16/9;
+      max-height: 50vh;
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+    }
+
+    .video-placeholder .teacher-video {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border: 4px solid rgba(255,255,255,0.3);
+    }
+
+    .video-placeholder h3 {
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .video-placeholder p {
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+
+    /* Video Overlay Controls */
+    .video-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, transparent 100%);
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--danger);
+      color: var(--white);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .live-badge .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--white);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .viewers-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.5);
+      color: var(--white);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    .close-btn {
+      width: 36px;
+      height: 36px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    /* Self Video Preview */
+    .self-video {
+      position: absolute;
+      bottom: 80px;
+      right: 16px;
+      width: 100px;
+      height: 75px;
+      background: var(--gray-800);
+      border-radius: var(--radius);
+      border: 2px solid var(--white);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    /* Video Controls */
+    .video-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .control-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      color: var(--white);
+    }
+
+    .control-btn.active {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .control-btn.muted {
+      background: var(--danger);
+    }
+
+    .control-btn.end-call {
+      background: var(--danger);
+      width: 56px;
+      height: 56px;
+    }
+
+    .control-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .control-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Content Section */
+    .content-section {
+      flex: 1;
+      background: var(--white);
+      border-radius: 24px 24px 0 0;
+      margin-top: -20px;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Tabs */
+    .content-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 8px;
+    }
+
+    .content-tab {
+      flex: 1;
+      padding: 16px 12px;
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .content-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .content-tab .badge {
+      display: inline-block;
+      background: var(--danger);
+      color: var(--white);
+      font-size: 0.625rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 4px;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      flex: 1;
+      overflow: hidden;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Chat Section */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .chat-message {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .chat-message .avatar {
+      width: 32px;
+      height: 32px;
+      font-size: 0.625rem;
+      flex-shrink: 0;
+    }
+
+    .chat-message-content {
+      flex: 1;
+    }
+
+    .chat-message-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .chat-message-header .name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .chat-message-header .teacher-badge {
+      font-size: 0.625rem;
+      padding: 2px 6px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-radius: 4px;
+    }
+
+    .chat-message-header .time {
+      font-size: 0.625rem;
+      color: var(--gray-400);
+    }
+
+    .chat-message-text {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+      line-height: 1.4;
+    }
+
+    .chat-input-container {
+      padding: 12px 16px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: 24px;
+      font-size: 0.875rem;
+      outline: none;
+    }
+
+    .chat-input:focus {
+      border-color: var(--primary);
+    }
+
+    .chat-send-btn {
+      width: 44px;
+      height: 44px;
+      background: var(--primary);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    /* Community Section */
+    .community-section {
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .participants-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .participants-header h3 {
+      font-size: 1rem;
+    }
+
+    .participants-header span {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    .participant-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: var(--radius);
+      transition: background 0.2s;
+    }
+
+    .participant-item:hover {
+      background: var(--gray-50);
+    }
+
+    .participant-item .avatar {
+      width: 40px;
+      height: 40px;
+    }
+
+    .participant-item .info {
+      flex: 1;
+    }
+
+    .participant-item .info h4 {
+      font-size: 0.875rem;
+      margin-bottom: 2px;
+    }
+
+    .participant-item .info span {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .participant-item .status {
+      display: flex;
+      gap: 8px;
+      color: var(--gray-400);
+    }
+
+    .participant-item .status svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .participant-item .status .active {
+      color: var(--secondary);
+    }
+
+    /* Assessment Section */
+    .assessment-section {
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .quiz-card {
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .quiz-header h3 {
+      font-size: 1rem;
+    }
+
+    .quiz-header .question-count {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+
+    .quiz-question {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      color: var(--gray-800);
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-option {
+      padding: 14px 16px;
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--primary);
+    }
+
+    .quiz-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--secondary);
+      background: #D1FAE5;
+    }
+
+    .quiz-option.wrong {
+      border-color: var(--danger);
+      background: #FEE2E2;
+    }
+
+    .quiz-timer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      background: var(--white);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    .quiz-timer svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent);
+    }
+
+    .quiz-timer .time {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .quiz-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .quiz-results {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .quiz-results .score {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .quiz-results .label {
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+
+    /* Hand Raise Notification */
+    .hand-raise-notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: var(--white);
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      display: none;
+    }
+
+    .hand-raise-notification.show {
+      display: flex;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateX(-50%) translateY(-100%); }
+      to { transform: translateX(-50%) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="live-session-page">
+    <!-- Hand Raise Notification -->
+    <div class="hand-raise-notification" id="handRaiseNotification">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v0"/>
+        <path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6"/>
+        <path d="M10 10V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/>
+        <path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8V6"/>
+      </svg>
+      Hand raised! Waiting for teacher...
+    </div>
+
+    <!-- Video Section -->
+    <div class="video-section">
+      <div class="video-placeholder">
+        <div class="teacher-video">SJ</div>
+        <h3>Ms. Sarah Johnson</h3>
+        <p>Multiplication Tables Made Easy!</p>
+      </div>
+
+      <div class="video-overlay">
+        <div style="display: flex; gap: 10px;">
+          <div class="live-badge">
+            <span class="dot"></span>
+            LIVE
+          </div>
+          <div class="viewers-count">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            234 watching
+          </div>
+        </div>
+        <div class="close-btn" onclick="window.location.href='03-home.html'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="self-video">AJ</div>
+
+      <div class="video-controls">
+        <button class="control-btn muted" id="micBtn" onclick="toggleMic()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="1" y1="1" x2="23" y2="23"/>
+            <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+            <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .74-.11 1.45-.32 2.12"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+        <button class="control-btn muted" id="videoBtn" onclick="toggleVideo()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2m5.66 0H14a2 2 0 0 1 2 2v3.34l1 1L23 7v10"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        </button>
+        <button class="control-btn active" id="handBtn" onclick="raiseHand()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v0"/>
+            <path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v6"/>
+            <path d="M10 10V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/>
+            <path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8V6"/>
+          </svg>
+        </button>
+        <button class="control-btn end-call" onclick="window.location.href='03-home.html'">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/>
+            <line x1="23" y1="1" x2="1" y2="23"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content-section">
+      <div class="content-tabs">
+        <div class="content-tab active" data-tab="chat">
+          Chat
+          <span class="badge">3</span>
+        </div>
+        <div class="content-tab" data-tab="community">Community</div>
+        <div class="content-tab" data-tab="assessment">Quiz</div>
+      </div>
+
+      <!-- Chat Tab -->
+      <div class="tab-content active" id="chat">
+        <div class="chat-messages">
+          <div class="chat-message">
+            <div class="avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">SJ</div>
+            <div class="chat-message-content">
+              <div class="chat-message-header">
+                <span class="name">Ms. Sarah</span>
+                <span class="teacher-badge">Teacher</span>
+                <span class="time">2:34 PM</span>
+              </div>
+              <div class="chat-message-text">Welcome everyone! Today we're going to make multiplication super fun and easy. Are you ready? 🎉</div>
+            </div>
+          </div>
+
+          <div class="chat-message">
+            <div class="avatar" style="background: linear-gradient(135deg, #10B981, #059669);">EK</div>
+            <div class="chat-message-content">
+              <div class="chat-message-header">
+                <span class="name">Emily K.</span>
+                <span class="time">2:35 PM</span>
+              </div>
+              <div class="chat-message-text">Yes! I'm excited! 😊</div>
+            </div>
+          </div>
+
+          <div class="chat-message">
+            <div class="avatar" style="background: linear-gradient(135deg, #6366F1, #8B5CF6);">MT</div>
+            <div class="chat-message-content">
+              <div class="chat-message-header">
+                <span class="name">Michael T.</span>
+                <span class="time">2:35 PM</span>
+              </div>
+              <div class="chat-message-text">Ready!</div>
+            </div>
+          </div>
+
+          <div class="chat-message">
+            <div class="avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">SJ</div>
+            <div class="chat-message-content">
+              <div class="chat-message-header">
+                <span class="name">Ms. Sarah</span>
+                <span class="teacher-badge">Teacher</span>
+                <span class="time">2:36 PM</span>
+              </div>
+              <div class="chat-message-text">Great! Let's start with the 5 times table. Can anyone tell me what 5 x 3 equals?</div>
+            </div>
+          </div>
+
+          <div class="chat-message">
+            <div class="avatar" style="background: linear-gradient(135deg, #EC4899, #DB2777);">AJ</div>
+            <div class="chat-message-content">
+              <div class="chat-message-header">
+                <span class="name">Alex J.</span>
+                <span class="time">2:36 PM</span>
+              </div>
+              <div class="chat-message-text">15!</div>
+            </div>
+          </div>
+
+          <div class="chat-message">
+            <div class="avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">SJ</div>
+            <div class="chat-message-content">
+              <div class="chat-message-header">
+                <span class="name">Ms. Sarah</span>
+                <span class="teacher-badge">Teacher</span>
+                <span class="time">2:37 PM</span>
+              </div>
+              <div class="chat-message-text">Excellent, Alex! That's correct! 🌟 Now let's try a quick quiz to practice...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <input type="text" class="chat-input" placeholder="Type a message...">
+          <button class="chat-send-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Community Tab -->
+      <div class="tab-content" id="community">
+        <div class="community-section">
+          <div class="participants-header">
+            <h3>Participants</h3>
+            <span>234 online</span>
+          </div>
+
+          <div class="participant-item">
+            <div class="avatar" style="background: linear-gradient(135deg, #F59E0B, #D97706);">SJ</div>
+            <div class="info">
+              <h4>Ms. Sarah Johnson</h4>
+              <span>Teacher &bull; Host</span>
+            </div>
+            <div class="status">
+              <svg class="active" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              </svg>
+              <svg class="active" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="23 7 16 12 23 17 23 7"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="participant-item">
+            <div class="avatar" style="background: linear-gradient(135deg, #EC4899, #DB2777);">AJ</div>
+            <div class="info">
+              <h4>Alex Johnson</h4>
+              <span>4th Grade</span>
+            </div>
+            <div class="status">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="1" y1="1" x2="23" y2="23"/>
+                <path d="M9 9v3a3 3 0 0 0 5.12 2.12"/>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="participant-item">
+            <div class="avatar" style="background: linear-gradient(135deg, #10B981, #059669);">EK</div>
+            <div class="info">
+              <h4>Emily Kim</h4>
+              <span>4th Grade</span>
+            </div>
+            <div class="status">
+              <svg class="active" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="23 7 16 12 23 17 23 7"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="participant-item">
+            <div class="avatar" style="background: linear-gradient(135deg, #6366F1, #8B5CF6);">MT</div>
+            <div class="info">
+              <h4>Michael Torres</h4>
+              <span>3rd Grade</span>
+            </div>
+            <div class="status">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="1" y1="1" x2="23" y2="23"/>
+                <path d="M9 9v3a3 3 0 0 0 5.12 2.12"/>
+              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="participant-item">
+            <div class="avatar" style="background: linear-gradient(135deg, #8B5CF6, #7C3AED);">LW</div>
+            <div class="info">
+              <h4>Lisa Wang</h4>
+              <span>4th Grade</span>
+            </div>
+            <div class="status">
+              <svg class="active" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              </svg>
+              <svg class="active" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="23 7 16 12 23 17 23 7"/>
+                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+              </svg>
+            </div>
+          </div>
+
+          <p style="text-align: center; padding: 16px; color: var(--gray-500); font-size: 0.875rem;">
+            + 229 more participants
+          </p>
+        </div>
+      </div>
+
+      <!-- Assessment Tab -->
+      <div class="tab-content" id="assessment">
+        <div class="assessment-section">
+          <div class="quiz-card">
+            <div class="quiz-header">
+              <h3>Quick Quiz</h3>
+              <span class="question-count">Question 1 of 5</span>
+            </div>
+
+            <div class="quiz-timer">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Time remaining: <span class="time">0:45</span>
+            </div>
+
+            <div class="quiz-question">
+              What is 7 x 6?
+            </div>
+
+            <div class="quiz-options">
+              <div class="quiz-option" onclick="selectOption(this)">36</div>
+              <div class="quiz-option" onclick="selectOption(this)">42</div>
+              <div class="quiz-option" onclick="selectOption(this)">48</div>
+              <div class="quiz-option" onclick="selectOption(this)">54</div>
+            </div>
+
+            <button class="quiz-submit" style="margin-top: 20px;">Submit Answer</button>
+          </div>
+
+          <div style="background: var(--white); border-radius: var(--radius-lg); padding: 20px;">
+            <h4 style="margin-bottom: 12px; font-size: 0.875rem;">Your Progress</h4>
+            <div style="display: flex; gap: 8px;">
+              <div style="width: 32px; height: 32px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div style="width: 32px; height: 32px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 600;">3</div>
+              <div style="width: 32px; height: 32px; background: var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gray-500); font-size: 0.75rem;">4</div>
+              <div style="width: 32px; height: 32px; background: var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gray-500); font-size: 0.75rem;">5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.content-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        this.classList.add('active');
+        document.getElementById(this.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Quiz option selection
+    function selectOption(el) {
+      document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    // Toggle mic
+    function toggleMic() {
+      const btn = document.getElementById('micBtn');
+      btn.classList.toggle('muted');
+      btn.classList.toggle('active');
+    }
+
+    // Toggle video
+    function toggleVideo() {
+      const btn = document.getElementById('videoBtn');
+      btn.classList.toggle('muted');
+      btn.classList.toggle('active');
+    }
+
+    // Raise hand
+    function raiseHand() {
+      const notification = document.getElementById('handRaiseNotification');
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

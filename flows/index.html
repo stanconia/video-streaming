@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduLive - App Flows</title>
+  <style>
+    :root {
+      --primary: #6366F1;
+      --primary-dark: #4F46E5;
+      --gray-50: #F9FAFB;
+      --gray-100: #F3F4F6;
+      --gray-200: #E5E7EB;
+      --gray-500: #6B7280;
+      --gray-700: #374151;
+      --gray-800: #1F2937;
+      --white: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: var(--white);
+      margin-bottom: 48px;
+    }
+
+    .header .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .header .logo svg {
+      width: 56px;
+      height: 56px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 1.125rem;
+      opacity: 0.9;
+      margin-top: 8px;
+    }
+
+    .flows-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .flow-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .flow-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .flow-preview {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flow-preview iframe {
+      width: 200%;
+      height: 200%;
+      transform: scale(0.5);
+      transform-origin: top left;
+      border: none;
+      pointer-events: none;
+    }
+
+    .flow-preview-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: transparent;
+    }
+
+    .flow-info {
+      padding: 20px;
+    }
+
+    .flow-number {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .flow-info h3 {
+      font-size: 1.125rem;
+      color: var(--gray-800);
+      margin-bottom: 8px;
+    }
+
+    .flow-info p {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
+    .flow-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .flow-tag {
+      padding: 4px 10px;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.875rem;
+    }
+
+    .footer a {
+      color: var(--white);
+      text-decoration: underline;
+    }
+
+    /* User Flow Diagram */
+    .flow-diagram {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 48px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .flow-diagram h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: var(--gray-800);
+    }
+
+    .diagram-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .diagram-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .diagram-box {
+      padding: 12px 20px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .diagram-arrow {
+      color: var(--gray-400);
+      font-size: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.75rem;
+      }
+
+      .diagram-container {
+        flex-direction: column;
+      }
+
+      .diagram-arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="24" r="22" fill="rgba(255,255,255,0.2)"/>
+          <polygon points="18,14 18,34 34,24" fill="white"/>
+          <path d="M24 8l-8 4 8 4 8-4-8-4z" fill="rgba(255,255,255,0.5)"/>
+          <circle cx="24" cy="12" r="2" fill="white"/>
+        </svg>
+        <h1>EduLive</h1>
+      </div>
+      <p>Interactive Education Platform - UI/UX Flow Designs</p>
+    </div>
+
+    <!-- User Flow Diagram -->
+    <div class="flow-diagram">
+      <h2>User Journey Flow</h2>
+      <div class="diagram-container">
+        <div class="diagram-step">
+          <div class="diagram-box">Login / Register</div>
+        </div>
+        <span class="diagram-arrow">→</span>
+        <div class="diagram-step">
+          <div class="diagram-box">Home Page</div>
+        </div>
+        <span class="diagram-arrow">→</span>
+        <div class="diagram-step">
+          <div class="diagram-box">Browse / Search</div>
+        </div>
+        <span class="diagram-arrow">→</span>
+        <div class="diagram-step">
+          <div class="diagram-box">Join Live Session</div>
+        </div>
+        <span class="diagram-arrow">→</span>
+        <div class="diagram-step">
+          <div class="diagram-box">Take Assessment</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flows Grid -->
+    <div class="flows-grid">
+      <!-- Login -->
+      <a href="01-login.html" class="flow-card">
+        <div class="flow-preview">
+          <iframe src="01-login.html" loading="lazy"></iframe>
+          <div class="flow-preview-overlay"></div>
+        </div>
+        <div class="flow-info">
+          <span class="flow-number">1</span>
+          <h3>Login Page</h3>
+          <p>User authentication with username/password, social login options, and user type selection (Student/Teacher).</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Authentication</span>
+            <span class="flow-tag">Social Login</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Register -->
+      <a href="02-register.html" class="flow-card">
+        <div class="flow-preview">
+          <iframe src="02-register.html" loading="lazy"></iframe>
+          <div class="flow-preview-overlay"></div>
+        </div>
+        <div class="flow-info">
+          <span class="flow-number">2</span>
+          <h3>Registration Page</h3>
+          <p>Create account flow with role selection, grade level picker, and subject interests for personalization.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Onboarding</span>
+            <span class="flow-tag">Profile Setup</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Home -->
+      <a href="03-home.html" class="flow-card">
+        <div class="flow-preview">
+          <iframe src="03-home.html" loading="lazy"></iframe>
+          <div class="flow-preview-overlay"></div>
+        </div>
+        <div class="flow-info">
+          <span class="flow-number">3</span>
+          <h3>Home Page</h3>
+          <p>Main dashboard with search, grade filters (K-12), subject categories, live sessions, and upcoming classes.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Search</span>
+            <span class="flow-tag">Grade Filter</span>
+            <span class="flow-tag">Live Sessions</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Teacher Profile -->
+      <a href="04-teacher-profile.html" class="flow-card">
+        <div class="flow-preview">
+          <iframe src="04-teacher-profile.html" loading="lazy"></iframe>
+          <div class="flow-preview-overlay"></div>
+        </div>
+        <div class="flow-info">
+          <span class="flow-number">4</span>
+          <h3>Teacher Profile</h3>
+          <p>Display teacher capabilities, scheduled live sessions, teaching schedule, and student reviews.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Capabilities</span>
+            <span class="flow-tag">Schedule</span>
+            <span class="flow-tag">Reviews</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Student Profile -->
+      <a href="05-student-profile.html" class="flow-card">
+        <div class="flow-preview">
+          <iframe src="05-student-profile.html" loading="lazy"></iframe>
+          <div class="flow-preview-overlay"></div>
+        </div>
+        <div class="flow-info">
+          <span class="flow-number">5</span>
+          <h3>Student Profile</h3>
+          <p>Student dashboard showing grade level, interests, progress tracking by subject, and achievements.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Progress Tracking</span>
+            <span class="flow-tag">Achievements</span>
+            <span class="flow-tag">Grade Level</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Live Session -->
+      <a href="06-live-session.html" class="flow-card">
+        <div class="flow-preview">
+          <iframe src="06-live-session.html" loading="lazy"></iframe>
+          <div class="flow-preview-overlay"></div>
+        </div>
+        <div class="flow-info">
+          <span class="flow-number">6</span>
+          <h3>Live Session</h3>
+          <p>Interactive live classroom with video, community chat, participant list, and real-time assessments/quizzes.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Video</span>
+            <span class="flow-tag">Chat</span>
+            <span class="flow-tag">Assessment</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>EduLive - Educational Live Streaming Platform for K-12 Students</p>
+      <p style="margin-top: 8px;">
+        <a href="../assets/svg/index.html">View SVG Assets Library</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

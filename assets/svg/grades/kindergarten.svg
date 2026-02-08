@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <circle cx="24" cy="24" r="22" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="24" y="30" text-anchor="middle" fill="#D97706" font-family="Arial, sans-serif" font-weight="bold" font-size="16">K</text>
+  <path d="M14 38c2-3 6-5 10-5s8 2 10 5" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+</svg>

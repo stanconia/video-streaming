@@ -1,0 +1,21 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "01ab4601a9fa319cddce08e2a1bf597e6d7de3ba2abcede4e3a354d9430d99d7": {
+      "displayName": "EduLiveDatabaseStack Template",
+      "source": {
+        "path": "EduLiveDatabaseStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "214102106723-us-east-1-d5ba0a2f": {
+          "bucketName": "cdk-hnb659fds-assets-214102106723-us-east-1",
+          "objectKey": "01ab4601a9fa319cddce08e2a1bf597e6d7de3ba2abcede4e3a354d9430d99d7.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::214102106723:role/cdk-hnb659fds-file-publishing-role-214102106723-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

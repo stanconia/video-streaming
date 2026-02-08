@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40" viewBox="0 0 120 40" fill="none">
+  <!-- Play button icon -->
+  <rect x="2" y="8" width="24" height="24" rx="4" fill="#6366F1"/>
+  <polygon points="12,14 12,26 22,20" fill="white"/>
+
+  <!-- Graduation cap accent -->
+  <path d="M26 10l-6 3 6 3 6-3-6-3z" fill="#4F46E5"/>
+  <path d="M22 14v4c0 1 2 2 4 2s4-1 4-2v-4" stroke="#4F46E5" stroke-width="1.5" fill="none"/>
+
+  <!-- Text: EduLive -->
+  <text x="34" y="26" fill="#1F2937" font-family="Arial, sans-serif" font-weight="bold" font-size="16">EduLive</text>
+</svg>

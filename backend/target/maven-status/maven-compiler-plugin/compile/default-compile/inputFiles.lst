@@ -1,0 +1,15 @@
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/model/dto/CreateRoomRequest.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/repository/ParticipantRepository.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/service/MediaServerClient.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/repository/RoomRepository.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/controller/HealthController.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/model/Participant.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/service/RoomService.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/model/Room.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/model/dto/JoinRoomRequest.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/controller/RoomController.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/websocket/SignalingWebSocketHandler.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/VideoStreamingApplication.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/config/WebSocketConfig.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/config/CorsConfig.java
+/Users/stanleyopara/projects/video-streaming/backend/src/main/java/com/videostreaming/model/ParticipantRole.java
