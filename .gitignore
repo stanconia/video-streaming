@@ -1,0 +1,44 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Frontend build
+frontend/build/
+
+# Backend build
+backend/target/
+backend/*.jar
+
+# CDK
+infrastructure/cdk.out/
+infrastructure/node_modules/
+
+# Media server
+media-server/dist/
+media-server/node_modules/
+
+# Logs
+*.log
+
+# Claude
+.claude/

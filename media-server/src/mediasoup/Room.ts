@@ -13,9 +13,14 @@ export class MediasoupRoom {
   private consumers: Map<string, Consumer> = new Map();
   private participants: Map<string, ParticipantInfo> = new Map(); // sessionId -> info
   private producerOwners: Map<string, string> = new Map(); // producerId -> sessionId
+  private producerSources: Map<string, string> = new Map(); // producerId -> 'camera' | 'screen'
 
   constructor(router: Router) {
     this.router = router;
+  }
+
+  getRouter(): Router {
+    return this.router;
   }
 
   getRtpCapabilities(): RtpCapabilities {
@@ -62,7 +67,8 @@ export class MediasoupRoom {
     transportId: string,
     kind: 'audio' | 'video',
     rtpParameters: any,
-    sessionId?: string
+    sessionId?: string,
+    source: string = 'camera'
   ): Promise<Producer> {
     const transport = this.transports.get(transportId);
     if (!transport) {
@@ -79,13 +85,15 @@ export class MediasoupRoom {
       producer.close();
       this.producers.delete(producer.id);
       this.producerOwners.delete(producer.id);
+      this.producerSources.delete(producer.id);
     });
 
     this.producers.set(producer.id, producer);
+    this.producerSources.set(producer.id, source);
     if (sessionId) {
       this.producerOwners.set(producer.id, sessionId);
     }
-    console.log(`Producer created: ${producer.id} (${kind}) by session: ${sessionId}`);
+    console.log(`Producer created: ${producer.id} (${kind}, source: ${source}) by session: ${sessionId}`);
 
     return producer;
   }
@@ -166,8 +174,8 @@ export class MediasoupRoom {
     return Array.from(this.producers.values());
   }
 
-  getProducersWithUserInfo(): Array<{ producerId: string; kind: string; userId: string; role: string }> {
-    const result: Array<{ producerId: string; kind: string; userId: string; role: string }> = [];
+  getProducersWithUserInfo(): Array<{ producerId: string; kind: string; userId: string; role: string; source: string }> {
+    const result: Array<{ producerId: string; kind: string; userId: string; role: string; source: string }> = [];
 
     for (const [producerId, producer] of this.producers.entries()) {
       const ownerSessionId = this.producerOwners.get(producerId);
@@ -178,6 +186,7 @@ export class MediasoupRoom {
         kind: producer.kind,
         userId: participantInfo?.userId || 'Unknown',
         role: participantInfo?.role || 'viewer',
+        source: this.producerSources.get(producerId) || 'camera',
       });
     }
 
@@ -194,6 +203,7 @@ export class MediasoupRoom {
       producer.close();
       this.producers.delete(producerId);
       this.producerOwners.delete(producerId);
+      this.producerSources.delete(producerId);
       console.log(`Producer closed: ${producerId}`);
     }
   }

@@ -1,13 +1,16 @@
 import { MediasoupManager } from '../mediasoup/MediasoupManager';
 import { MediasoupRoom } from '../mediasoup/Room';
+import { RecordingManager } from '../recording/RecordingManager';
 
 export class SignalingHandler {
   private mediasoupManager: MediasoupManager;
+  private recordingManager: RecordingManager;
   private rooms: Map<string, MediasoupRoom> = new Map();
   private participantRooms: Map<string, string> = new Map(); // sessionId -> roomId
 
   constructor(mediasoupManager: MediasoupManager) {
     this.mediasoupManager = mediasoupManager;
+    this.recordingManager = new RecordingManager();
   }
 
   async handleMessage(message: any, sessionId: string): Promise<any> {
@@ -41,6 +44,15 @@ export class SignalingHandler {
 
         case 'close-producers':
           return this.handleCloseProducers(message, sessionId);
+
+        case 'start-recording':
+          return await this.handleStartRecording(message);
+
+        case 'stop-recording':
+          return await this.handleStopRecording(message);
+
+        case 'recording-status':
+          return this.handleRecordingStatus(message);
 
         default:
           throw new Error(`Unknown message type: ${message.type}`);
@@ -136,7 +148,7 @@ export class SignalingHandler {
   }
 
   private async handleProduce(message: any, sessionId: string): Promise<any> {
-    const { transportId, kind, rtpParameters, roomId, userId, role } = message;
+    const { transportId, kind, rtpParameters, roomId, userId, role, source } = message;
 
     const room = roomId ? this.rooms.get(roomId) : this.rooms.get(this.participantRooms.get(sessionId)!);
 
@@ -144,7 +156,7 @@ export class SignalingHandler {
       throw new Error(`Room not found`);
     }
 
-    const producer = await room.createProducer(transportId, kind, rtpParameters, sessionId);
+    const producer = await room.createProducer(transportId, kind, rtpParameters, sessionId, source || 'camera');
 
     // Notify other participants about new producer (include userId for identification)
     const notification = {
@@ -153,6 +165,7 @@ export class SignalingHandler {
       kind: producer.kind,
       userId: userId || sessionId,
       role: role || 'viewer',
+      source: source || 'camera',
     };
 
     return {
@@ -274,7 +287,58 @@ export class SignalingHandler {
     return this.rooms.values().next().value;
   }
 
+  private async handleStartRecording(message: any): Promise<any> {
+    const { roomId, recordingId } = message;
+    const room = this.rooms.get(roomId);
+    if (!room) throw new Error(`Room not found: ${roomId}`);
+
+    const router = room.getRouter();
+    const result = await this.recordingManager.startRecording(roomId, recordingId, room, router);
+
+    return {
+      type: 'recording-started',
+      roomId,
+      recordingId,
+      success: result.success,
+      error: result.error,
+      requestId: message.requestId,
+      notification: result.success
+        ? { type: 'recording-status-changed', roomId, isRecording: true }
+        : undefined,
+    };
+  }
+
+  private async handleStopRecording(message: any): Promise<any> {
+    const { roomId } = message;
+    const result = await this.recordingManager.stopRecording(roomId);
+
+    return {
+      type: 'recording-stopped',
+      roomId,
+      success: result.success,
+      filePath: result.result?.filePath,
+      durationMs: result.result?.durationMs,
+      error: result.error,
+      requestId: message.requestId,
+      notification: result.success
+        ? { type: 'recording-status-changed', roomId, isRecording: false }
+        : undefined,
+    };
+  }
+
+  private handleRecordingStatus(message: any): any {
+    const { roomId } = message;
+    return {
+      type: 'recording-status-response',
+      roomId,
+      isRecording: this.recordingManager.isRecording(roomId),
+      state: this.recordingManager.getRecordingState(roomId),
+      requestId: message.requestId,
+    };
+  }
+
   close(): void {
+    this.recordingManager.stopAll();
     this.rooms.forEach((room) => room.close());
     this.rooms.clear();
     this.participantRooms.clear();

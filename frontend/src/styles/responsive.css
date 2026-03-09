@@ -1,0 +1,149 @@
+/* Hamburger button - hidden on desktop */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  color: #333;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  /* Navbar */
+  .navbar {
+    flex-wrap: wrap !important;
+    height: auto !important;
+    padding: 8px 12px !important;
+  }
+  .navbar-left {
+    width: 100%;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .navbar-links {
+    display: none !important;
+    width: 100%;
+    order: 3;
+  }
+  .navbar-links.open {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px 0 4px;
+  }
+  .navbar-links button {
+    flex: 1 1 auto;
+    min-width: 80px;
+    text-align: center;
+  }
+  .navbar-right {
+    display: flex !important;
+    gap: 8px !important;
+    order: 2;
+  }
+  .navbar-right .user-name {
+    display: none;
+  }
+  .navbar-right .role-badge {
+    display: none;
+  }
+  .hamburger {
+    display: block !important;
+  }
+
+  /* Messages layout */
+  .messages-layout {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: calc(100vh - 160px);
+  }
+  .messages-sidebar {
+    width: 100% !important;
+    min-width: unset !important;
+    max-height: 40vh;
+    border-right: none !important;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .messages-sidebar.hidden {
+    display: none !important;
+  }
+  .messages-main.hidden {
+    display: none !important;
+  }
+
+  /* Course learn layout */
+  .learn-layout {
+    flex-direction: column !important;
+  }
+  .learn-sidebar {
+    width: 100% !important;
+    max-height: 50vh;
+    border-right: none !important;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .learn-main {
+    padding: 16px !important;
+  }
+  .lesson-nav {
+    flex-direction: column !important;
+  }
+  .lesson-nav button {
+    max-width: 100% !important;
+    width: 100%;
+  }
+
+  /* Tables: horizontal scroll */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .earnings-table {
+    min-width: 600px;
+  }
+
+  /* General containers */
+  .page-container {
+    padding: 12px !important;
+  }
+
+  /* Grids */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  /* Forms */
+  .form-row {
+    flex-direction: column !important;
+  }
+
+  /* Quick links */
+  .quick-links {
+    flex-wrap: wrap !important;
+  }
+  .quick-links button {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+
+  /* Auth pages */
+  .auth-card {
+    margin: 12px !important;
+    padding: 20px !important;
+  }
+}
+
+/* Small phone adjustments */
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .navbar-links.open button {
+    min-width: 70px;
+    font-size: 12px !important;
+    padding: 6px 8px !important;
+  }
+}

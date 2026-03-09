@@ -200,12 +200,13 @@ export class BackendStack extends cdk.Stack {
         }),
         environment: {
           // Spring Boot configuration
+          SPRING_PROFILES_ACTIVE: 'aws',
           PORT: '8080',
           AWS_REGION: this.region,
           COGNITO_USER_POOL_ID: userPool.userPoolId,
           UPLOADS_BUCKET: uploadsBucket.bucketName,
           // Database configuration for PostgreSQL
-          DB_URL: `jdbc:postgresql://${database.instanceEndpoint.hostname}:${database.instanceEndpoint.port}/edulive`,
+          DB_URL: `jdbc:postgresql://${database.instanceEndpoint.hostname}:${database.instanceEndpoint.port}/edulive?stringtype=unspecified`,
           DB_DRIVER: 'org.postgresql.Driver',
           DB_USERNAME: 'edulive_admin',
           HIBERNATE_DIALECT: 'org.hibernate.dialect.PostgreSQLDialect',
@@ -219,6 +220,19 @@ export class BackendStack extends cdk.Stack {
           MEDIA_SERVER_URL: 'http://localhost:3000',
           // CORS - allow CloudFront origin
           CORS_ALLOWED_ORIGINS: '*',
+          // Stripe (placeholders — payments disabled until real keys added)
+          STRIPE_SECRET_KEY: 'sk_test_placeholder',
+          STRIPE_PUBLISHABLE_KEY: 'pk_test_placeholder',
+          STRIPE_WEBHOOK_SECRET: 'whsec_placeholder',
+          // JWT
+          JWT_SECRET: 'prodSecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmDeployment!',
+          // SQL init (runs schema-postgresql.sql to fix constraints)
+          SQL_INIT_MODE: 'always',
+          SQL_INIT_PLATFORM: 'postgresql',
+          DEFER_DS_INIT: 'true',
+          // Google OAuth
+          GOOGLE_CLIENT_ID: '991479117309-7896ulfi3hl2318ia17lq3007c3e85oj.apps.googleusercontent.com',
+          GOOGLE_CLIENT_SECRET: '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',
           // Logging
           LOG_LEVEL: environment === 'prod' ? 'INFO' : 'DEBUG',
         },

@@ -5,6 +5,8 @@ import { Construct } from 'constructs';
 export interface AuthStackProps extends cdk.StackProps {
   appName: string;
   environment: string;
+  googleClientId?: string;
+  googleClientSecret?: string;
 }
 
 export class AuthStack extends cdk.Stack {
@@ -87,6 +89,23 @@ export class AuthStack extends cdk.Stack {
 
     this.userPool = userPool;
 
+    // Google Identity Provider
+    let googleProvider: cognito.UserPoolIdentityProviderGoogle | undefined;
+    if (props.googleClientId && props.googleClientSecret) {
+      googleProvider = new cognito.UserPoolIdentityProviderGoogle(this, 'GoogleProvider', {
+        userPool,
+        clientId: props.googleClientId,
+        clientSecretValue: cdk.SecretValue.unsafePlainText(props.googleClientSecret),
+        scopes: ['profile', 'email', 'openid'],
+        attributeMapping: {
+          email: cognito.ProviderAttribute.GOOGLE_EMAIL,
+          givenName: cognito.ProviderAttribute.GOOGLE_GIVEN_NAME,
+          familyName: cognito.ProviderAttribute.GOOGLE_FAMILY_NAME,
+          profilePicture: cognito.ProviderAttribute.GOOGLE_PICTURE,
+        },
+      });
+    }
+
     // User Pool Groups
     new cognito.CfnUserPoolGroup(this, 'StudentsGroup', {
       userPoolId: userPool.userPoolId,
@@ -143,6 +162,7 @@ export class AuthStack extends cdk.Stack {
       },
       supportedIdentityProviders: [
         cognito.UserPoolClientIdentityProvider.COGNITO,
+        ...(googleProvider ? [cognito.UserPoolClientIdentityProvider.GOOGLE] : []),
       ],
       accessTokenValidity: cdk.Duration.hours(1),
       idTokenValidity: cdk.Duration.hours(1),
@@ -152,6 +172,10 @@ export class AuthStack extends cdk.Stack {
     });
 
     this.userPoolClient = userPoolClient;
+
+    if (googleProvider) {
+      userPoolClient.node.addDependency(googleProvider);
+    }
 
     // Identity Pool for AWS credentials
     this.identityPool = new cognito.CfnIdentityPool(this, 'IdentityPool', {

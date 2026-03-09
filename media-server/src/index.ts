@@ -1,6 +1,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import http from 'http';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 import { MediasoupManager } from './mediasoup/MediasoupManager';
 import { SignalingHandler } from './signaling/SignalingHandler';
 import { config } from './mediasoup/config';
@@ -35,6 +38,17 @@ async function discoverPublicIp(): Promise<string> {
 // Health check endpoint
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', service: 'media-server' });
+});
+
+// Recording file download endpoint (internal, called by backend)
+app.get('/recordings/:recordingId', (req: Request, res: Response) => {
+  const filePath = path.join(os.tmpdir(), 'recordings', `${req.params.recordingId}.webm`);
+  if (fs.existsSync(filePath)) {
+    res.setHeader('Content-Type', 'video/webm');
+    res.sendFile(filePath);
+  } else {
+    res.status(404).json({ error: 'Recording file not found' });
+  }
 });
 
 // Signaling endpoint

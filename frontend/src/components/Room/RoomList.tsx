@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Room } from '../../types/room.types';
-import { roomApi } from '../../services/api/RoomApi';
+import { Room } from '../../types/live/room.types';
+import { roomApi } from '../../services/api/live/RoomApi';
 
 interface RoomListProps {
   onJoinRoom: (roomId: string, role: 'broadcaster' | 'viewer') => void;

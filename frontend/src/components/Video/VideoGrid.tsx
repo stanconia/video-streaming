@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 export interface RemoteParticipant {
   stream: MediaStream | null;
   userId: string;
+  displayName?: string;
   role: 'broadcaster' | 'viewer';
   hasVideo: boolean;
   isMuted: boolean;
@@ -12,11 +13,14 @@ interface VideoGridProps {
   streams: Map<string, RemoteParticipant>;
   localStream?: MediaStream | null;
   localUserId?: string;
+  localDisplayName?: string;
   showLocalPlaceholder?: boolean;
   isLocalMuted?: boolean;
   onToggleLocalMute?: () => void;
   onMuteParticipant?: (participantId: string) => void;
   canMuteOthers?: boolean; // Only broadcasters can mute others
+  activeSpeakerId?: string | null;
+  audioOutputDeviceId?: string;
 }
 
 const VideoTile: React.FC<{
@@ -29,16 +33,35 @@ const VideoTile: React.FC<{
   onToggleMute?: () => void;
   canMute?: boolean;
   participantId?: string;
-}> = ({ stream, name, isBroadcaster, isLocal, hasVideo, isMuted, onToggleMute, canMute }) => {
-  // Use callback ref to set srcObject immediately when video element is created
+  isSpeaking?: boolean;
+  audioOutputDeviceId?: string;
+}> = ({ stream, name, isBroadcaster, isLocal, hasVideo, isMuted, onToggleMute, canMute, isSpeaking, audioOutputDeviceId }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // Set srcObject when stream changes
   const setVideoRef = useCallback((video: HTMLVideoElement | null) => {
+    videoRef.current = video;
     if (video && stream) {
       video.srcObject = stream;
     }
   }, [stream]);
 
+  // Apply audio output device via setSinkId
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || isLocal || !audioOutputDeviceId) return;
+    if (typeof (video as any).setSinkId === 'function') {
+      (video as any).setSinkId(audioOutputDeviceId).catch((err: any) => {
+        console.warn('Failed to set audio output device:', err);
+      });
+    }
+  }, [audioOutputDeviceId, isLocal]);
+
   return (
-    <div style={styles.tile}>
+    <div style={{
+      ...styles.tile,
+      ...(isSpeaking ? styles.speakingTile : {}),
+    }}>
       {/* Always render video element for audio, hide visually when camera is off */}
       {stream && (
         <video
@@ -78,11 +101,14 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
   streams,
   localStream,
   localUserId,
+  localDisplayName,
   showLocalPlaceholder = false,
   isLocalMuted = false,
   onToggleLocalMute,
   onMuteParticipant,
   canMuteOthers = false,
+  activeSpeakerId,
+  audioOutputDeviceId,
 }) => {
   const showLocalTile = localStream || showLocalPlaceholder;
   const participantCount = streams.size + (showLocalTile ? 1 : 0);
@@ -100,13 +126,15 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
       {showLocalTile && (
         <VideoTile
           stream={localStream ?? null}
-          name={localUserId || 'You'}
+          name={localDisplayName || localUserId || 'You'}
           isBroadcaster={false}
           isLocal={true}
           hasVideo={!!localStream}
           isMuted={isLocalMuted}
           onToggleMute={onToggleLocalMute}
           canMute={true}
+          isSpeaking={activeSpeakerId === localUserId}
+          audioOutputDeviceId={audioOutputDeviceId}
         />
       )}
 
@@ -115,13 +143,15 @@ export const VideoGrid: React.FC<VideoGridProps> = ({
         <VideoTile
           key={odrive}
           stream={participant.stream}
-          name={participant.userId}
+          name={participant.displayName || participant.userId}
           isBroadcaster={participant.role === 'broadcaster'}
           hasVideo={participant.hasVideo}
           isMuted={participant.isMuted}
           onToggleMute={canMuteOthers ? () => onMuteParticipant?.(odrive) : undefined}
           canMute={canMuteOthers}
           participantId={odrive}
+          isSpeaking={activeSpeakerId === odrive}
+          audioOutputDeviceId={audioOutputDeviceId}
         />
       ))}
 
@@ -147,6 +177,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: '8px',
     overflow: 'hidden',
     aspectRatio: '16/9',
+    border: '3px solid transparent',
+    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+  },
+  speakingTile: {
+    borderColor: '#4caf50',
+    boxShadow: '0 0 12px rgba(76, 175, 80, 0.5)',
   },
   video: {
     width: '100%',

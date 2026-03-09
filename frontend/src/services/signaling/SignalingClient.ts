@@ -16,8 +16,8 @@ export class SignalingClient {
   private reconnectDelay = 2000;
   private isConnecting = false;
 
-  constructor(url: string) {
-    this.url = url;
+  constructor(url: string, token?: string) {
+    this.url = token ? `${url}?token=${encodeURIComponent(token)}` : url;
   }
 
   connect(): Promise<void> {
@@ -89,6 +89,12 @@ export class SignalingClient {
       this.ws!.send(JSON.stringify(messageWithId));
       console.log('Sent message:', message.type, requestId);
     });
+  }
+
+  /** Fire-and-forget send — no pending request tracking, no ack expected. Use for high-frequency messages like whiteboard updates. */
+  sendNoAck(message: any): void {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+    this.ws.send(JSON.stringify(message));
   }
 
   on(messageType: string, handler: (message: any) => void): void {

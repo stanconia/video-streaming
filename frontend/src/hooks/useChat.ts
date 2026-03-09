@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { SignalingClient } from '../services/signaling/SignalingClient';
-import { ChatMessage } from '../types/chat.types';
-import { ChatMessageNotification } from '../types/signaling.types';
+import { ChatMessage } from '../types/live/chat.types';
+import { ChatMessageNotification } from '../types/live/signaling.types';
 
 interface UseChatOptions {
   roomId: string;

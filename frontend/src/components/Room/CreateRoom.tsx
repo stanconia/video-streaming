@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { roomApi } from '../../services/api/RoomApi';
+import { roomApi } from '../../services/api/live/RoomApi';
 
 interface CreateRoomProps {
   onRoomCreated: (roomId: string) => void;
@@ -26,7 +26,8 @@ export const CreateRoom: React.FC<CreateRoomProps> = ({ onRoomCreated }) => {
       console.log('Room created:', room);
       onRoomCreated(room.id);
     } catch (err: any) {
-      setError('Failed to create room');
+      const message = err.response?.data?.message || err.message || 'Unknown error';
+      setError(`Failed to create room: ${message}`);
       console.error('Error creating room:', err);
     } finally {
       setCreating(false);

@@ -1,50 +1,27 @@
 package com.videostreaming.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import java.util.List;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ConfigurationProperties(prefix = "cors")
-public class CorsConfig {
+public class CorsConfig implements WebMvcConfigurer {
 
-    private List<String> allowedOrigins;
-    private List<String> allowedMethods;
-    private List<String> allowedHeaders;
-    private boolean allowCredentials;
+    @Value("${cors.allowed-origins:http://localhost:3000,http://localhost:3001}")
+    private String allowedOrigins;
 
-    public void setAllowedOrigins(List<String> allowedOrigins) {
-        this.allowedOrigins = allowedOrigins;
-    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        var mapping = registry.addMapping("/**")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
 
-    public void setAllowedMethods(List<String> allowedMethods) {
-        this.allowedMethods = allowedMethods;
-    }
-
-    public void setAllowedHeaders(List<String> allowedHeaders) {
-        this.allowedHeaders = allowedHeaders;
-    }
-
-    public void setAllowCredentials(boolean allowCredentials) {
-        this.allowCredentials = allowCredentials;
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-
-        config.setAllowCredentials(allowCredentials);
-        config.setAllowedOrigins(allowedOrigins);
-        config.setAllowedMethods(allowedMethods);
-        config.setAllowedHeaders(allowedHeaders);
-
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        if ("*".equals(allowedOrigins.trim())) {
+            mapping.allowedOriginPatterns("*");
+        } else {
+            mapping.allowedOrigins(allowedOrigins.split(","));
+        }
     }
 }

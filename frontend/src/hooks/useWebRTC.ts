@@ -8,6 +8,16 @@ interface UseWebRTCOptions {
   roomId: string;
   role: 'broadcaster' | 'viewer';
   userId: string;
+  displayName?: string;
+}
+
+interface ActiveScreenShare {
+  userId: string;
+  stream: MediaStream;
+}
+
+interface ScreenShareRequest {
+  userId: string;
 }
 
 interface UseWebRTCReturn {
@@ -24,9 +34,20 @@ interface UseWebRTCReturn {
   toggleLocalMute: () => void;
   muteParticipant: (participantId: string) => void;
   signalingClient: SignalingClient | null;
+  // Screen share
+  activeScreenShare: ActiveScreenShare | null;
+  isScreenSharing: boolean;
+  screenShareRequest: ScreenShareRequest | null;
+  screenSharePermissionStatus: 'none' | 'pending' | 'approved' | 'denied';
+  startScreenShare: () => Promise<void>;
+  stopScreenShare: () => void;
+  respondToScreenShareRequest: (approved: boolean) => void;
+  forceStopScreenShare: (targetUserId: string) => void;
+  // Session ended
+  sessionEnded: boolean;
 }
 
-export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTCReturn {
+export function useWebRTC({ roomId, role, userId, displayName }: UseWebRTCOptions): UseWebRTCReturn {
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStreams, setRemoteStreams] = useState<Map<string, RemoteParticipant>>(new Map());
   const [isConnected, setIsConnected] = useState(false);
@@ -34,16 +55,110 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
   const [isLocalMuted, setIsLocalMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
 
+  // Screen share state
+  const [activeScreenShare, setActiveScreenShare] = useState<ActiveScreenShare | null>(null);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [screenShareRequest, setScreenShareRequest] = useState<ScreenShareRequest | null>(null);
+  const [screenSharePermissionStatus, setScreenSharePermissionStatus] = useState<'none' | 'pending' | 'approved' | 'denied'>('none');
+  const [sessionEnded, setSessionEnded] = useState(false);
+
   const signalingClientRef = useRef<SignalingClient | null>(null);
   const webrtcClientRef = useRef<WebRTCClient | null>(null);
   const initPromiseRef = useRef<Promise<void> | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
   const isProducingRef = useRef<boolean>(false);
+  const screenShareProducerIdRef = useRef<string | null>(null);
+  const screenShareStreamRef = useRef<MediaStream | null>(null);
+  const screenShareRequestRef = useRef<ScreenShareRequest | null>(null);
 
-  // Keep ref in sync with state
+  // Keep refs in sync with state
   useEffect(() => {
     localStreamRef.current = localStream;
   }, [localStream]);
+
+  useEffect(() => {
+    screenShareRequestRef.current = screenShareRequest;
+  }, [screenShareRequest]);
+
+  // Internal: start screen sharing (after permission granted or host initiating directly)
+  const startScreenShareInternal = useCallback(async () => {
+    try {
+      if (!webrtcClientRef.current || !signalingClientRef.current) {
+        throw new Error('WebRTC client not initialized');
+      }
+
+      // Call getDisplayMedia FIRST — must be in user gesture context (before any await)
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+
+      // Now set up transport (async is OK after getDisplayMedia succeeds)
+      await webrtcClientRef.current.createSendTransport();
+      const screenTrack = screenStream.getVideoTracks()[0];
+
+      // Handle browser's native "Stop sharing" button
+      screenTrack.onended = () => {
+        console.log('Screen share track ended (browser stop)');
+        stopScreenShareInternal();
+      };
+
+      screenShareStreamRef.current = screenStream;
+      const producer = await webrtcClientRef.current.produce(screenTrack, 'screen');
+      screenShareProducerIdRef.current = producer.id;
+
+      setIsScreenSharing(true);
+      setActiveScreenShare({ userId, stream: screenStream });
+
+      // Notify other participants
+      await signalingClientRef.current.send({
+        type: 'screen-share-status-update',
+        roomId,
+        userId,
+        active: true,
+      });
+
+      console.log('Screen sharing started');
+    } catch (err: any) {
+      console.error('Error starting screen share:', err);
+      setScreenSharePermissionStatus('none');
+      // User cancelled the screen picker - not an error
+      if (err.name !== 'NotAllowedError') {
+        setError(`Failed to start screen share: ${err.message}`);
+      }
+    }
+  }, [roomId, userId]);
+
+  const stopScreenShareInternal = useCallback(async () => {
+    // Stop screen share tracks
+    if (screenShareStreamRef.current) {
+      screenShareStreamRef.current.getTracks().forEach(t => t.stop());
+      screenShareStreamRef.current = null;
+    }
+
+    // Close the screen share producer
+    if (screenShareProducerIdRef.current && webrtcClientRef.current) {
+      webrtcClientRef.current.closeProducer(screenShareProducerIdRef.current);
+      screenShareProducerIdRef.current = null;
+    }
+
+    setIsScreenSharing(false);
+    setActiveScreenShare(null);
+    setScreenSharePermissionStatus('none');
+
+    // Notify other participants
+    if (signalingClientRef.current) {
+      try {
+        await signalingClientRef.current.send({
+          type: 'screen-share-status-update',
+          roomId,
+          userId,
+          active: false,
+        });
+      } catch (err) {
+        console.error('Error sending screen share status update:', err);
+      }
+    }
+
+    console.log('Screen sharing stopped');
+  }, [roomId, userId]);
 
   const initializeClients = useCallback(async () => {
     // If already initializing or initialized, return existing promise
@@ -53,11 +168,12 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
 
     const initPromise = (async () => {
       try {
-        // Initialize signaling client
+        // Initialize signaling client with auth token
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsHost = process.env.NODE_ENV === 'development' ? 'localhost:8080' : window.location.host;
         const wsUrl = `${wsProtocol}//${wsHost}/ws/signaling`;
-        const signalingClient = new SignalingClient(wsUrl);
+        const token = localStorage.getItem('edulive_token') || undefined;
+        const signalingClient = new SignalingClient(wsUrl, token);
         await signalingClient.connect();
         signalingClientRef.current = signalingClient;
 
@@ -67,6 +183,7 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
           roomId,
           role,
           userId,
+          displayName,
         });
 
         console.log('Join response:', joinResponse);
@@ -85,11 +202,18 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
           // Consume each producer
           for (const producer of joinResponse.existingProducers) {
             try {
-              // Use userId as the key for grouping streams by participant
               const participantId = producer.userId || producer.producerId;
+              const producerSource = producer.source || 'camera';
 
               await webrtcClient.consume(producer.producerId, (track) => {
-                console.log('Received remote track from existing producer:', track.kind);
+                console.log('Received remote track from existing producer:', track.kind, 'source:', producerSource);
+
+                // Route screen share producers to activeScreenShare state
+                if (producerSource === 'screen') {
+                  const screenStream = new MediaStream([track]);
+                  setActiveScreenShare({ userId: participantId, stream: screenStream });
+                  return;
+                }
 
                 setRemoteStreams((prev) => {
                   const newStreams = new Map(prev);
@@ -106,6 +230,7 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
                   const newParticipant = {
                     stream: newStream,
                     userId: existingParticipant?.userId || producer.userId || 'Participant',
+                    displayName: existingParticipant?.displayName || producer.displayName || producer.userId,
                     role: existingParticipant?.role || producer.role || 'viewer',
                     hasVideo: true,
                     isMuted: existingParticipant?.isMuted || false,
@@ -224,17 +349,25 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
             console.log('>>> Skipping own producer (userId match)');
             return;
           }
-          console.log('>>> Will consume producer from:', message.userId);
+          console.log('>>> Will consume producer from:', message.userId, 'source:', message.source);
 
           if (webrtcClientRef.current) {
             try {
               await webrtcClientRef.current.createRecvTransport();
 
               const participantId = message.userId || message.producerId;
+              const producerSource = message.source || 'camera';
 
               console.log('>>> About to consume producer:', message.producerId);
               await webrtcClientRef.current.consume(message.producerId, (track) => {
-                console.log('>>> TRACK RECEIVED in callback! kind:', track.kind, 'id:', track.id);
+                console.log('>>> TRACK RECEIVED in callback! kind:', track.kind, 'id:', track.id, 'source:', producerSource);
+
+                // Route screen share producers to activeScreenShare state
+                if (producerSource === 'screen') {
+                  const screenStream = new MediaStream([track]);
+                  setActiveScreenShare({ userId: participantId, stream: screenStream });
+                  return;
+                }
 
                 setRemoteStreams((prev) => {
                   console.log('>>> setRemoteStreams called, prev size:', prev.size);
@@ -252,6 +385,7 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
                   const newParticipant = {
                     stream: newStream,
                     userId: existingParticipant?.userId || message.userId || 'Participant',
+                    displayName: existingParticipant?.displayName || message.displayName || message.userId,
                     role: existingParticipant?.role || message.role || 'viewer',
                     hasVideo: true,
                     isMuted: existingParticipant?.isMuted || false,
@@ -259,12 +393,6 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
                   newStreams.set(participantId, newParticipant);
 
                   console.log('>>> Updated remoteStreams, size:', newStreams.size, 'participantId:', participantId);
-                  console.log('>>> New participant:', JSON.stringify({
-                    userId: newParticipant.userId,
-                    role: newParticipant.role,
-                    hasVideo: newParticipant.hasVideo,
-                    streamTracks: newStream.getTracks().length
-                  }));
                   return newStreams;
                 });
               });
@@ -273,6 +401,47 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
               setError(`Failed to consume stream: ${err.message}`);
             }
           }
+        });
+
+        // Screen share notification handlers
+        signalingClient.on('screen-share-request-notification', (message) => {
+          console.log('>>> SCREEN SHARE REQUEST:', message);
+          setScreenShareRequest({ userId: message.userId });
+        });
+
+        signalingClient.on('screen-share-permission', async (message) => {
+          console.log('>>> SCREEN SHARE PERMISSION:', message);
+          if (message.approved) {
+            setScreenSharePermissionStatus('approved');
+            // Actually start the screen share now
+            try {
+              await startScreenShareInternal();
+            } catch (err) {
+              console.error('Error starting screen share after approval:', err);
+            }
+          } else {
+            setScreenSharePermissionStatus('denied');
+            // Auto-clear denied status after 3 seconds
+            setTimeout(() => setScreenSharePermissionStatus('none'), 3000);
+          }
+        });
+
+        signalingClient.on('screen-share-status', (message) => {
+          console.log('>>> SCREEN SHARE STATUS:', message);
+          if (!message.active) {
+            setActiveScreenShare(null);
+          }
+        });
+
+        signalingClient.on('screen-share-stopped', () => {
+          console.log('>>> SCREEN SHARE STOPPED (forced by host)');
+          stopScreenShareInternal();
+        });
+
+        // Listen for session-ended (teacher ended the live session)
+        signalingClient.on('session-ended', (message) => {
+          console.log('>>> SESSION ENDED:', message);
+          setSessionEnded(true);
         });
 
         setIsConnected(true);
@@ -286,7 +455,7 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
 
     initPromiseRef.current = initPromise;
     return initPromise;
-  }, [roomId, role, userId]);
+  }, [roomId, role, userId, startScreenShareInternal, stopScreenShareInternal]);
 
   // Start producing media (for all participants)
   const startMedia = useCallback(async () => {
@@ -316,9 +485,9 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
       // Create send transport
       await webrtcClientRef.current.createSendTransport();
 
-      // Produce tracks
+      // Produce tracks (camera source)
       for (const track of stream.getTracks()) {
-        await webrtcClientRef.current.produce(track);
+        await webrtcClientRef.current.produce(track, 'camera');
         console.log(`Producing ${track.kind} track`);
       }
 
@@ -360,6 +529,11 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
   }, [localStream, roomId, userId]);
 
   const leave = useCallback(() => {
+    // Stop screen share if active
+    if (isScreenSharing) {
+      stopScreenShareInternal();
+    }
+
     if (webrtcClientRef.current) {
       webrtcClientRef.current.close();
       webrtcClientRef.current = null;
@@ -381,9 +555,13 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
 
     setRemoteStreams(new Map());
     setIsConnected(false);
+    setActiveScreenShare(null);
+    setIsScreenSharing(false);
+    setScreenShareRequest(null);
+    setScreenSharePermissionStatus('none');
 
     console.log('Left room');
-  }, [roomId, localStream]);
+  }, [roomId, localStream, isScreenSharing, stopScreenShareInternal]);
 
   // Toggle local video on/off
   const toggleVideo = useCallback(async () => {
@@ -484,6 +662,70 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
     }
   }, [role, roomId, remoteStreams]);
 
+  // Screen share: public method - host starts directly, viewer requests permission
+  const startScreenShare = useCallback(async () => {
+    if (role === 'broadcaster') {
+      // Host can share directly
+      await startScreenShareInternal();
+    } else {
+      // Viewer must request permission
+      if (!signalingClientRef.current) return;
+      setScreenSharePermissionStatus('pending');
+      try {
+        await signalingClientRef.current.send({
+          type: 'screen-share-request',
+          roomId,
+          userId,
+        });
+      } catch (err) {
+        console.error('Error sending screen share request:', err);
+        setScreenSharePermissionStatus('none');
+      }
+    }
+  }, [role, roomId, userId, startScreenShareInternal]);
+
+  // Screen share: stop (called by user or forced)
+  const stopScreenShare = useCallback(() => {
+    stopScreenShareInternal();
+  }, [stopScreenShareInternal]);
+
+  // Screen share: host responds to viewer request
+  const respondToScreenShareRequest = useCallback(async (approved: boolean) => {
+    const request = screenShareRequestRef.current;
+    if (!request || !signalingClientRef.current) return;
+
+    try {
+      await signalingClientRef.current.send({
+        type: 'screen-share-response',
+        roomId,
+        targetUserId: request.userId,
+        approved,
+      });
+    } catch (err) {
+      console.error('Error sending screen share response:', err);
+    }
+
+    setScreenShareRequest(null);
+  }, [roomId]);
+
+  // Screen share: host force-stops a viewer's share
+  const forceStopScreenShare = useCallback(async (targetUserId: string) => {
+    if (role !== 'broadcaster' || !signalingClientRef.current) return;
+
+    try {
+      await signalingClientRef.current.send({
+        type: 'stop-screen-share',
+        roomId,
+        targetUserId,
+      });
+    } catch (err) {
+      console.error('Error sending force stop screen share:', err);
+    }
+
+    // Also clear local screen share state since the share is ending
+    setActiveScreenShare(null);
+  }, [role, roomId]);
+
   // Initialize clients on mount (so we can receive notifications even before starting media)
   useEffect(() => {
     initializeClients().catch((err) => {
@@ -494,6 +736,11 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      // Stop screen share
+      if (screenShareStreamRef.current) {
+        screenShareStreamRef.current.getTracks().forEach(t => t.stop());
+      }
+
       if (webrtcClientRef.current) {
         webrtcClientRef.current.close();
       }
@@ -526,5 +773,16 @@ export function useWebRTC({ roomId, role, userId }: UseWebRTCOptions): UseWebRTC
     toggleLocalMute,
     muteParticipant,
     signalingClient: signalingClientRef.current,
+    // Screen share
+    activeScreenShare,
+    isScreenSharing,
+    screenShareRequest,
+    screenSharePermissionStatus,
+    startScreenShare,
+    stopScreenShare,
+    respondToScreenShareRequest,
+    forceStopScreenShare,
+    // Session ended
+    sessionEnded,
   };
 }

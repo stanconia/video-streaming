@@ -43,6 +43,8 @@ const authStack = new AuthStack(app, `${config.appName}AuthStack`, {
   env,
   appName: config.appName,
   environment: config.environment,
+  googleClientId: app.node.tryGetContext('googleClientId') || process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: app.node.tryGetContext('googleClientSecret') || process.env.GOOGLE_CLIENT_SECRET,
   description: 'EduLive Authentication - Cognito User Pool',
 });
 

@@ -80,7 +80,7 @@ export class WebRTCClient {
       }
     });
 
-    this.sendTransport.on('produce', async ({ kind, rtpParameters }, callback, errback) => {
+    this.sendTransport.on('produce', async ({ kind, rtpParameters, appData }, callback, errback) => {
       try {
         const response = await this.signalingClient.send({
           type: 'produce',
@@ -90,6 +90,7 @@ export class WebRTCClient {
           roomId: this.roomId,
           userId: this.userId,
           role: this.role,
+          source: (appData?.source as string) || 'camera',
         });
 
         callback({ id: response.producerId });
@@ -152,12 +153,12 @@ export class WebRTCClient {
     console.log('Receive transport created');
   }
 
-  async produce(track: MediaStreamTrack): Promise<Producer> {
+  async produce(track: MediaStreamTrack, source: 'camera' | 'screen' = 'camera'): Promise<Producer> {
     if (!this.sendTransport) {
       throw new Error('Send transport not created');
     }
 
-    const producer = await this.sendTransport.produce({ track });
+    const producer = await this.sendTransport.produce({ track, appData: { source } });
     this.producers.set(producer.id, producer);
 
     producer.on('trackended', () => {
