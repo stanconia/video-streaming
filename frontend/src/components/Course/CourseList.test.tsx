@@ -160,7 +160,7 @@ describe('CourseList', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Showing 1-2 of 2 courses')).toBeInTheDocument();
+      expect(screen.getByText(/2 results found/)).toBeInTheDocument();
     });
   });
 

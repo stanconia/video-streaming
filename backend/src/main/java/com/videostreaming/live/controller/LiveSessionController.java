@@ -3,6 +3,7 @@ package com.videostreaming.live.controller;
 import com.videostreaming.live.dto.CreateLiveSessionRequest;
 import com.videostreaming.live.dto.LiveSessionResponse;
 import com.videostreaming.live.service.LiveSessionService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class LiveSessionController {
     }
 
     @PostMapping
-    public ResponseEntity<?> scheduleLiveSession(@RequestBody CreateLiveSessionRequest request,
+    public ResponseEntity<?> scheduleLiveSession(@Valid @RequestBody CreateLiveSessionRequest request,
                                                   Authentication authentication) {
         try {
             String userId = (String) authentication.getPrincipal();

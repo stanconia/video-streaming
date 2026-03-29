@@ -1,11 +1,21 @@
 package com.videostreaming.live.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 public class CreateLiveSessionRequest {
+    @NotBlank(message = "Course ID is required")
     private String courseId;
+
     private String moduleId;
+
+    @NotBlank(message = "Title is required")
     private String title;
+
     private String description;
     private String scheduledAt;
+
+    @Min(value = 1, message = "Duration must be at least 1 minute")
     private int durationMinutes;
 
     public CreateLiveSessionRequest() {}

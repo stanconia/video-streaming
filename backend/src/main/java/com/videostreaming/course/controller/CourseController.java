@@ -16,6 +16,7 @@ import com.videostreaming.certificate.dto.*;
 import com.videostreaming.user.dto.*;
 import com.videostreaming.auth.dto.*;
 import com.videostreaming.course.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -37,7 +38,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCourse(@RequestBody CreateCourseRequest request,
+    public ResponseEntity<?> createCourse(@Valid @RequestBody CreateCourseRequest request,
                                            Authentication authentication) {
         try {
             String userId = (String) authentication.getPrincipal();
@@ -98,10 +99,11 @@ public class CourseController {
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false, defaultValue = "newest") String sortBy,
+            @RequestParam(required = false) Integer minRating,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "12") int size) {
         CourseSearchResponse response = courseService.searchCourses(
-                q, subject, difficulty, minPrice, maxPrice, sortBy, page, size);
+                q, subject, difficulty, minPrice, maxPrice, sortBy, minRating, page, size);
         return ResponseEntity.ok(response);
     }
 

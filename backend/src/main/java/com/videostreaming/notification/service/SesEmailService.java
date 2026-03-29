@@ -49,6 +49,26 @@ public class SesEmailService implements EmailService {
     }
 
     @Override
+    public void sendHtmlEmail(String to, String subject, String htmlBody) {
+        try {
+            SendEmailRequest request = SendEmailRequest.builder()
+                    .source(senderEmail)
+                    .destination(Destination.builder().toAddresses(to).build())
+                    .message(Message.builder()
+                            .subject(Content.builder().data(subject).charset("UTF-8").build())
+                            .body(Body.builder()
+                                    .html(Content.builder().data(htmlBody).charset("UTF-8").build())
+                                    .build())
+                            .build())
+                    .build();
+            sesClient.sendEmail(request);
+            logger.info("HTML email sent via SES to: {}", to);
+        } catch (Exception e) {
+            logger.error("Failed to send HTML email via SES to {}: {}", to, e.getMessage());
+        }
+    }
+
+    @Override
     public void sendTemplatedEmail(String to, String template, Map<String, String> variables) {
         String subject = getSubjectForTemplate(template);
         String body = buildTemplate(template, variables);
@@ -65,6 +85,7 @@ public class SesEmailService implements EmailService {
             case "teacher_enrollment_notification" -> "New Student Enrolled - EduLive";
             case "live_session_scheduled" -> "Live Session Scheduled - EduLive";
             case "live_session_starting" -> "Live Session Starting Now! - EduLive";
+            case "password_reset" -> "Reset Your Password - EduLive";
             default -> "EduLive Notification";
         };
     }
@@ -118,6 +139,10 @@ public class SesEmailService implements EmailService {
                     variables.getOrDefault("sessionTitle", ""),
                     variables.getOrDefault("courseTitle", ""),
                     variables.getOrDefault("roomId", ""));
+            case "password_reset" -> String.format(
+                    "Hi %s,\n\nWe received a request to reset your password. Click the link below to set a new password:\n\n%s\n\nThis link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email.\n\nBest,\nThe EduLive Team",
+                    variables.getOrDefault("displayName", "there"),
+                    variables.getOrDefault("resetLink", ""));
             default -> "You have a new notification from EduLive.";
         };
     }

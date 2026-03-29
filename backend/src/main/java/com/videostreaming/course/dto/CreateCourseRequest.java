@@ -1,11 +1,20 @@
 package com.videostreaming.course.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 import java.math.BigDecimal;
 
 public class CreateCourseRequest {
+    @NotBlank(message = "Title is required")
     private String title;
+
+    @NotBlank(message = "Description is required")
     private String description;
+
     private String subject;
+
+    @Min(value = 0, message = "Price must be zero or positive")
     private BigDecimal price;
     private String currency;
     private String thumbnailUrl;

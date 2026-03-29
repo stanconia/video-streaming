@@ -180,7 +180,7 @@ public class CourseService {
 
     public CourseSearchResponse searchCourses(String query, String subject, String difficulty,
                                                BigDecimal minPrice, BigDecimal maxPrice,
-                                               String sortBy, int page, int size) {
+                                               String sortBy, Integer minRating, int page, int size) {
         Sort sort = buildSort(sortBy);
         PageRequest pageable = PageRequest.of(page, size, sort);
 
@@ -192,6 +192,21 @@ public class CourseService {
                 .stream()
                 .map(this::toCourseResponse)
                 .collect(Collectors.toList());
+
+        // Apply minRating filter in-memory (averageRating is computed, not a DB column)
+        if (minRating != null && minRating > 0) {
+            final int ratingThreshold = minRating;
+            courses = courses.stream()
+                    .filter(c -> c.getAverageRating() != null && c.getAverageRating() >= ratingThreshold)
+                    .collect(Collectors.toList());
+        }
+
+        // Apply "popular" sort in-memory (enrolledCount is computed, not a DB column)
+        if ("popular".equals(sortBy)) {
+            courses = courses.stream()
+                    .sorted((a, b) -> Integer.compare(b.getEnrolledCount(), a.getEnrolledCount()))
+                    .collect(Collectors.toList());
+        }
 
         return new CourseSearchResponse(
                 courses,
@@ -214,6 +229,9 @@ public class CourseService {
                 return Sort.by(Sort.Direction.DESC, "price");
             case "title":
                 return Sort.by(Sort.Direction.ASC, "title");
+            case "popular":
+                // Popular sort is applied in-memory after computing enrolledCount
+                return Sort.by(Sort.Direction.DESC, "created_at");
             case "newest":
             default:
                 return Sort.by(Sort.Direction.DESC, "created_at");

@@ -9,6 +9,7 @@ export interface Recording {
   playbackUrl?: string;
   createdAt: string;
   completedAt?: string;
+  errorMessage?: string;
 }
 
 export interface StartRecordingRequest {

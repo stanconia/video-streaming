@@ -1,7 +1,11 @@
 package com.videostreaming.messaging.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class SendMessageRequest {
     private String recipientUserId;
+
+    @NotBlank(message = "Message content is required")
     private String content;
 
     public SendMessageRequest() {}

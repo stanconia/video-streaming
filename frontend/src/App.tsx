@@ -7,6 +7,8 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './components/Auth/LoginPage';
 import { RegisterPage } from './components/Auth/RegisterPage';
+import { ForgotPasswordPage } from './components/Auth/ForgotPasswordPage';
+import { ResetPasswordPage } from './components/Auth/ResetPasswordPage';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { RecordingsList } from './components/Recording/RecordingsList';
 import { PlaybackPage } from './components/Recording/PlaybackPage';
@@ -40,6 +42,8 @@ import { TeacherList } from './components/Teacher/TeacherList';
 import { TeacherProfilePage } from './components/Teacher/TeacherProfilePage';
 import { UserProfilePage } from './components/Profile/UserProfilePage';
 import { EditUserProfilePage } from './components/Profile/EditUserProfilePage';
+import { ProgressDashboard } from './components/Progress/ProgressDashboard';
+import { CourseProgressDetail } from './components/Progress/CourseProgressDetail';
 
 function HomePage() {
   return (
@@ -98,7 +102,7 @@ function ForceLogout() {
 
 function AppContent() {
   const location = useLocation();
-  const hideNavbar = ['/login', '/register'].includes(location.pathname) ||
+  const hideNavbar = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname) ||
     location.pathname.includes('/broadcast') || location.pathname.includes('/view');
 
   return (
@@ -107,6 +111,8 @@ function AppContent() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/force-logout" element={<ForceLogout />} />
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/room/:roomId/broadcast" element={<ProtectedRoute><BroadcastPage /></ProtectedRoute>} />
@@ -138,6 +144,8 @@ function AppContent() {
         <Route path="/courses/:courseId/discussions/:threadId" element={<ProtectedRoute><ThreadView /></ProtectedRoute>} />
         <Route path="/my-courses" element={<ProtectedRoute allowedRoles={['TEACHER']}><MyCourses /></ProtectedRoute>} />
         <Route path="/my-enrollments" element={<ProtectedRoute><MyEnrollments /></ProtectedRoute>} />
+        <Route path="/progress" element={<ProtectedRoute><ProgressDashboard /></ProtectedRoute>} />
+        <Route path="/progress/:enrollmentId" element={<ProtectedRoute><CourseProgressDetail /></ProtectedRoute>} />
         <Route path="/teachers" element={<ProtectedRoute><TeacherList /></ProtectedRoute>} />
         <Route path="/teachers/:userId" element={<ProtectedRoute><TeacherProfilePage /></ProtectedRoute>} />
         <Route path="/profile/edit" element={<ProtectedRoute><EditUserProfilePage /></ProtectedRoute>} />
