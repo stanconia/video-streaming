@@ -943,13 +943,18 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
             String sessionRoom = sessionRoomMap.get(session.getId());
             if (!roomId.equals(sessionRoom)) { sendErrorMessage(session, "Not a member of this room"); return; }
 
+            // Send immediate ack so the frontend send() doesn't timeout
+            if (requestId != null) {
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                        Map.of("type", "request-session-summary-ack", "requestId", requestId, "success", true))));
+            }
+
             List<Map<String, Object>> history = roomChatHistory.getOrDefault(roomId, List.of());
 
             if (history.isEmpty()) {
-                if (requestId != null) {
-                    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
-                            Map.of("type", "session-summary", "roomId", roomId, "summary", "No chat messages to summarize.", "requestId", requestId))));
-                }
+                // Broadcast empty summary (no requestId — delivered as event, not pending request response)
+                broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(
+                        Map.of("type", "session-summary", "roomId", roomId, "summary", "No chat messages to summarize.")));
                 return;
             }
 
@@ -961,11 +966,12 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
                     .subscribe(
                             summary -> {
                                 try {
-                                    Map<String, Object> summaryNotification = new HashMap<>();
-                                    summaryNotification.put("type", "session-summary");
-                                    summaryNotification.put("roomId", roomId);
-                                    summaryNotification.put("summary", summary);
-                                    if (requestId != null) summaryNotification.put("requestId", requestId);
+                                    // No requestId — delivered as broadcast event to all participants
+                                    Map<String, Object> summaryNotification = Map.of(
+                                            "type", "session-summary",
+                                            "roomId", roomId,
+                                            "summary", summary
+                                    );
                                     broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(summaryNotification));
                                     logger.info("Session summary generated for room {}", roomId);
                                 } catch (Exception e) {
@@ -975,8 +981,9 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
                             error -> {
                                 logger.error("Summary generation error: {}", error.getMessage());
                                 try {
-                                    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
-                                            Map.of("type", "session-summary", "roomId", roomId, "summary", "Failed to generate summary: " + error.getMessage()))));
+                                    broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(
+                                            Map.of("type", "session-summary", "roomId", roomId,
+                                                    "summary", "Failed to generate summary. The AI service may be unavailable.")));
                                 } catch (Exception e2) {
                                     logger.error("Error sending summary error: {}", e2.getMessage());
                                 }

@@ -195,7 +195,7 @@ export class BackendStack extends cdk.Stack {
 
     // Fargate Service with ALB
     const desiredCount = environment === 'prod' ? 2 : 1;
-    const cpu = environment === 'prod' ? 4096 : 2048;
+    const cpu = environment === 'prod' ? 4096 : 4096;
     const memoryLimitMiB = environment === 'prod' ? 16384 : 12288;
 
     this.service = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'BackendService', {
@@ -319,7 +319,7 @@ export class BackendStack extends cdk.Stack {
       ),
       containerName: 'ollama',
       memoryLimitMiB: 8192,
-      cpu: 1024,
+      cpu: 2048,
       logging: ecs.LogDrivers.awsLogs({
         streamPrefix: 'ollama',
         logGroup,
