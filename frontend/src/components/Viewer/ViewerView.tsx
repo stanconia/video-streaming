@@ -11,6 +11,7 @@ import { useActiveSpeaker } from '../../hooks/useActiveSpeaker';
 import { useAudioOutput } from '../../hooks/useAudioOutput';
 import { SpeakerSelector } from '../Video/SpeakerSelector';
 import { ChatWindow } from '../Chat/ChatWindow';
+import { useChat } from '../../hooks/useChat';
 import { VideoGrid } from '../Video/VideoGrid';
 import { ScreenShareDisplay } from '../Video/ScreenShareDisplay';
 import { ReactionPicker } from '../Reactions/ReactionPicker';
@@ -119,6 +120,9 @@ export const ViewerView: React.FC<ViewerViewProps> = ({ roomId, userId, displayN
   const { isActive: whiteboardActive, canDraw: whiteboardCanDraw, sendUpdate: whiteboardSendUpdate, setRemoteDrawCallback, incomingSnapshot: wbSnapshot, setIncomingSnapshot: setWbSnapshot } = useWhiteboard({ roomId, userId, role: 'viewer', signalingClient });
   const { isBreakoutActive, currentBreakoutRoom, assignment, remainingSeconds: breakoutRemaining, joinBreakout, leaveBreakout } = useBreakoutRooms({ roomId, userId, role: 'viewer', signalingClient });
 
+  // Chat hook — always active so messages aren't lost when sidebar is closed
+  const chatState = useChat({ roomId, userId, userRole: 'viewer', signalingClient });
+
   const speakerStreams = React.useMemo(() => {
     const entries: { userId: string; stream: MediaStream }[] = [];
     if (localStream) entries.push({ userId, stream: localStream });
@@ -172,7 +176,7 @@ export const ViewerView: React.FC<ViewerViewProps> = ({ roomId, userId, displayN
     {
       id: 'chat',
       label: 'Chat',
-      content: <ChatWindow roomId={roomId} userId={userId} userRole="viewer" signalingClient={signalingClient} />,
+      content: <ChatWindow chatState={chatState} userRole="viewer" />,
     },
     {
       id: 'polls',

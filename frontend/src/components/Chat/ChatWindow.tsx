@@ -1,31 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { SignalingClient } from '../../services/signaling/SignalingClient';
 import { useChat } from '../../hooks/useChat';
+import { ChatMessage as ChatMessageType } from '../../types/live/chat.types';
 import { ChatMessage } from './ChatMessage';
 
-interface ChatWindowProps {
+// Props for standalone usage (calls useChat internally)
+interface StandaloneProps {
   roomId: string;
   userId: string;
   userRole: 'broadcaster' | 'viewer';
   signalingClient: SignalingClient | null;
 }
 
-export const ChatWindow: React.FC<ChatWindowProps> = ({
-  roomId,
-  userId,
-  userRole,
-  signalingClient,
-}) => {
+// Props when chat state is managed externally
+interface ManagedProps {
+  chatState: ReturnType<typeof useChat>;
+  userRole: 'broadcaster' | 'viewer';
+}
+
+type ChatWindowProps = StandaloneProps | ManagedProps;
+
+function isManagedProps(props: ChatWindowProps): props is ManagedProps {
+  return 'chatState' in props;
+}
+
+export const ChatWindow: React.FC<ChatWindowProps> = (props) => {
   const [inputValue, setInputValue] = useState('');
   const [aiMode, setAiMode] = useState(false);
   const messageListRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Use externally managed state if provided, otherwise call useChat
+  const standaloneChat = useChat(
+    isManagedProps(props)
+      ? { roomId: '', userId: '', userRole: props.userRole, signalingClient: null }
+      : { roomId: props.roomId, userId: props.userId, userRole: props.userRole, signalingClient: props.signalingClient }
+  );
+
   const {
     messages, sendMessage, sendAiMessage, requestSummary,
     sessionSummary, isAiThinking, isSummaryGenerating,
     isConnected, error, clearError,
-  } = useChat({ roomId, userId, userRole, signalingClient });
+  } = isManagedProps(props) ? props.chatState : standaloneChat;
+
+  const userRole = props.userRole;
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

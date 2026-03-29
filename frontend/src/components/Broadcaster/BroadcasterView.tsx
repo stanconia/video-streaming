@@ -11,6 +11,7 @@ import { useActiveSpeaker } from '../../hooks/useActiveSpeaker';
 import { useAudioOutput } from '../../hooks/useAudioOutput';
 import { SpeakerSelector } from '../Video/SpeakerSelector';
 import { ChatWindow } from '../Chat/ChatWindow';
+import { useChat } from '../../hooks/useChat';
 import { VideoGrid } from '../Video/VideoGrid';
 import { ScreenShareDisplay } from '../Video/ScreenShareDisplay';
 import { recordingApi } from '../../services/api/live/RecordingApi';
@@ -154,6 +155,9 @@ export const BroadcasterView: React.FC<BroadcasterViewProps> = ({ roomId, userId
   const activeSpeakerId = useActiveSpeaker(speakerStreams);
   const { devices: audioOutputDevices, selectedDeviceId: audioOutputId, selectDevice: selectAudioOutput } = useAudioOutput();
 
+  // Chat hook — always active so messages aren't lost when sidebar is closed
+  const chatState = useChat({ roomId, userId, userRole: 'broadcaster', signalingClient });
+
   const participantNames = new Map<string, string>();
   remoteStreams.forEach((participant, streamUserId) => {
     participantNames.set(streamUserId, participant.displayName || streamUserId);
@@ -232,7 +236,7 @@ export const BroadcasterView: React.FC<BroadcasterViewProps> = ({ roomId, userId
     {
       id: 'chat',
       label: 'Chat',
-      content: <ChatWindow roomId={roomId} userId={userId} userRole="broadcaster" signalingClient={signalingClient} />,
+      content: <ChatWindow chatState={chatState} userRole="broadcaster" />,
     },
     {
       id: 'polls',
