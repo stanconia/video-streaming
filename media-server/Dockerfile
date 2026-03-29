@@ -28,10 +28,11 @@ FROM --platform=linux/amd64 node:20-slim
 
 WORKDIR /app
 
-# Install runtime dependencies for mediasoup
+# Install runtime dependencies for mediasoup and recording
 RUN apt-get update && apt-get install -y \
     python3 \
     build-essential \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy package files and install production dependencies
