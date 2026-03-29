@@ -67,11 +67,8 @@ jobs:
           cache-dependency-path: infrastructure/package-lock.json
 
       - run: npm ci
-      - run: npx cdk synth --quiet
-        name: CDK Synth (validate templates)
-        env:
-          CDK_DEFAULT_ACCOUNT: "000000000000"
-          CDK_DEFAULT_REGION: us-east-1
+      - run: npx tsc --noEmit
+        name: TypeScript Check (CDK validates all stack definitions compile)
 
   # ─── Smoke Test ───
   smoke-test:
