@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { CalendarEvent, CalendarDay } from '../types/class/calendar.types';
 import { bookingApi } from '../services/api/class/BookingApi';
 import { classApi } from '../services/api/class/ClassApi';
+import { liveSessionApi } from '../services/api/live/LiveSessionApi';
 import { useAuth } from '../context/AuthContext';
 
 export function useCalendar() {
@@ -55,6 +56,31 @@ export function useCalendar() {
               type: 'teaching',
               status: cls.status,
               classId: cls.id,
+            });
+          });
+        } catch (e) {
+          /* ignore */
+        }
+
+        // Load teacher's live sessions
+        try {
+          const liveSessions = await liveSessionApi.getMyTeaching();
+          liveSessions.forEach((ls) => {
+            if (ls.status === 'CANCELLED') return;
+            const dateStr = ls.scheduledAt.split('T')[0];
+            const timeStr = ls.scheduledAt.includes('T')
+              ? ls.scheduledAt.split('T')[1]?.substring(0, 5) || ''
+              : '';
+            allEvents.push({
+              id: ls.id,
+              title: ls.title,
+              date: dateStr,
+              time: timeStr,
+              durationMinutes: ls.durationMinutes,
+              type: 'live_session',
+              status: ls.status,
+              classId: null,
+              moduleTitle: ls.moduleTitle || null,
             });
           });
         } catch (e) {

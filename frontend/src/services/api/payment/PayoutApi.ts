@@ -26,6 +26,11 @@ export class PayoutApi {
     const response = await this.client.get<TeacherEarning[]>('/payouts/history');
     return response.data;
   }
+
+  async requestPayout(params: { bookingId?: string; enrollmentId?: string }): Promise<{ message: string }> {
+    const response = await this.client.post<{ message: string }>('/payouts/request-payout', params);
+    return response.data;
+  }
 }
 
 export const payoutApi = new PayoutApi();

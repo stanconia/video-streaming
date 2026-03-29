@@ -108,10 +108,18 @@ public class TeacherProfileService {
     }
 
     private TeacherProfileResponse toResponse(TeacherProfile p) {
+        // Fall back to User's profileImageUrl if TeacherProfile doesn't have one
+        String imageUrl = p.getProfileImageUrl();
+        if (imageUrl == null || imageUrl.isBlank()) {
+            imageUrl = userRepository.findById(p.getUserId())
+                    .map(User::getProfileImageUrl)
+                    .orElse(null);
+        }
+
         return new TeacherProfileResponse(
                 p.getId(), p.getUserId(), p.getDisplayName(), p.getBio(),
                 p.getHeadline(), p.getSubjects(), p.getHourlyRate(),
-                p.getExperienceYears(), p.getProfileImageUrl(), p.isVerified(),
+                p.getExperienceYears(), imageUrl, p.isVerified(),
                 p.getAverageRating(), p.getReviewCount(), p.getCreatedAt());
     }
 }

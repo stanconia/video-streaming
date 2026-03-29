@@ -1,22 +1,30 @@
 package com.videostreaming.payment.dto;
 
 public class StripeConnectResponse {
-    private String accountId;
-    private String onboardingUrl;
-    private boolean onboarded;
+    private boolean bankAccountAdded;
+    private String bankAccountLast4;
+    private String bankAccountHolderName;
+    private boolean transfersEnabled;
 
     public StripeConnectResponse() {}
 
-    public StripeConnectResponse(String accountId, String onboardingUrl, boolean onboarded) {
-        this.accountId = accountId;
-        this.onboardingUrl = onboardingUrl;
-        this.onboarded = onboarded;
+    public StripeConnectResponse(boolean bankAccountAdded, String bankAccountLast4,
+                                  String bankAccountHolderName, boolean transfersEnabled) {
+        this.bankAccountAdded = bankAccountAdded;
+        this.bankAccountLast4 = bankAccountLast4;
+        this.bankAccountHolderName = bankAccountHolderName;
+        this.transfersEnabled = transfersEnabled;
     }
 
-    public String getAccountId() { return accountId; }
-    public void setAccountId(String accountId) { this.accountId = accountId; }
-    public String getOnboardingUrl() { return onboardingUrl; }
-    public void setOnboardingUrl(String onboardingUrl) { this.onboardingUrl = onboardingUrl; }
-    public boolean isOnboarded() { return onboarded; }
-    public void setOnboarded(boolean onboarded) { this.onboarded = onboarded; }
+    public boolean isBankAccountAdded() { return bankAccountAdded; }
+    public void setBankAccountAdded(boolean bankAccountAdded) { this.bankAccountAdded = bankAccountAdded; }
+
+    public String getBankAccountLast4() { return bankAccountLast4; }
+    public void setBankAccountLast4(String bankAccountLast4) { this.bankAccountLast4 = bankAccountLast4; }
+
+    public String getBankAccountHolderName() { return bankAccountHolderName; }
+    public void setBankAccountHolderName(String bankAccountHolderName) { this.bankAccountHolderName = bankAccountHolderName; }
+
+    public boolean isTransfersEnabled() { return transfersEnabled; }
+    public void setTransfersEnabled(boolean transfersEnabled) { this.transfersEnabled = transfersEnabled; }
 }

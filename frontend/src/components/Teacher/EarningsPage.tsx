@@ -8,6 +8,7 @@ export const EarningsPage: React.FC = () => {
   const [history, setHistory] = useState<TeacherEarning[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [payoutLoading, setPayoutLoading] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -26,6 +27,21 @@ export const EarningsPage: React.FC = () => {
       setError(err.response?.data?.error || 'Failed to load earnings');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRequestPayout = async (earning: TeacherEarning) => {
+    try {
+      setPayoutLoading(earning.id);
+      const params = earning.type === 'course'
+        ? { enrollmentId: earning.id }
+        : { bookingId: earning.id };
+      await payoutApi.requestPayout(params);
+      await loadData();
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Payout request failed');
+    } finally {
+      setPayoutLoading(null);
     }
   };
 
@@ -52,18 +68,27 @@ export const EarningsPage: React.FC = () => {
         <div className="table-responsive"><table style={styles.table} className="earnings-table">
           <thead>
             <tr>
-              <th style={styles.th}>Class</th>
+              <th style={styles.th}>Type</th>
+              <th style={styles.th}>Title</th>
               <th style={styles.th}>Student</th>
               <th style={styles.th}>Amount</th>
               <th style={styles.th}>Fee (15%)</th>
               <th style={styles.th}>Your Payout</th>
               <th style={styles.th}>Status</th>
               <th style={styles.th}>Date</th>
+              <th style={styles.th}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {history.map((e, i) => (
-              <tr key={i} style={i % 2 === 0 ? styles.evenRow : {}}>
+              <tr key={e.id || i} style={i % 2 === 0 ? styles.evenRow : {}}>
+                <td style={styles.td}>
+                  <span style={{
+                    ...styles.badge,
+                    backgroundColor: e.type === 'course' ? '#e7f3ff' : '#f0e6ff',
+                    color: e.type === 'course' ? '#004085' : '#6f42c1',
+                  }}>{e.type === 'course' ? 'Course' : 'Class'}</span>
+                </td>
                 <td style={styles.td}>{e.classTitle}</td>
                 <td style={styles.td}>{e.studentName}</td>
                 <td style={styles.td}>${e.amount.toFixed(2)}</td>
@@ -79,6 +104,17 @@ export const EarningsPage: React.FC = () => {
                   }}>{e.payoutStatus}</span>
                 </td>
                 <td style={styles.td}>{new Date(e.date).toLocaleDateString()}</td>
+                <td style={styles.td}>
+                  {e.payoutStatus === 'HELD' && (
+                    <button
+                      onClick={() => handleRequestPayout(e)}
+                      disabled={payoutLoading === e.id}
+                      style={styles.payoutButton}
+                    >
+                      {payoutLoading === e.id ? 'Processing...' : 'Request Payout'}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -101,4 +137,5 @@ const styles: { [key: string]: React.CSSProperties } = {
   td: { padding: '12px 16px', borderBottom: '1px solid #dee2e6', fontSize: '14px' },
   evenRow: { backgroundColor: '#f8f9fa' },
   badge: { display: 'inline-block', padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold' },
+  payoutButton: { padding: '6px 12px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' },
 };

@@ -11,8 +11,9 @@ export interface TeacherProfile {
   verified: boolean;
   averageRating: number;
   reviewCount: number;
-  stripeAccountId: string | null;
-  stripeOnboarded: boolean;
+  bankAccountAdded: boolean;
+  bankAccountLast4: string | null;
+  bankAccountHolderName: string | null;
   backgroundCheckStatus: string | null;
   totalEarnings: number;
   createdAt: string;

@@ -4,9 +4,10 @@ export interface CalendarEvent {
   date: string;
   time: string;
   durationMinutes: number;
-  type: 'teaching' | 'enrolled' | 'available';
+  type: 'teaching' | 'enrolled' | 'live_session' | 'available';
   status: string;
-  classId: string;
+  classId: string | null;
+  moduleTitle?: string | null;
 }
 
 export interface CalendarDay {

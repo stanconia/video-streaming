@@ -114,7 +114,8 @@ public class LiveSessionService {
                 request.getCourseId(), List.of(EnrollmentStatus.ACTIVE));
         for (CourseEnrollment enrollment : enrollments) {
             notificationService.sendLiveSessionScheduledNotification(
-                    enrollment.getStudentUserId(), sessionTitle, courseTitle);
+                    enrollment.getStudentUserId(), sessionTitle, courseTitle,
+                    session.getScheduledAt(), session.getDurationMinutes());
         }
 
         return toResponse(session);
@@ -165,11 +166,12 @@ public class LiveSessionService {
         logger.info("Started live session '{}', room {}", session.getTitle(), room.getId());
 
         // Notify enrolled students that session is starting
+        String courseTitle2 = course.getTitle();
         List<CourseEnrollment> enrollments = courseEnrollmentRepository.findByCourseIdAndStatusIn(
                 session.getCourseId(), List.of(EnrollmentStatus.ACTIVE));
         for (CourseEnrollment enrollment : enrollments) {
             notificationService.sendLiveSessionStartingNotification(
-                    enrollment.getStudentUserId(), session.getTitle(), room.getId());
+                    enrollment.getStudentUserId(), session.getTitle(), courseTitle2, room.getId());
         }
 
         return toResponse(session);
@@ -225,6 +227,11 @@ public class LiveSessionService {
         session.setStatus(LiveSessionStatus.CANCELLED);
         liveSessionRepository.save(session);
         logger.info("Cancelled live session '{}'", session.getTitle());
+    }
+
+    public List<LiveSessionResponse> getSessionsForTeacher(String teacherUserId) {
+        return liveSessionRepository.findByTeacherUserIdOrderByScheduledAtDesc(teacherUserId)
+                .stream().map(this::toResponse).collect(Collectors.toList());
     }
 
     public List<LiveSessionResponse> getUpcomingSessionsForStudent(String studentUserId) {

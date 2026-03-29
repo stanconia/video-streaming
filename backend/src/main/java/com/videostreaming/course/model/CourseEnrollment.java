@@ -27,6 +27,18 @@ public class CourseEnrollment {
     @Column
     private BigDecimal paidAmount;
 
+    @Column
+    private BigDecimal platformFee;
+
+    @Column
+    private BigDecimal teacherPayout;
+
+    @Column
+    private String payoutStatus;
+
+    @Column
+    private String stripeTransferId;
+
     @Enumerated(EnumType.STRING)
     @Column
     private EnrollmentStatus status = EnrollmentStatus.ACTIVE;
@@ -88,6 +100,18 @@ public class CourseEnrollment {
 
     public LocalDateTime getCompletedAt() { return completedAt; }
     public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
+
+    public BigDecimal getPlatformFee() { return platformFee; }
+    public void setPlatformFee(BigDecimal platformFee) { this.platformFee = platformFee; }
+
+    public BigDecimal getTeacherPayout() { return teacherPayout; }
+    public void setTeacherPayout(BigDecimal teacherPayout) { this.teacherPayout = teacherPayout; }
+
+    public String getPayoutStatus() { return payoutStatus; }
+    public void setPayoutStatus(String payoutStatus) { this.payoutStatus = payoutStatus; }
+
+    public String getStripeTransferId() { return stripeTransferId; }
+    public void setStripeTransferId(String stripeTransferId) { this.stripeTransferId = stripeTransferId; }
 
     // Builder pattern
     public static CourseEnrollmentBuilder builder() {

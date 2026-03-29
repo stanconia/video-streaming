@@ -2,6 +2,7 @@ package com.videostreaming.live.websocket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.videostreaming.ai.service.AiCompanionService;
 import com.videostreaming.live.service.MediaServerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper;
     private final MediaServerClient mediaServerClient;
+    private final AiCompanionService aiCompanionService;
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final Map<String, String> sessionRoomMap = new ConcurrentHashMap<>();
     private final Map<String, String> sessionRoleMap = new ConcurrentHashMap<>();
@@ -41,6 +43,10 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
     private final Map<String, String> sessionMainRoomMap = new ConcurrentHashMap<>();
     private final Map<String, String> sessionBreakoutRoomMap = new ConcurrentHashMap<>();
 
+    // AI Companion: chat history buffer per room (capped at 200 messages)
+    private final Map<String, List<Map<String, Object>>> roomChatHistory = new ConcurrentHashMap<>();
+    private static final int MAX_CHAT_HISTORY = 200;
+
     // Inner class for breakout state
     static class BreakoutState {
         String mainRoomId;
@@ -51,9 +57,10 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
         Timer endTimer;
     }
 
-    public SignalingWebSocketHandler(ObjectMapper objectMapper, MediaServerClient mediaServerClient) {
+    public SignalingWebSocketHandler(ObjectMapper objectMapper, MediaServerClient mediaServerClient, AiCompanionService aiCompanionService) {
         this.objectMapper = objectMapper;
         this.mediaServerClient = mediaServerClient;
+        this.aiCompanionService = aiCompanionService;
     }
 
     @Override
@@ -158,6 +165,22 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
                 return;
             }
 
+            // Handle session-ended (broadcaster ending the session for all participants)
+            if ("session-ended".equals(messageType)) {
+                handleSessionEnded(session, messageNode, requestId);
+                return;
+            }
+
+            // AI Companion
+            if ("send-ai-chat-message".equals(messageType)) {
+                handleAiChatMessage(session, messageNode, requestId);
+                return;
+            }
+            if ("request-session-summary".equals(messageType)) {
+                handleSessionSummaryRequest(session, messageNode, requestId);
+                return;
+            }
+
             // Tier 2: Emoji Reactions
             if ("send-reaction".equals(messageType)) { handleSendReaction(session, messageNode, requestId); return; }
 
@@ -246,6 +269,7 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
         logger.info("WebSocket connection closed: {} with status: {}", session.getId(), status);
 
         String roomId = sessionRoomMap.get(session.getId());
+        String disconnectedRole = sessionRoleMap.get(session.getId());
         if (roomId != null) {
             try {
                 // Notify media server about client disconnection
@@ -257,6 +281,21 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
                 mediaServerClient.forwardSignalingMessage(leaveMessage, session.getId());
             } catch (Exception e) {
                 logger.error("Error notifying media server of disconnection: {}", e.getMessage());
+            }
+
+            // If the broadcaster disconnected, end the session for all participants
+            if ("broadcaster".equals(disconnectedRole)) {
+                try {
+                    String sessionEndedNotification = objectMapper.writeValueAsString(Map.of(
+                            "type", "session-ended",
+                            "roomId", roomId,
+                            "reason", "host-left"
+                    ));
+                    broadcastToRoom(roomId, sessionEndedNotification, session.getId());
+                    logger.info("Broadcaster left room {}, broadcasting session-ended to all participants", roomId);
+                } catch (Exception e) {
+                    logger.error("Error broadcasting session-ended: {}", e.getMessage());
+                }
             }
         }
 
@@ -405,6 +444,12 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
                 );
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(ack)));
             }
+
+            // Buffer message for AI context
+            roomChatHistory.computeIfAbsent(roomId, k -> Collections.synchronizedList(new ArrayList<>()));
+            List<Map<String, Object>> history = roomChatHistory.get(roomId);
+            history.add(Map.of("senderName", senderName, "senderRole", senderRole, "content", content, "timestamp", timestamp));
+            if (history.size() > MAX_CHAT_HISTORY) history.remove(0);
 
             logger.info("Chat message from {} in room {}", chatUserId, roomId);
 
@@ -756,6 +801,191 @@ public class SignalingWebSocketHandler extends TextWebSocketHandler {
             logger.info("Broadcast recording status for room {}: isRecording={}", roomId, isRecording);
         } catch (Exception e) {
             logger.error("Error broadcasting recording status for room {}: {}", roomId, e.getMessage());
+        }
+    }
+
+    // ==================== SESSION ENDED ====================
+
+    private void handleSessionEnded(WebSocketSession session, JsonNode messageNode, String requestId) {
+        try {
+            String roomId = messageNode.get("roomId").asText();
+            String sessionRoom = sessionRoomMap.get(session.getId());
+            if (!roomId.equals(sessionRoom)) { sendErrorMessage(session, "Not a member of this room"); return; }
+            if (!"broadcaster".equals(sessionRoleMap.get(session.getId()))) { sendErrorMessage(session, "Only broadcaster can end session"); return; }
+
+            String notification = objectMapper.writeValueAsString(Map.of(
+                    "type", "session-ended",
+                    "roomId", roomId,
+                    "reason", "host-ended"
+            ));
+            broadcastToRoom(roomId, notification, session.getId());
+            logger.info("Broadcaster explicitly ended session in room {}", roomId);
+
+            if (requestId != null) {
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                        Map.of("type", "session-ended-ack", "requestId", requestId, "success", true))));
+            }
+        } catch (Exception e) {
+            logger.error("Error handling session-ended: {}", e.getMessage());
+            sendErrorMessage(session, "Failed to end session");
+        }
+    }
+
+    // ==================== AI COMPANION ====================
+
+    private void handleAiChatMessage(WebSocketSession session, JsonNode messageNode, String requestId) {
+        try {
+            String roomId = messageNode.get("roomId").asText();
+            String question = messageNode.get("question").asText();
+            String chatUserId = sessionUserIdMap.getOrDefault(session.getId(), "anonymous");
+            String senderName = sessionDisplayNameMap.getOrDefault(session.getId(), chatUserId);
+
+            String sessionRoom = sessionRoomMap.get(session.getId());
+            if (!roomId.equals(sessionRoom)) { sendErrorMessage(session, "Not a member of this room"); return; }
+
+            // Broadcast the user's question as a regular chat message with isAiQuery flag
+            String questionMessageId = java.util.UUID.randomUUID().toString();
+            Map<String, Object> questionNotification = new HashMap<>();
+            questionNotification.put("type", "chat-message");
+            questionNotification.put("messageId", questionMessageId);
+            questionNotification.put("roomId", roomId);
+            questionNotification.put("senderId", chatUserId);
+            questionNotification.put("senderName", senderName);
+            questionNotification.put("senderRole", sessionRoleMap.getOrDefault(session.getId(), "viewer"));
+            questionNotification.put("content", "@ai " + question);
+            questionNotification.put("timestamp", Instant.now().toString());
+            questionNotification.put("isAiQuery", true);
+            broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(questionNotification));
+
+            // Buffer the question
+            roomChatHistory.computeIfAbsent(roomId, k -> Collections.synchronizedList(new ArrayList<>()));
+            roomChatHistory.get(roomId).add(Map.of("senderName", senderName, "senderRole", "viewer", "content", "@ai " + question));
+
+            // Send ack
+            if (requestId != null) {
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                        Map.of("type", "send-ai-chat-message-ack", "requestId", requestId, "success", true))));
+            }
+
+            // Broadcast "AI is thinking" indicator
+            String aiMessageId = java.util.UUID.randomUUID().toString();
+            Map<String, Object> thinkingNotification = new HashMap<>();
+            thinkingNotification.put("type", "ai-chat-message-start");
+            thinkingNotification.put("messageId", aiMessageId);
+            thinkingNotification.put("roomId", roomId);
+            broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(thinkingNotification));
+
+            // Call AI and stream response chunks
+            List<Map<String, Object>> history = roomChatHistory.getOrDefault(roomId, List.of());
+            StringBuilder fullResponse = new StringBuilder();
+
+            aiCompanionService.handleChatQuestion(question, history)
+                    .buffer(3) // batch every 3 tokens for efficiency
+                    .subscribe(
+                            chunks -> {
+                                try {
+                                    String combined = String.join("", chunks);
+                                    fullResponse.append(combined);
+                                    Map<String, Object> chunkNotification = Map.of(
+                                            "type", "ai-chat-message-chunk",
+                                            "messageId", aiMessageId,
+                                            "roomId", roomId,
+                                            "chunk", combined
+                                    );
+                                    broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(chunkNotification));
+                                } catch (Exception e) {
+                                    logger.error("Error broadcasting AI chunk: {}", e.getMessage());
+                                }
+                            },
+                            error -> {
+                                logger.error("AI streaming error: {}", error.getMessage());
+                                try {
+                                    Map<String, Object> errorNotification = Map.of(
+                                            "type", "ai-chat-message-complete",
+                                            "messageId", aiMessageId,
+                                            "roomId", roomId,
+                                            "fullContent", "[AI encountered an error: " + error.getMessage() + "]"
+                                    );
+                                    broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(errorNotification));
+                                } catch (Exception e2) {
+                                    logger.error("Error sending AI error notification: {}", e2.getMessage());
+                                }
+                            },
+                            () -> {
+                                try {
+                                    String content = fullResponse.toString();
+                                    Map<String, Object> completeNotification = Map.of(
+                                            "type", "ai-chat-message-complete",
+                                            "messageId", aiMessageId,
+                                            "roomId", roomId,
+                                            "fullContent", content
+                                    );
+                                    broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(completeNotification));
+
+                                    // Buffer AI response
+                                    roomChatHistory.get(roomId).add(Map.of("senderName", "AI Assistant", "senderRole", "ai", "content", content));
+                                    logger.info("AI response complete for room {}: {} chars", roomId, content.length());
+                                } catch (Exception e) {
+                                    logger.error("Error sending AI complete notification: {}", e.getMessage());
+                                }
+                            }
+                    );
+
+        } catch (Exception e) {
+            logger.error("Error handling AI chat message: {}", e.getMessage());
+            sendErrorMessage(session, "Failed to process AI message");
+        }
+    }
+
+    private void handleSessionSummaryRequest(WebSocketSession session, JsonNode messageNode, String requestId) {
+        try {
+            String roomId = messageNode.get("roomId").asText();
+            String sessionRoom = sessionRoomMap.get(session.getId());
+            if (!roomId.equals(sessionRoom)) { sendErrorMessage(session, "Not a member of this room"); return; }
+
+            List<Map<String, Object>> history = roomChatHistory.getOrDefault(roomId, List.of());
+
+            if (history.isEmpty()) {
+                if (requestId != null) {
+                    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                            Map.of("type", "session-summary", "roomId", roomId, "summary", "No chat messages to summarize.", "requestId", requestId))));
+                }
+                return;
+            }
+
+            // Broadcast "generating summary" indicator
+            broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(
+                    Map.of("type", "ai-summary-generating", "roomId", roomId)));
+
+            aiCompanionService.generateSummary(history)
+                    .subscribe(
+                            summary -> {
+                                try {
+                                    Map<String, Object> summaryNotification = new HashMap<>();
+                                    summaryNotification.put("type", "session-summary");
+                                    summaryNotification.put("roomId", roomId);
+                                    summaryNotification.put("summary", summary);
+                                    if (requestId != null) summaryNotification.put("requestId", requestId);
+                                    broadcastToRoomIncludingSender(roomId, objectMapper.writeValueAsString(summaryNotification));
+                                    logger.info("Session summary generated for room {}", roomId);
+                                } catch (Exception e) {
+                                    logger.error("Error broadcasting summary: {}", e.getMessage());
+                                }
+                            },
+                            error -> {
+                                logger.error("Summary generation error: {}", error.getMessage());
+                                try {
+                                    session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                                            Map.of("type", "session-summary", "roomId", roomId, "summary", "Failed to generate summary: " + error.getMessage()))));
+                                } catch (Exception e2) {
+                                    logger.error("Error sending summary error: {}", e2.getMessage());
+                                }
+                            }
+                    );
+
+        } catch (Exception e) {
+            logger.error("Error handling session summary request: {}", e.getMessage());
+            sendErrorMessage(session, "Failed to generate summary");
         }
     }
 

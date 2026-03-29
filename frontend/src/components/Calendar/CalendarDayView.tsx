@@ -24,10 +24,20 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({ date, events, 
     if (type === 'teaching') {
       return { ...styles.typeBadge, backgroundColor: '#cce5ff', color: '#004085' };
     }
+    if (type === 'live_session') {
+      return { ...styles.typeBadge, backgroundColor: '#ffe5cc', color: '#7c3a00' };
+    }
     if (type === 'enrolled') {
       return { ...styles.typeBadge, backgroundColor: '#d4edda', color: '#155724' };
     }
     return { ...styles.typeBadge, backgroundColor: '#e9ecef', color: '#495057' };
+  };
+
+  const getTypeLabel = (type: string): string => {
+    if (type === 'teaching') return 'Teaching';
+    if (type === 'live_session') return 'Live Session';
+    if (type === 'enrolled') return 'Enrolled';
+    return 'Available';
   };
 
   return (
@@ -47,17 +57,22 @@ export const CalendarDayView: React.FC<CalendarDayViewProps> = ({ date, events, 
                 <div
                   key={event.id}
                   style={styles.eventItem}
-                  onClick={() => navigate(`/classes/${event.classId}`)}
+                  onClick={() => {
+                    if (event.classId) {
+                      navigate(`/classes/${event.classId}`);
+                    }
+                  }}
                 >
                   <div style={styles.eventHeader}>
                     <span style={styles.eventTitle}>{event.title}</span>
                     <span style={getTypeBadgeStyle(event.type)}>
-                      {event.type === 'teaching' ? 'Teaching' : event.type === 'enrolled' ? 'Enrolled' : 'Available'}
+                      {getTypeLabel(event.type)}
                     </span>
                   </div>
                   <div style={styles.eventDetails}>
                     {event.time && <span>Time: {event.time}</span>}
                     {event.durationMinutes > 0 && <span>{event.durationMinutes} min</span>}
+                    {event.moduleTitle && <span>Module: {event.moduleTitle}</span>}
                     <span>Status: {event.status}</span>
                   </div>
                 </div>

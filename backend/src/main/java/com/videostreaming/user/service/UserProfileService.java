@@ -48,6 +48,9 @@ public class UserProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            user.setEmail(request.getEmail());
+        }
         if (request.getDisplayName() != null && !request.getDisplayName().isBlank()) {
             user.setDisplayName(request.getDisplayName());
             // Sync displayName to TeacherProfile if teacher
@@ -61,7 +64,16 @@ public class UserProfileService {
         if (request.getPhone() != null) user.setPhone(request.getPhone());
         if (request.getLocation() != null) user.setLocation(request.getLocation());
         if (request.getBio() != null) user.setBio(request.getBio());
-        if (request.getProfileImageUrl() != null) user.setProfileImageUrl(request.getProfileImageUrl());
+        if (request.getProfileImageUrl() != null) {
+            user.setProfileImageUrl(request.getProfileImageUrl());
+            // Sync profileImageUrl to TeacherProfile if teacher
+            if (user.getRole() == UserRole.TEACHER) {
+                teacherProfileRepository.findByUserId(userId).ifPresent(tp -> {
+                    tp.setProfileImageUrl(request.getProfileImageUrl());
+                    teacherProfileRepository.save(tp);
+                });
+            }
+        }
         if (request.getSubjectInterests() != null) user.setSubjectInterests(request.getSubjectInterests());
 
         user = userRepository.save(user);

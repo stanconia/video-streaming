@@ -27,7 +27,7 @@ public class AuthController {
             AuthResponse response = authService.register(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Authentication failed"));
         }
     }
 
@@ -37,7 +37,7 @@ public class AuthController {
             AuthResponse response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Authentication failed"));
         }
     }
 
@@ -47,7 +47,7 @@ public class AuthController {
             AuthResponse response = authService.loginWithGoogle(request.getCredential());
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Authentication failed"));
         }
     }
 
@@ -58,7 +58,7 @@ public class AuthController {
             AuthResponse response = authService.loginWithGoogleCode(code);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Authentication failed"));
         }
     }
 }

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { StripeConnectStatus } from '../../../types/payment/payment.types';
+import { BankAccountStatus, SetupBankAccountRequest } from '../../../types/payment/payment.types';
 
 import { API_BASE } from '../config';
 
@@ -17,18 +17,14 @@ export class StripeConnectApi {
     });
   }
 
-  async createAccount(): Promise<StripeConnectStatus> {
-    const response = await this.client.post<StripeConnectStatus>('/stripe-connect/create-account');
+  async setupBankAccount(request: SetupBankAccountRequest): Promise<BankAccountStatus> {
+    const response = await this.client.post<BankAccountStatus>(
+      '/stripe-connect/setup-bank-account', request);
     return response.data;
   }
 
-  async getOnboardingLink(): Promise<StripeConnectStatus> {
-    const response = await this.client.get<StripeConnectStatus>('/stripe-connect/onboarding-link');
-    return response.data;
-  }
-
-  async getStatus(): Promise<StripeConnectStatus> {
-    const response = await this.client.get<StripeConnectStatus>('/stripe-connect/status');
+  async getStatus(): Promise<BankAccountStatus> {
+    const response = await this.client.get<BankAccountStatus>('/stripe-connect/status');
     return response.data;
   }
 

@@ -2,6 +2,7 @@ package com.videostreaming.course.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CourseEnrollmentResponse {
     private String id;
@@ -14,9 +15,34 @@ public class CourseEnrollmentResponse {
     private double progressPercentage;
     private LocalDateTime enrolledAt;
     private LocalDateTime completedAt;
-    private String calendarLink;
+    private List<SessionCalendarLink> calendarLinks;
 
     public CourseEnrollmentResponse() {}
+
+    public static class SessionCalendarLink {
+        private String sessionTitle;
+        private LocalDateTime scheduledAt;
+        private int durationMinutes;
+        private String calendarLink;
+
+        public SessionCalendarLink() {}
+
+        public SessionCalendarLink(String sessionTitle, LocalDateTime scheduledAt, int durationMinutes, String calendarLink) {
+            this.sessionTitle = sessionTitle;
+            this.scheduledAt = scheduledAt;
+            this.durationMinutes = durationMinutes;
+            this.calendarLink = calendarLink;
+        }
+
+        public String getSessionTitle() { return sessionTitle; }
+        public void setSessionTitle(String sessionTitle) { this.sessionTitle = sessionTitle; }
+        public LocalDateTime getScheduledAt() { return scheduledAt; }
+        public void setScheduledAt(LocalDateTime scheduledAt) { this.scheduledAt = scheduledAt; }
+        public int getDurationMinutes() { return durationMinutes; }
+        public void setDurationMinutes(int durationMinutes) { this.durationMinutes = durationMinutes; }
+        public String getCalendarLink() { return calendarLink; }
+        public void setCalendarLink(String calendarLink) { this.calendarLink = calendarLink; }
+    }
 
     public CourseEnrollmentResponse(String id, String courseId, String courseTitle,
                                     String studentUserId, String studentDisplayName,
@@ -65,6 +91,6 @@ public class CourseEnrollmentResponse {
     public LocalDateTime getCompletedAt() { return completedAt; }
     public void setCompletedAt(LocalDateTime completedAt) { this.completedAt = completedAt; }
 
-    public String getCalendarLink() { return calendarLink; }
-    public void setCalendarLink(String calendarLink) { this.calendarLink = calendarLink; }
+    public List<SessionCalendarLink> getCalendarLinks() { return calendarLinks; }
+    public void setCalendarLinks(List<SessionCalendarLink> calendarLinks) { this.calendarLinks = calendarLinks; }
 }

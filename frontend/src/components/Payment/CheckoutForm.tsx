@@ -6,7 +6,8 @@ import { CouponInput } from '../Coupon/CouponInput';
 import { Coupon } from '../../types/payment/coupon.types';
 
 interface CheckoutFormProps {
-  classId: string;
+  classId?: string;
+  courseId?: string;
   amount: number;
   currency: string;
   onSuccess: (paymentIntentId: string) => void;
@@ -63,7 +64,7 @@ const PaymentForm: React.FC<{ onSuccess: (paymentIntentId: string) => void; onCa
   );
 };
 
-export const CheckoutForm: React.FC<CheckoutFormProps> = ({ classId, amount, currency, onSuccess, onCancel }) => {
+export const CheckoutForm: React.FC<CheckoutFormProps> = ({ classId, courseId, amount, currency, onSuccess, onCancel }) => {
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentIntentId, setPaymentIntentId] = useState<string>('');
@@ -92,7 +93,11 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({ classId, amount, cur
       const config = await paymentApi.getStripeConfig();
       setStripePromise(loadStripe(config.publishableKey));
 
-      const intent = await paymentApi.createPaymentIntent(classId, amount, currency);
+      const intent = await paymentApi.createPaymentIntent(
+        classId ? { classId } : { courseId: courseId! },
+        amount,
+        currency
+      );
       setClientSecret(intent.clientSecret);
       setPaymentIntentId(intent.paymentIntentId);
     } catch (err: any) {
@@ -111,11 +116,11 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({ classId, amount, cur
   return (
     <div style={styles.checkoutContainer}>
       <h3>Payment</h3>
-      <CouponInput
+      {classId && <CouponInput
         classId={classId}
         onApply={(coupon) => setAppliedCoupon(coupon)}
         onClear={() => setAppliedCoupon(null)}
-      />
+      />}
       {appliedCoupon && discountedAmount !== amount && (
         <div style={styles.discountInfo}>
           <span style={{ textDecoration: 'line-through', color: '#999' }}>${(amount / 100).toFixed(2)}</span>

@@ -32,6 +32,9 @@ import com.videostreaming.discussion.repository.*;
 import com.videostreaming.messaging.repository.*;
 import com.videostreaming.certificate.repository.*;
 import com.videostreaming.scheduling.service.CalendarBlockService;
+import com.videostreaming.payment.service.StripePaymentGateway;
+import com.stripe.model.PaymentIntent;
+import com.stripe.exception.StripeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +65,8 @@ public class CourseEnrollmentService {
     private final EmailService emailService;
     private final GoogleCalendarLinkService googleCalendarLinkService;
     private final CalendarBlockService calendarBlockService;
+    private final LiveSessionRepository liveSessionRepository;
+    private final StripePaymentGateway stripePaymentGateway;
 
     public CourseEnrollmentService(CourseEnrollmentRepository courseEnrollmentRepository,
                                    CourseRepository courseRepository,
@@ -71,7 +77,9 @@ public class CourseEnrollmentService {
                                    CourseModuleRepository courseModuleRepository,
                                    EmailService emailService,
                                    GoogleCalendarLinkService googleCalendarLinkService,
-                                   CalendarBlockService calendarBlockService) {
+                                   CalendarBlockService calendarBlockService,
+                                   LiveSessionRepository liveSessionRepository,
+                                   StripePaymentGateway stripePaymentGateway) {
         this.courseEnrollmentRepository = courseEnrollmentRepository;
         this.courseRepository = courseRepository;
         this.lessonRepository = lessonRepository;
@@ -82,6 +90,8 @@ public class CourseEnrollmentService {
         this.emailService = emailService;
         this.googleCalendarLinkService = googleCalendarLinkService;
         this.calendarBlockService = calendarBlockService;
+        this.liveSessionRepository = liveSessionRepository;
+        this.stripePaymentGateway = stripePaymentGateway;
     }
 
     @Transactional
@@ -90,9 +100,106 @@ public class CourseEnrollmentService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
-        if (courseEnrollmentRepository.existsByCourseIdAndStudentUserIdAndStatus(
-                courseId, studentUserId, EnrollmentStatus.ACTIVE)) {
+        // Check for existing active enrollment first (before payment verification)
+        boolean isPaidCourse = course.getPrice() != null && course.getPrice().compareTo(BigDecimal.ZERO) > 0;
+        if (courseEnrollmentRepository.existsByCourseIdAndStudentUserIdAndStatus(courseId, studentUserId, EnrollmentStatus.ACTIVE)) {
             throw new RuntimeException("You are already enrolled in this course");
+        }
+
+        // Payment enforcement for paid courses
+        if (isPaidCourse) {
+            if (paymentIntentId == null || paymentIntentId.isBlank()) {
+                throw new RuntimeException("Payment is required for this course");
+            }
+            try {
+                PaymentIntent pi = stripePaymentGateway.retrievePaymentIntent(paymentIntentId);
+                if (!"succeeded".equals(pi.getStatus())) {
+                    throw new RuntimeException("Payment has not been completed");
+                }
+                String metaCourseId = pi.getMetadata().get("courseId");
+                if (!courseId.equals(metaCourseId)) {
+                    throw new RuntimeException("Payment does not match this course");
+                }
+                paidAmount = BigDecimal.valueOf(pi.getAmount()).divide(BigDecimal.valueOf(100), 2, java.math.RoundingMode.HALF_UP);
+            } catch (StripeException e) {
+                logger.error("Failed to verify PaymentIntent {}: {}", paymentIntentId, e.getMessage());
+                throw new RuntimeException("Payment verification failed");
+            }
+        }
+
+        // Check for existing cancelled enrollment (re-enrollment)
+        Optional<CourseEnrollment> existing = courseEnrollmentRepository.findByCourseIdAndStudentUserId(courseId, studentUserId);
+        if (existing.isPresent()) {
+            CourseEnrollment prev = existing.get();
+            // Reactivate cancelled enrollment
+            prev.setStatus(EnrollmentStatus.ACTIVE);
+            prev.setEnrolledAt(java.time.LocalDateTime.now());
+            prev.setProgressPercentage(0);
+            prev.setCompletedAt(null);
+            if (paymentIntentId != null) prev.setPaymentIntentId(paymentIntentId);
+            if (paidAmount != null) prev.setPaidAmount(paidAmount);
+            // Calculate escrow for paid re-enrollment
+            if (isPaidCourse && paidAmount != null) {
+                BigDecimal fee = paidAmount.multiply(new BigDecimal("0.15"))
+                        .setScale(2, java.math.RoundingMode.HALF_UP);
+                BigDecimal payout = paidAmount.subtract(fee);
+                prev.setPlatformFee(fee);
+                prev.setTeacherPayout(payout);
+                prev.setPayoutStatus("HELD");
+            }
+            prev = courseEnrollmentRepository.save(prev);
+            logger.info("Student {} re-enrolled in course '{}'", studentUserId, course.getTitle());
+
+            // Send notifications and email for re-enrollment
+            notificationService.sendCourseEnrollmentNotification(studentUserId, course.getTitle());
+
+            try {
+                if (course.getTeacherUserId() != null) {
+                    calendarBlockService.blockSlotsForEnrollment(
+                            courseId, studentUserId, course.getTeacherUserId(), prev.getId());
+                }
+            } catch (Exception e) {
+                logger.warn("Failed to block calendar slots on re-enroll: {}", e.getMessage());
+            }
+
+            try {
+                User student = userRepository.findById(studentUserId).orElse(null);
+                String teacherName = "EduLive Teacher";
+                if (course.getTeacherUserId() != null) {
+                    teacherName = userRepository.findById(course.getTeacherUserId())
+                            .map(User::getDisplayName).orElse("EduLive Teacher");
+                }
+
+                List<CourseEnrollmentResponse.SessionCalendarLink> sessionLinks = buildSessionCalendarLinks(courseId, course.getTitle());
+                String calendarLinksSection = buildCalendarLinksSection(sessionLinks);
+
+                if (student != null) {
+                    Map<String, String> emailVars = new HashMap<>();
+                    emailVars.put("studentName", student.getDisplayName());
+                    emailVars.put("courseName", course.getTitle());
+                    emailVars.put("teacherName", teacherName);
+                    if (!calendarLinksSection.isEmpty()) {
+                        emailVars.put("calendarLinks", calendarLinksSection);
+                    }
+                    emailService.sendTemplatedEmail(student.getEmail(), "enrollment_confirmation", emailVars);
+                }
+
+                if (course.getTeacherUserId() != null) {
+                    String studentDisplayName = student != null ? student.getDisplayName() : "A student";
+                    notificationService.sendNewStudentEnrolledNotification(
+                            course.getTeacherUserId(), studentDisplayName, course.getTitle(), courseId);
+                }
+
+                CourseEnrollmentResponse response = toEnrollmentResponse(prev);
+                if (!sessionLinks.isEmpty()) {
+                    response.setCalendarLinks(sessionLinks);
+                }
+                return response;
+            } catch (Exception e) {
+                logger.warn("Failed to send re-enrollment email: {}", e.getMessage());
+            }
+
+            return toEnrollmentResponse(prev);
         }
 
         CourseEnrollment enrollment = CourseEnrollment.builder()
@@ -105,6 +212,18 @@ public class CourseEnrollmentService {
 
         enrollment = courseEnrollmentRepository.save(enrollment);
         logger.info("Student {} enrolled in course '{}'", studentUserId, course.getTitle());
+
+        // Calculate escrow for paid courses
+        if (isPaidCourse && paidAmount != null) {
+            BigDecimal fee = paidAmount.multiply(new BigDecimal("0.15"))
+                    .setScale(2, java.math.RoundingMode.HALF_UP);
+            BigDecimal payout = paidAmount.subtract(fee);
+            enrollment.setPlatformFee(fee);
+            enrollment.setTeacherPayout(payout);
+            enrollment.setPayoutStatus("HELD");
+            enrollment = courseEnrollmentRepository.save(enrollment);
+            logger.info("Course payment held: total={}, fee={}, payout={}", paidAmount, fee, payout);
+        }
 
         notificationService.sendCourseEnrollmentNotification(studentUserId, course.getTitle());
 
@@ -127,18 +246,17 @@ public class CourseEnrollmentService {
                         .map(User::getDisplayName).orElse("EduLive Teacher");
             }
 
-            String calendarLink = googleCalendarLinkService.generateLink(
-                    "Course: " + course.getTitle(),
-                    "Enrolled in " + course.getTitle() + " on EduLive",
-                    LocalDateTime.now()
-            );
+            List<CourseEnrollmentResponse.SessionCalendarLink> sessionLinks = buildSessionCalendarLinks(courseId, course.getTitle());
+            String calendarLinksSection = buildCalendarLinksSection(sessionLinks);
 
             if (student != null) {
                 Map<String, String> emailVars = new HashMap<>();
                 emailVars.put("studentName", student.getDisplayName());
                 emailVars.put("courseName", course.getTitle());
                 emailVars.put("teacherName", teacherName);
-                emailVars.put("calendarLink", calendarLink);
+                if (!calendarLinksSection.isEmpty()) {
+                    emailVars.put("calendarLinks", calendarLinksSection);
+                }
                 emailService.sendTemplatedEmail(student.getEmail(), "enrollment_confirmation", emailVars);
             }
 
@@ -150,7 +268,9 @@ public class CourseEnrollmentService {
             }
 
             CourseEnrollmentResponse response = toEnrollmentResponse(enrollment);
-            response.setCalendarLink(calendarLink);
+            if (!sessionLinks.isEmpty()) {
+                response.setCalendarLinks(sessionLinks);
+            }
             return response;
         } catch (Exception e) {
             logger.warn("Failed to send enrollment email: {}", e.getMessage());
@@ -332,6 +452,41 @@ public class CourseEnrollmentService {
     }
 
     // --- Helper methods ---
+
+    private List<CourseEnrollmentResponse.SessionCalendarLink> buildSessionCalendarLinks(String courseId, String courseTitle) {
+        List<LiveSession> upcomingSessions = liveSessionRepository
+                .findByCourseIdOrderByScheduledAtAsc(courseId)
+                .stream()
+                .filter(s -> s.getStatus() == LiveSessionStatus.SCHEDULED)
+                .collect(Collectors.toList());
+
+        List<CourseEnrollmentResponse.SessionCalendarLink> links = new ArrayList<>();
+        for (LiveSession session : upcomingSessions) {
+            String link = googleCalendarLinkService.generateLink(
+                    "Live: " + session.getTitle() + " (" + courseTitle + ")",
+                    "Live session for " + courseTitle,
+                    session.getScheduledAt(),
+                    session.getDurationMinutes()
+            );
+            links.add(new CourseEnrollmentResponse.SessionCalendarLink(
+                    session.getTitle(), session.getScheduledAt(), session.getDurationMinutes(), link));
+        }
+        return links;
+    }
+
+    private String buildCalendarLinksSection(List<CourseEnrollmentResponse.SessionCalendarLink> sessionLinks) {
+        if (sessionLinks.isEmpty()) {
+            return "";
+        }
+        DateTimeFormatter displayFmt = DateTimeFormatter.ofPattern("MMM d, yyyy 'at' h:mm a");
+        StringBuilder sb = new StringBuilder("Upcoming Live Sessions:\n");
+        for (CourseEnrollmentResponse.SessionCalendarLink sl : sessionLinks) {
+            sb.append("- ").append(sl.getSessionTitle())
+              .append(" (").append(sl.getScheduledAt().format(displayFmt)).append(")\n")
+              .append("  Add to Google Calendar: ").append(sl.getCalendarLink()).append("\n");
+        }
+        return sb.toString();
+    }
 
     private CourseEnrollmentResponse toEnrollmentResponse(CourseEnrollment enrollment) {
         String courseTitle = courseRepository.findById(enrollment.getCourseId())

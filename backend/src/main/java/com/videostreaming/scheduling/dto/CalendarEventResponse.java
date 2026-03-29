@@ -9,6 +9,7 @@ public class CalendarEventResponse {
     private String type;
     private String status;
     private String classId;
+    private String moduleTitle;
 
     public CalendarEventResponse() {}
 
@@ -21,6 +22,11 @@ public class CalendarEventResponse {
         this.type = type;
         this.status = status;
         this.classId = classId;
+    }
+
+    public CalendarEventResponse(String id, String title, String date, String time, int durationMinutes, String type, String status, String classId, String moduleTitle) {
+        this(id, title, date, time, durationMinutes, type, status, classId);
+        this.moduleTitle = moduleTitle;
     }
 
     public String getId() { return id; }
@@ -39,4 +45,6 @@ public class CalendarEventResponse {
     public void setStatus(String status) { this.status = status; }
     public String getClassId() { return classId; }
     public void setClassId(String classId) { this.classId = classId; }
+    public String getModuleTitle() { return moduleTitle; }
+    public void setModuleTitle(String moduleTitle) { this.moduleTitle = moduleTitle; }
 }

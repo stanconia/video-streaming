@@ -9,6 +9,7 @@ ENVIRONMENT="dev"
 ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 BACKEND_IMAGE="${ECR_REGISTRY}/${APP_NAME}-${ENVIRONMENT}-api:latest"
 MEDIA_SERVER_IMAGE="${ECR_REGISTRY}/${APP_NAME}-${ENVIRONMENT}-media-server:latest"
+OLLAMA_IMAGE="${ECR_REGISTRY}/${APP_NAME}-${ENVIRONMENT}-ollama:latest"
 ECS_CLUSTER="EduLive-${ENVIRONMENT}-cluster"
 ECS_SERVICE="EduLive-${ENVIRONMENT}-backend"
 S3_BUCKET="${APP_NAME}-${ENVIRONMENT}-frontend-${AWS_ACCOUNT_ID}"
@@ -30,6 +31,7 @@ SKIP_INFRA=false
 SKIP_BACKEND=false
 SKIP_FRONTEND=false
 SKIP_MEDIA=false
+SKIP_OLLAMA=false
 
 for arg in "$@"; do
   case $arg in
@@ -37,6 +39,7 @@ for arg in "$@"; do
     --skip-backend)  SKIP_BACKEND=true ;;
     --skip-frontend) SKIP_FRONTEND=true ;;
     --skip-media)    SKIP_MEDIA=true ;;
+    --skip-ollama)   SKIP_OLLAMA=true ;;
     --help)
       echo "Usage: ./deploy.sh [OPTIONS]"
       echo ""
@@ -45,6 +48,7 @@ for arg in "$@"; do
       echo "  --skip-backend    Skip backend Docker build and push"
       echo "  --skip-frontend   Skip frontend build and S3 upload"
       echo "  --skip-media      Skip media server Docker build and push"
+      echo "  --skip-ollama     Skip Ollama AI Docker build and push"
       echo "  --help            Show this help message"
       exit 0
       ;;
@@ -93,6 +97,19 @@ else
   warn "Skipping media server build"
 fi
 
+# Step 3b: Build and push Ollama image
+if [ "$SKIP_OLLAMA" = false ]; then
+  log "Building Ollama Docker image (this may take a while on first build)..."
+  docker build --platform linux/amd64 \
+    -t "${OLLAMA_IMAGE}" \
+    "${PROJECT_DIR}/ollama"
+  log "Pushing Ollama image to ECR..."
+  docker push "${OLLAMA_IMAGE}"
+  log "Ollama image pushed"
+else
+  warn "Skipping Ollama build"
+fi
+
 # Step 4: Build frontend
 if [ "$SKIP_FRONTEND" = false ]; then
   log "Building frontend..."
@@ -129,7 +146,7 @@ if [ "$SKIP_FRONTEND" = false ]; then
 fi
 
 # Step 7: Force ECS redeployment
-if [ "$SKIP_BACKEND" = false ] || [ "$SKIP_MEDIA" = false ]; then
+if [ "$SKIP_BACKEND" = false ] || [ "$SKIP_MEDIA" = false ] || [ "$SKIP_OLLAMA" = false ]; then
   log "Forcing ECS service redeployment..."
   aws ecs update-service \
     --cluster "${ECS_CLUSTER}" \

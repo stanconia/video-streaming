@@ -24,27 +24,45 @@ public class LocalFileController {
 
     @GetMapping("/**")
     public ResponseEntity<byte[]> serveFile(HttpServletRequest request) {
-        if (!s3Service.isUsingLocalStorage()) {
-            return ResponseEntity.notFound().build();
-        }
-
         String fullPath = request.getRequestURI();
         String key = fullPath.replaceFirst("/api/local-files/", "");
 
-        Path filePath = s3Service.getLocalStoragePath().resolve(key);
-        if (!Files.exists(filePath)) {
-            return ResponseEntity.notFound().build();
+        if (s3Service.isUsingLocalStorage()) {
+            Path filePath = s3Service.getLocalStoragePath().resolve(key);
+            if (!Files.exists(filePath)) {
+                return ResponseEntity.notFound().build();
+            }
+            try {
+                byte[] data = Files.readAllBytes(filePath);
+                String contentType = Files.probeContentType(filePath);
+                if (contentType == null) contentType = "application/octet-stream";
+                return ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(contentType))
+                        .body(data);
+            } catch (IOException e) {
+                return ResponseEntity.internalServerError().build();
+            }
         }
 
+        // Serve from S3
         try {
-            byte[] data = Files.readAllBytes(filePath);
-            String contentType = Files.probeContentType(filePath);
-            if (contentType == null) contentType = "application/octet-stream";
+            byte[] data = s3Service.downloadFile(key);
+            String contentType = guessContentType(key);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
                     .body(data);
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
+    }
+
+    private String guessContentType(String key) {
+        String lower = key.toLowerCase();
+        if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
+        if (lower.endsWith(".png")) return "image/png";
+        if (lower.endsWith(".gif")) return "image/gif";
+        if (lower.endsWith(".webp")) return "image/webp";
+        if (lower.endsWith(".pdf")) return "application/pdf";
+        return "application/octet-stream";
     }
 }

@@ -1,3 +1,12 @@
+/* Video conference animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* Hamburger button - hidden on desktop */
 .hamburger {
   display: none;

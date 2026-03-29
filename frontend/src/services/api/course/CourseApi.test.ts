@@ -1,32 +1,39 @@
 import axios from 'axios';
 import { CourseApi } from './CourseApi';
 
-const mockClient = {
-  get: jest.fn(),
-  post: jest.fn(),
-  put: jest.fn(),
-  delete: jest.fn(),
-  interceptors: {
-    request: { use: jest.fn() },
-    response: { use: jest.fn() },
-  },
-};
-
 jest.mock('axios', () => ({
   __esModule: true,
   default: {
-    create: jest.fn(() => mockClient),
+    create: jest.fn(() => ({
+      get: jest.fn(),
+      post: jest.fn(),
+      put: jest.fn(),
+      delete: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn() },
+        response: { use: jest.fn() },
+      },
+    })),
   },
 }));
 
 describe('CourseApi', () => {
   let courseApi: CourseApi;
+  let mockClient: any;
 
   beforeEach(() => {
-    mockClient.get.mockClear();
-    mockClient.post.mockClear();
-    mockClient.put.mockClear();
-    mockClient.delete.mockClear();
+    jest.clearAllMocks();
+    mockClient = {
+      get: jest.fn(),
+      post: jest.fn(),
+      put: jest.fn(),
+      delete: jest.fn(),
+      interceptors: {
+        request: { use: jest.fn() },
+        response: { use: jest.fn() },
+      },
+    };
+    (axios.create as jest.Mock).mockReturnValue(mockClient);
     localStorage.clear();
     courseApi = new CourseApi();
   });

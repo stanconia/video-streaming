@@ -2,23 +2,25 @@ package com.videostreaming.user.controller;
 
 import com.videostreaming.user.dto.UpdateUserProfileRequest;
 import com.videostreaming.user.service.UserProfileService;
+import com.videostreaming.shared.service.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserProfileController {
 
     private final UserProfileService userProfileService;
-    private final com.videostreaming.shared.service.FileService fileService;
+    private final S3Service s3Service;
 
-    public UserProfileController(UserProfileService userProfileService, com.videostreaming.shared.service.FileService fileService) {
+    public UserProfileController(UserProfileService userProfileService, S3Service s3Service) {
         this.userProfileService = userProfileService;
-        this.fileService = fileService;
+        this.s3Service = s3Service;
     }
 
     @GetMapping("/me")
@@ -57,9 +59,12 @@ public class UserProfileController {
                 return ResponseEntity.badRequest().body(Map.of("error", "Image must be smaller than 5MB"));
             }
 
-            // Upload using FileService (stores locally or S3)
-            Map<String, Object> uploadResult = fileService.uploadFile(file, "profile-images", userId);
-            String imageUrl = (String) uploadResult.get("downloadUrl");
+            // Upload using S3Service (persistent: S3 in prod, local fallback in dev)
+            String originalFilename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "image";
+            String extension = originalFilename.contains(".") ? originalFilename.substring(originalFilename.lastIndexOf('.')) : ".jpg";
+            String key = "profile-images/" + userId + "/" + UUID.randomUUID() + extension;
+            s3Service.uploadFile(key, file.getBytes(), contentType);
+            String imageUrl = "/api/local-files/" + key;
 
             // Update user's profileImageUrl
             UpdateUserProfileRequest updateReq = new UpdateUserProfileRequest();

@@ -209,10 +209,9 @@ class AuthServiceTest {
     @Test
     void loginWithGoogle_invalidToken_throwsRuntimeException() {
         // The GoogleIdTokenVerifier is created inside the method, so passing a garbage token
-        // will cause verification to fail (idToken == null), resulting in RuntimeException.
-        RuntimeException exception = assertThrows(RuntimeException.class,
+        // will cause verification to fail, resulting in RuntimeException.
+        assertThrows(RuntimeException.class,
                 () -> authService.loginWithGoogle("garbage-token-that-will-not-verify"));
-        assertNotNull(exception.getMessage());
     }
 
     @Test

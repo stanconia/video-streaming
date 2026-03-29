@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -30,7 +31,7 @@ public class S3Service {
     private S3Presigner presigner;
 
     public S3Service(
-            @Value("${aws.s3.recordings-bucket:}") String bucketName,
+            @Value("${aws.s3.uploads-bucket:}") String bucketName,
             @Value("${aws.region:us-east-1}") String region,
             @Value("${aws.s3.local-storage-path:#{null}}") String localPath) {
 
@@ -98,6 +99,24 @@ public class S3Service {
         String url = presigner.presignGetObject(presignRequest).url().toString();
         logger.debug("Generated presigned URL for key={}", key);
         return url;
+    }
+
+    public byte[] downloadFile(String key) {
+        if (useLocalStorage) {
+            try {
+                Path filePath = localStoragePath.resolve(key);
+                return Files.readAllBytes(filePath);
+            } catch (IOException e) {
+                throw new RuntimeException("File not found: " + key, e);
+            }
+        }
+        logger.info("Downloading from S3: bucket={}, key={}", bucketName, key);
+        GetObjectRequest getRequest = GetObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build();
+        ResponseBytes<?> responseBytes = s3Client.getObjectAsBytes(getRequest);
+        return responseBytes.asByteArray();
     }
 
     private void uploadLocal(String key, byte[] data) {

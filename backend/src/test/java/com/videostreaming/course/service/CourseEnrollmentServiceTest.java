@@ -3,8 +3,11 @@ package com.videostreaming.course.service;
 import com.videostreaming.course.dto.CourseEnrollmentResponse;
 import com.videostreaming.course.model.*;
 import com.videostreaming.course.repository.*;
+import com.videostreaming.live.repository.LiveSessionRepository;
 import com.videostreaming.notification.service.EmailService;
 import com.videostreaming.notification.service.NotificationService;
+import com.videostreaming.payment.service.StripePaymentGateway;
+import com.videostreaming.scheduling.service.CalendarBlockService;
 import com.videostreaming.user.model.User;
 import com.videostreaming.user.model.UserRole;
 import com.videostreaming.user.repository.UserRepository;
@@ -54,6 +57,15 @@ class CourseEnrollmentServiceTest {
     @Mock
     private GoogleCalendarLinkService googleCalendarLinkService;
 
+    @Mock
+    private CalendarBlockService calendarBlockService;
+
+    @Mock
+    private LiveSessionRepository liveSessionRepository;
+
+    @Mock
+    private StripePaymentGateway stripePaymentGateway;
+
     @InjectMocks
     private CourseEnrollmentService courseEnrollmentService;
 
@@ -66,7 +78,7 @@ class CourseEnrollmentServiceTest {
                 .title("Test Course")
                 .description("A test course")
                 .subject("Testing")
-                .price(new BigDecimal("29.99"))
+                .price(BigDecimal.ZERO)
                 .currency("USD")
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -119,8 +131,8 @@ class CourseEnrollmentServiceTest {
                 .role(UserRole.TEACHER)
                 .build();
         when(userRepository.findById("teacher-1")).thenReturn(Optional.of(teacher));
-        when(googleCalendarLinkService.generateLink(anyString(), anyString(), any(LocalDateTime.class)))
-                .thenReturn("https://calendar.google.com/calendar/render?action=TEMPLATE&text=test");
+        when(liveSessionRepository.findByCourseIdOrderByScheduledAtAsc(courseId))
+                .thenReturn(List.of());
 
         CourseEnrollmentResponse response = courseEnrollmentService.enroll(
                 courseId, studentUserId, "pi_123", new BigDecimal("29.99"));

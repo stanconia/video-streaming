@@ -21,13 +21,16 @@ public class PaymentService {
     private final StripeConfig stripeConfig;
     private final EscrowPaymentService escrowPaymentService;
     private final StripeConnectService stripeConnectService;
+    private final StripePaymentGateway stripePaymentGateway;
 
     public PaymentService(StripeConfig stripeConfig,
                           EscrowPaymentService escrowPaymentService,
-                          StripeConnectService stripeConnectService) {
+                          StripeConnectService stripeConnectService,
+                          StripePaymentGateway stripePaymentGateway) {
         this.stripeConfig = stripeConfig;
         this.escrowPaymentService = escrowPaymentService;
         this.stripeConnectService = stripeConnectService;
+        this.stripePaymentGateway = stripePaymentGateway;
     }
 
     public Map<String, String> createPaymentIntent(long amountCents, String currency,
@@ -38,9 +41,10 @@ public class PaymentService {
                     .setCurrency(currency.toLowerCase())
                     .putMetadata("classId", classId)
                     .putMetadata("studentUserId", studentUserId)
+                    .putMetadata("type", "class_booking")
                     .build();
 
-            PaymentIntent paymentIntent = PaymentIntent.create(params);
+            PaymentIntent paymentIntent = stripePaymentGateway.createPaymentIntent(params);
 
             logger.info("Created PaymentIntent {} for class {} by student {}",
                     paymentIntent.getId(), classId, studentUserId);
@@ -51,6 +55,32 @@ public class PaymentService {
             );
         } catch (StripeException e) {
             logger.error("Stripe error creating PaymentIntent: {}", e.getMessage());
+            throw new RuntimeException("Payment processing error: " + e.getMessage());
+        }
+    }
+
+    public Map<String, String> createCoursePaymentIntent(long amountCents, String currency,
+                                                           String courseId, String studentUserId) {
+        try {
+            PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                    .setAmount(amountCents)
+                    .setCurrency(currency.toLowerCase())
+                    .putMetadata("courseId", courseId)
+                    .putMetadata("studentUserId", studentUserId)
+                    .putMetadata("type", "course_enrollment")
+                    .build();
+
+            PaymentIntent paymentIntent = stripePaymentGateway.createPaymentIntent(params);
+
+            logger.info("Created PaymentIntent {} for course {} by student {}",
+                    paymentIntent.getId(), courseId, studentUserId);
+
+            return Map.of(
+                    "clientSecret", paymentIntent.getClientSecret(),
+                    "paymentIntentId", paymentIntent.getId()
+            );
+        } catch (StripeException e) {
+            logger.error("Stripe error creating course PaymentIntent: {}", e.getMessage());
             throw new RuntimeException("Payment processing error: " + e.getMessage());
         }
     }
@@ -83,10 +113,15 @@ public class PaymentService {
 
     private void handlePaymentSucceeded(Event event) {
         logger.info("Payment succeeded: {}", event.getId());
-        // Extract payment intent ID and capture in escrow
         event.getDataObjectDeserializer().getObject().ifPresent(obj -> {
             if (obj instanceof PaymentIntent pi) {
-                escrowPaymentService.capturePaymentWithEscrow(pi.getId());
+                String type = pi.getMetadata().get("type");
+                if ("course_enrollment".equals(type)) {
+                    logger.info("Course payment succeeded for PI {}, courseId={}",
+                            pi.getId(), pi.getMetadata().get("courseId"));
+                } else {
+                    escrowPaymentService.capturePaymentWithEscrow(pi.getId());
+                }
             }
         });
     }

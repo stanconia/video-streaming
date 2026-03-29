@@ -6,6 +6,10 @@ import com.stripe.model.Refund;
 import com.stripe.model.Transfer;
 import com.stripe.param.RefundCreateParams;
 import com.stripe.param.TransferCreateParams;
+import com.videostreaming.course.model.Course;
+import com.videostreaming.course.model.CourseEnrollment;
+import com.videostreaming.course.repository.CourseEnrollmentRepository;
+import com.videostreaming.course.repository.CourseRepository;
 import com.videostreaming.scheduling.model.Booking;
 import com.videostreaming.scheduling.model.BookingStatus;
 import com.videostreaming.scheduling.model.ScheduledClass;
@@ -32,15 +36,21 @@ public class EscrowPaymentService {
     private final ScheduledClassRepository scheduledClassRepository;
     private final TeacherProfileRepository teacherProfileRepository;
     private final NotificationService notificationService;
+    private final CourseEnrollmentRepository courseEnrollmentRepository;
+    private final CourseRepository courseRepository;
 
     public EscrowPaymentService(BookingRepository bookingRepository,
                                  ScheduledClassRepository scheduledClassRepository,
                                  TeacherProfileRepository teacherProfileRepository,
-                                 NotificationService notificationService) {
+                                 NotificationService notificationService,
+                                 CourseEnrollmentRepository courseEnrollmentRepository,
+                                 CourseRepository courseRepository) {
         this.bookingRepository = bookingRepository;
         this.scheduledClassRepository = scheduledClassRepository;
         this.teacherProfileRepository = teacherProfileRepository;
         this.notificationService = notificationService;
+        this.courseEnrollmentRepository = courseEnrollmentRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Transactional
@@ -148,5 +158,52 @@ public class EscrowPaymentService {
         bookingRepository.save(booking);
 
         return new RefundResponse(bookingId, booking.getPaidAmount(), "REFUNDED", booking.getRefundedAt());
+    }
+
+    @Transactional
+    public void releaseCoursePayment(String enrollmentId) {
+        CourseEnrollment enrollment = courseEnrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+
+        if (!"HELD".equals(enrollment.getPayoutStatus())) {
+            logger.warn("Enrollment {} payout status is {}, not HELD", enrollmentId, enrollment.getPayoutStatus());
+            return;
+        }
+
+        Course course = courseRepository.findById(enrollment.getCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        TeacherProfile teacher = teacherProfileRepository.findByUserId(course.getTeacherUserId()).orElse(null);
+
+        if (teacher != null && teacher.getStripeAccountId() != null && teacher.isStripeOnboarded()) {
+            try {
+                long payoutCents = enrollment.getTeacherPayout().longValue();
+                TransferCreateParams params = TransferCreateParams.builder()
+                        .setAmount(payoutCents)
+                        .setCurrency("usd")
+                        .setDestination(teacher.getStripeAccountId())
+                        .putMetadata("enrollmentId", enrollmentId)
+                        .putMetadata("courseId", enrollment.getCourseId())
+                        .build();
+                Transfer transfer = Transfer.create(params);
+                enrollment.setStripeTransferId(transfer.getId());
+                enrollment.setPayoutStatus("COMPLETED");
+                teacher.setTotalEarnings(teacher.getTotalEarnings() + enrollment.getTeacherPayout().doubleValue());
+                teacherProfileRepository.save(teacher);
+                courseEnrollmentRepository.save(enrollment);
+                logger.info("Released course payout {} to teacher {} for enrollment {}",
+                        transfer.getId(), course.getTeacherUserId(), enrollmentId);
+                notificationService.sendPaymentReleasedNotification(
+                        course.getTeacherUserId(), enrollment.getTeacherPayout().doubleValue(), course.getTitle());
+            } catch (StripeException e) {
+                enrollment.setPayoutStatus("FAILED");
+                courseEnrollmentRepository.save(enrollment);
+                logger.error("Stripe transfer failed for enrollment {}: {}", enrollmentId, e.getMessage());
+            }
+        } else {
+            enrollment.setPayoutStatus("PENDING");
+            courseEnrollmentRepository.save(enrollment);
+            logger.info("Teacher {} not onboarded, course payout pending", course.getTeacherUserId());
+        }
     }
 }

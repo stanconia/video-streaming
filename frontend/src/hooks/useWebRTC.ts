@@ -534,6 +534,18 @@ export function useWebRTC({ roomId, role, userId, displayName }: UseWebRTCOption
       stopScreenShareInternal();
     }
 
+    // If broadcaster, notify all participants that session has ended before leaving
+    if (role === 'broadcaster' && signalingClientRef.current) {
+      try {
+        signalingClientRef.current.sendNoAck({
+          type: 'session-ended',
+          roomId,
+        });
+      } catch (err) {
+        console.error('Error sending session-ended:', err);
+      }
+    }
+
     if (webrtcClientRef.current) {
       webrtcClientRef.current.close();
       webrtcClientRef.current = null;
@@ -561,7 +573,7 @@ export function useWebRTC({ roomId, role, userId, displayName }: UseWebRTCOption
     setScreenSharePermissionStatus('none');
 
     console.log('Left room');
-  }, [roomId, localStream, isScreenSharing, stopScreenShareInternal]);
+  }, [roomId, role, localStream, isScreenSharing, stopScreenShareInternal]);
 
   // Toggle local video on/off
   const toggleVideo = useCallback(async () => {

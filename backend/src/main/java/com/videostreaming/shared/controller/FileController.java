@@ -44,9 +44,28 @@ public class FileController {
         try {
             File file = fileService.getFile(roomId, filename);
             Resource resource = new FileSystemResource(file);
+
+            // Detect content type from filename
+            MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
+            String name = file.getName().toLowerCase();
+            if (name.endsWith(".jpg") || name.endsWith(".jpeg")) {
+                mediaType = MediaType.IMAGE_JPEG;
+            } else if (name.endsWith(".png")) {
+                mediaType = MediaType.IMAGE_PNG;
+            } else if (name.endsWith(".gif")) {
+                mediaType = MediaType.IMAGE_GIF;
+            } else if (name.endsWith(".webp")) {
+                mediaType = MediaType.parseMediaType("image/webp");
+            } else if (name.endsWith(".pdf")) {
+                mediaType = MediaType.APPLICATION_PDF;
+            }
+
+            // For images, serve inline so browsers can render them in <img> tags
+            String disposition = mediaType.getType().equals("image") ? "inline" : "attachment";
+
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"" + file.getName() + "\"")
+                    .contentType(mediaType)
                     .body(resource);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

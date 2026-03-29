@@ -47,6 +47,12 @@ public class LiveSessionController {
         return ResponseEntity.ok(liveSessionService.getUpcomingSessionsForStudent(userId));
     }
 
+    @GetMapping("/my-teaching")
+    public ResponseEntity<List<LiveSessionResponse>> getMyTeachingSessions(Authentication authentication) {
+        String userId = (String) authentication.getPrincipal();
+        return ResponseEntity.ok(liveSessionService.getSessionsForTeacher(userId));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getSession(@PathVariable String id) {
         try {

@@ -243,18 +243,19 @@ export const CourseList: React.FC = () => {
                 style={styles.card}
                 onClick={() => navigate(`/courses/${course.id}`)}
               >
-                {course.thumbnailUrl && (
-                  <img
-                    src={course.thumbnailUrl}
-                    alt={course.title}
-                    style={styles.thumbnail}
-                  />
-                )}
-                {!course.thumbnailUrl && (
+                <div style={styles.thumbnailWrapper}>
                   <div style={styles.thumbnailPlaceholder}>
                     <span style={styles.thumbnailText}>{course.subject || 'Course'}</span>
                   </div>
-                )}
+                  {course.thumbnailUrl && (
+                    <img
+                      src={course.thumbnailUrl}
+                      alt={course.title}
+                      style={styles.thumbnailOverlay}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  )}
+                </div>
                 <div style={styles.cardBody}>
                   <div style={styles.cardTitleRow}>
                     <h3 style={styles.courseTitle}>{course.title}</h3>
@@ -427,9 +428,18 @@ const styles: { [key: string]: React.CSSProperties } = {
     overflow: 'hidden',
     transition: 'box-shadow 0.2s',
   },
-  thumbnail: {
+  thumbnailWrapper: {
+    position: 'relative' as const,
     width: '100%',
     height: '180px',
+    overflow: 'hidden',
+  },
+  thumbnailOverlay: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
     objectFit: 'cover' as const,
     display: 'block',
   },

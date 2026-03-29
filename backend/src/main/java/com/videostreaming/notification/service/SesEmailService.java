@@ -63,6 +63,8 @@ public class SesEmailService implements EmailService {
             case "class_reminder" -> "Class Reminder - EduLive";
             case "enrollment_confirmation" -> "You're enrolled! - EduLive";
             case "teacher_enrollment_notification" -> "New Student Enrolled - EduLive";
+            case "live_session_scheduled" -> "Live Session Scheduled - EduLive";
+            case "live_session_starting" -> "Live Session Starting Now! - EduLive";
             default -> "EduLive Notification";
         };
     }
@@ -95,13 +97,27 @@ public class SesEmailService implements EmailService {
                     variables.getOrDefault("studentName", "there"),
                     variables.getOrDefault("courseName", ""),
                     variables.getOrDefault("teacherName", ""),
-                    variables.containsKey("calendarLink") ? "Add to Google Calendar: " + variables.get("calendarLink") + "\n\n" : "");
+                    variables.containsKey("calendarLinks") ? variables.get("calendarLinks") + "\n" : "");
             case "teacher_enrollment_notification" -> String.format(
                     "Hi %s,\n\nGreat news! %s has enrolled in your course \"%s\".\n\nEnrollment Date: %s\n\nLog in to EduLive to see your updated roster.\n\nBest,\nThe EduLive Team",
                     variables.getOrDefault("teacherName", "there"),
                     variables.getOrDefault("studentName", "A student"),
                     variables.getOrDefault("courseTitle", ""),
                     variables.getOrDefault("enrollmentDate", ""));
+            case "live_session_scheduled" -> String.format(
+                    "Hi %s,\n\nA live session has been scheduled for your course!\n\nSession: %s\nCourse: %s\nDate & Time: %s\nDuration: %s\n\nAdd to Google Calendar: %s\n\nDon't miss it!\n\nBest,\nThe EduLive Team",
+                    variables.getOrDefault("studentName", "there"),
+                    variables.getOrDefault("sessionTitle", ""),
+                    variables.getOrDefault("courseTitle", ""),
+                    variables.getOrDefault("scheduledAt", ""),
+                    variables.getOrDefault("duration", ""),
+                    variables.getOrDefault("calendarLink", ""));
+            case "live_session_starting" -> String.format(
+                    "Hi %s,\n\nThe live session \"%s\" for \"%s\" is starting now!\n\nJoin here: https://d2mv0p0scx4qgr.cloudfront.net/room/%s/view\n\nBest,\nThe EduLive Team",
+                    variables.getOrDefault("studentName", "there"),
+                    variables.getOrDefault("sessionTitle", ""),
+                    variables.getOrDefault("courseTitle", ""),
+                    variables.getOrDefault("roomId", ""));
             default -> "You have a new notification from EduLive.";
         };
     }

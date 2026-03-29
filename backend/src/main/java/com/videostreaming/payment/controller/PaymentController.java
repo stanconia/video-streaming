@@ -30,15 +30,23 @@ public class PaymentController {
         try {
             String userId = (String) authentication.getPrincipal();
             String classId = (String) request.get("classId");
+            String courseId = (String) request.get("courseId");
             Number amountNumber = (Number) request.get("amount");
             String currency = (String) request.getOrDefault("currency", "USD");
 
-            if (classId == null || amountNumber == null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "classId and amount are required"));
+            if ((classId == null && courseId == null) || amountNumber == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "classId or courseId, and amount are required"));
             }
 
             long amountCents = amountNumber.longValue();
-            Map<String, String> result = paymentService.createPaymentIntent(amountCents, currency, classId, userId);
+            Map<String, String> result;
+
+            if (courseId != null) {
+                result = paymentService.createCoursePaymentIntent(amountCents, currency, courseId, userId);
+            } else {
+                result = paymentService.createPaymentIntent(amountCents, currency, classId, userId);
+            }
+
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

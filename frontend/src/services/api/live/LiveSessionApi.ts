@@ -31,6 +31,7 @@ export class LiveSessionApi {
           localStorage.removeItem(TOKEN_KEY);
           localStorage.removeItem('edulive_user');
           window.location.href = '/login';
+          return new Promise(() => {});
         }
         return Promise.reject(error);
       }
@@ -63,6 +64,11 @@ export class LiveSessionApi {
 
   async getMyUpcoming(): Promise<LiveSession[]> {
     const response = await this.client.get<LiveSession[]>('/live-sessions/my-upcoming');
+    return response.data;
+  }
+
+  async getMyTeaching(): Promise<LiveSession[]> {
+    const response = await this.client.get<LiveSession[]>('/live-sessions/my-teaching');
     return response.data;
   }
 

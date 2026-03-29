@@ -14,13 +14,19 @@ public class GoogleCalendarLinkService {
     private static final DateTimeFormatter CALENDAR_FMT = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
 
     public String generateLink(String title, String description, LocalDateTime startDate) {
-        LocalDateTime endDate = startDate.plusHours(1); // Default 1 hour event
+        return generateLink(title, description, startDate, 60);
+    }
 
+    public String generateLink(String title, String description, LocalDateTime startDate, int durationMinutes) {
+        LocalDateTime endDate = startDate.plusMinutes(durationMinutes);
+
+        // No Z suffix — Google Calendar uses the viewer's timezone setting,
+        // which matches how teachers enter local time via datetime-local input
         String dates = startDate.format(CALENDAR_FMT) + "/" + endDate.format(CALENDAR_FMT);
 
         return CALENDAR_BASE + "?action=TEMPLATE" +
                 "&text=" + encode(title) +
-                "&dates=" + encode(dates) +
+                "&dates=" + dates +
                 "&details=" + encode(description);
     }
 

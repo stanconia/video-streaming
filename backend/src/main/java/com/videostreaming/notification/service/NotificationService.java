@@ -1,5 +1,6 @@
 package com.videostreaming.notification.service;
 
+import com.videostreaming.course.service.GoogleCalendarLinkService;
 import com.videostreaming.notification.model.Notification;
 import com.videostreaming.notification.model.NotificationType;
 import com.videostreaming.user.model.User;
@@ -13,6 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -23,12 +27,15 @@ public class NotificationService {
     private final EmailService emailService;
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
+    private final GoogleCalendarLinkService googleCalendarLinkService;
 
     public NotificationService(EmailService emailService, UserRepository userRepository,
-                                NotificationRepository notificationRepository) {
+                                NotificationRepository notificationRepository,
+                                GoogleCalendarLinkService googleCalendarLinkService) {
         this.emailService = emailService;
         this.userRepository = userRepository;
         this.notificationRepository = notificationRepository;
+        this.googleCalendarLinkService = googleCalendarLinkService;
     }
 
     public void sendWelcomeEmail(String userId) {
@@ -174,10 +181,29 @@ public class NotificationService {
         logger.info("Sent payout completed notification to teacher {}", teacherUserId);
     }
 
-    public void sendLiveSessionScheduledNotification(String studentUserId, String sessionTitle, String courseTitle) {
+    public void sendLiveSessionScheduledNotification(String studentUserId, String sessionTitle,
+                                                        String courseTitle, LocalDateTime scheduledAt, int durationMinutes) {
+        String formattedTime = scheduledAt.format(DateTimeFormatter.ofPattern("MMM d, yyyy 'at' h:mm a"));
         createNotification(studentUserId, NotificationType.LIVE_SESSION_SCHEDULED,
                 "Live Session Scheduled",
-                "A live session '" + sessionTitle + "' has been scheduled for '" + courseTitle + "'.");
+                "A live session '" + sessionTitle + "' has been scheduled for '" + courseTitle + "' on " + formattedTime + ".");
+
+        String calendarLink = googleCalendarLinkService.generateLink(
+                "Live: " + sessionTitle + " (" + courseTitle + ")",
+                "Live session for course: " + courseTitle + "\n\nJoin at EduLive when the session starts.",
+                scheduledAt, durationMinutes);
+
+        userRepository.findById(studentUserId).ifPresent(student -> {
+            Map<String, String> emailVars = new HashMap<>();
+            emailVars.put("studentName", student.getDisplayName());
+            emailVars.put("sessionTitle", sessionTitle);
+            emailVars.put("courseTitle", courseTitle);
+            emailVars.put("scheduledAt", formattedTime);
+            emailVars.put("duration", durationMinutes + " minutes");
+            emailVars.put("calendarLink", calendarLink);
+            emailService.sendTemplatedEmail(student.getEmail(), "live_session_scheduled", emailVars);
+        });
+
         logger.info("Sent live session scheduled notification to user {}", studentUserId);
     }
 
@@ -198,11 +224,22 @@ public class NotificationService {
         logger.info("Sent new student enrolled notification to teacher {}", teacherUserId);
     }
 
-    public void sendLiveSessionStartingNotification(String studentUserId, String sessionTitle, String roomId) {
+    public void sendLiveSessionStartingNotification(String studentUserId, String sessionTitle,
+                                                       String courseTitle, String roomId) {
         createNotification(studentUserId, NotificationType.LIVE_SESSION_STARTING,
                 "Live Session Starting!",
                 "'" + sessionTitle + "' is starting now! Join to participate.",
                 "{\"link\":\"/room/" + roomId + "/view\"}");
+
+        userRepository.findById(studentUserId).ifPresent(student -> {
+            Map<String, String> emailVars = new HashMap<>();
+            emailVars.put("studentName", student.getDisplayName());
+            emailVars.put("sessionTitle", sessionTitle);
+            emailVars.put("courseTitle", courseTitle);
+            emailVars.put("roomId", roomId);
+            emailService.sendTemplatedEmail(student.getEmail(), "live_session_starting", emailVars);
+        });
+
         logger.info("Sent live session starting notification to user {}", studentUserId);
     }
 

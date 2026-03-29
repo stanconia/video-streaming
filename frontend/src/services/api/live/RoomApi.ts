@@ -33,6 +33,7 @@ export class RoomApi {
           localStorage.removeItem(TOKEN_KEY);
           localStorage.removeItem('edulive_user');
           window.location.href = '/login';
+          return new Promise(() => {});
         }
         return Promise.reject(error);
       }

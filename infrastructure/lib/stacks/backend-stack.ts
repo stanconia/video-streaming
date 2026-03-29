@@ -132,6 +132,23 @@ export class BackendStack extends cdk.Stack {
     // Grant permissions
     uploadsBucket.grantReadWrite(taskRole);
 
+    // Grant SES permissions for sending emails
+    taskRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'ses:SendEmail',
+        'ses:SendRawEmail',
+      ],
+      resources: ['*'],
+    }));
+
+    // Grant S3 ListBuckets (needed by S3Service health check)
+    taskRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['s3:ListAllMyBuckets'],
+      resources: ['*'],
+    }));
+
     // Grant access to Secrets Manager
     taskRole.addToPolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -178,8 +195,8 @@ export class BackendStack extends cdk.Stack {
 
     // Fargate Service with ALB
     const desiredCount = environment === 'prod' ? 2 : 1;
-    const cpu = environment === 'prod' ? 1024 : 512;
-    const memoryLimitMiB = environment === 'prod' ? 2048 : 1024;
+    const cpu = environment === 'prod' ? 4096 : 2048;
+    const memoryLimitMiB = environment === 'prod' ? 16384 : 12288;
 
     this.service = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'BackendService', {
       cluster: this.cluster,
@@ -218,11 +235,14 @@ export class BackendStack extends cdk.Stack {
           REDIS_PORT: cache.attrRedisEndpointPort,
           // Media server (sidecar on localhost)
           MEDIA_SERVER_URL: 'http://localhost:3000',
+          // Ollama AI (sidecar on localhost)
+          OLLAMA_URL: 'http://localhost:11434',
+          OLLAMA_MODEL: 'llama3.1:8b-instruct-q4_0',
           // CORS - allow CloudFront origin
           CORS_ALLOWED_ORIGINS: '*',
-          // Stripe (placeholders — payments disabled until real keys added)
-          STRIPE_SECRET_KEY: 'sk_test_placeholder',
-          STRIPE_PUBLISHABLE_KEY: 'pk_test_placeholder',
+          // Stripe
+          STRIPE_SECRET_KEY: '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',
+          STRIPE_PUBLISHABLE_KEY: 'pk_live_51T3KEGQwkJfNUP75oyn2lQ2lKPYFUGtgeEwFD5tS6fSb41tA5nE6WWPmL5zeM2Xue6SyKwvBG8AHxurh5TtUYVrw00Lot9t2Ij',
           STRIPE_WEBHOOK_SECRET: 'whsec_placeholder',
           // JWT
           JWT_SECRET: 'prodSecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmDeployment!',
@@ -233,6 +253,8 @@ export class BackendStack extends cdk.Stack {
           // Google OAuth
           GOOGLE_CLIENT_ID: '991479117309-7896ulfi3hl2318ia17lq3007c3e85oj.apps.googleusercontent.com',
           GOOGLE_CLIENT_SECRET: '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',
+          // SES
+          SES_SENDER_EMAIL: 'stanley.opara6@gmail.com',
           // Logging
           LOG_LEVEL: environment === 'prod' ? 'INFO' : 'DEBUG',
         },
@@ -260,6 +282,10 @@ export class BackendStack extends cdk.Stack {
       enableExecuteCommand: true,
     });
 
+    // Increase ephemeral storage for Ollama model (~5GB)
+    const cfnTaskDef = this.service.taskDefinition.node.defaultChild as cdk.aws_ecs.CfnTaskDefinition;
+    cfnTaskDef.addPropertyOverride('EphemeralStorage', { SizeInGiB: 30 });
+
     // Add media server sidecar container
     const mediaServerContainer = this.service.taskDefinition.addContainer('media-server', {
       image: ecs.ContainerImage.fromRegistry(
@@ -285,6 +311,31 @@ export class BackendStack extends cdk.Stack {
       },
     });
     mediaServerContainer.addPortMappings({ containerPort: 3000 });
+
+    // Add Ollama AI sidecar container
+    const ollamaContainer = this.service.taskDefinition.addContainer('ollama', {
+      image: ecs.ContainerImage.fromRegistry(
+        `214102106723.dkr.ecr.${this.region}.amazonaws.com/edulive-dev-ollama:latest`
+      ),
+      containerName: 'ollama',
+      memoryLimitMiB: 8192,
+      cpu: 1024,
+      logging: ecs.LogDrivers.awsLogs({
+        streamPrefix: 'ollama',
+        logGroup,
+      }),
+      environment: {
+        OLLAMA_HOST: '0.0.0.0:11434',
+      },
+      healthCheck: {
+        command: ['CMD', '/bin/ollama', 'list'],
+        interval: cdk.Duration.seconds(30),
+        timeout: cdk.Duration.seconds(10),
+        retries: 5,
+        startPeriod: cdk.Duration.seconds(120),
+      },
+    });
+    ollamaContainer.addPortMappings({ containerPort: 11434 });
 
     // Configure health check
     this.service.targetGroup.configureHealthCheck({

@@ -204,20 +204,8 @@ function handler(event) {
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
       comment: `${appName} ${environment} - Frontend Distribution`,
       defaultRootObject: 'index.html',
-      errorResponses: [
-        {
-          httpStatus: 403,
-          responseHttpStatus: 200,
-          responsePagePath: '/index.html',
-          ttl: cdk.Duration.minutes(5),
-        },
-        {
-          httpStatus: 404,
-          responseHttpStatus: 200,
-          responsePagePath: '/index.html',
-          ttl: cdk.Duration.minutes(5),
-        },
-      ],
+      // SPA routing handled by CloudFront Function (spaRoutingFunction) — no errorResponses
+      // needed. Error responses would mask backend 403/404 for /api/* routes.
       enableLogging: true,
       logBucket: new s3.Bucket(this, 'LogsBucket', {
         bucketName: `${appName.toLowerCase()}-${environment}-cf-logs-${this.account}`,

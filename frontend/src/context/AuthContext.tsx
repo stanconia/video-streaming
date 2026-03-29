@@ -22,14 +22,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Restore session from localStorage on mount
+  // Restore session from localStorage on mount, clear if token expired
   useEffect(() => {
     const savedToken = localStorage.getItem(TOKEN_KEY);
     const savedUser = localStorage.getItem(USER_KEY);
     if (savedToken && savedUser) {
       try {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+        const payload = JSON.parse(atob(savedToken.split('.')[1]));
+        if (payload.exp && payload.exp * 1000 < Date.now()) {
+          localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(USER_KEY);
+        } else {
+          setToken(savedToken);
+          setUser(JSON.parse(savedUser));
+        }
       } catch {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);

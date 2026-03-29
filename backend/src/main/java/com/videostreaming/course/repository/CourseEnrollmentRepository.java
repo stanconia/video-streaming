@@ -34,5 +34,8 @@ public interface CourseEnrollmentRepository extends JpaRepository<CourseEnrollme
     @Query("SELECT e FROM CourseEnrollment e WHERE e.courseId IN :courseIds AND e.status IN ('ACTIVE','COMPLETED') AND e.paidAmount IS NOT NULL ORDER BY e.enrolledAt ASC")
     List<CourseEnrollment> findPaidEnrollmentsByCourseIds(@Param("courseIds") List<String> courseIds);
 
+    @Query("SELECT e FROM CourseEnrollment e JOIN Course c ON e.courseId = c.id WHERE c.teacherUserId = :teacherUserId AND e.paidAmount IS NOT NULL AND e.status IN ('ACTIVE','COMPLETED') ORDER BY e.enrolledAt DESC")
+    List<CourseEnrollment> findPaidEnrollmentsByTeacherUserId(@Param("teacherUserId") String teacherUserId);
+
     void deleteByCourseId(String courseId);
 }

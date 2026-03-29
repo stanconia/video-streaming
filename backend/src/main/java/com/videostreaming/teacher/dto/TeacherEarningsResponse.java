@@ -1,6 +1,8 @@
 package com.videostreaming.teacher.dto;
 
 public class TeacherEarningsResponse {
+    private String id;
+    private String type;
     private String classId;
     private String classTitle;
     private String studentName;
@@ -23,6 +25,10 @@ public class TeacherEarningsResponse {
         this.date = date;
     }
 
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
     public String getClassId() { return classId; }
     public void setClassId(String classId) { this.classId = classId; }
     public String getClassTitle() { return classTitle; }

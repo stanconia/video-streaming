@@ -7,6 +7,7 @@ import { enrollmentApi } from '../../services/api/course/EnrollmentApi';
 import { liveSessionApi } from '../../services/api/live/LiveSessionApi';
 import { LiveSession } from '../../types/live/liveSession.types';
 import { useAuth } from '../../context/AuthContext';
+import { CheckoutForm } from '../Payment/CheckoutForm';
 
 export const CourseDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ export const CourseDetail: React.FC = () => {
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
+  const [unenrolling, setUnenrolling] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [moduleSessions, setModuleSessions] = useState<Record<string, LiveSession | null>>({});
   const [goingLive, setGoingLive] = useState<string | null>(null);
@@ -75,7 +78,7 @@ export const CourseDetail: React.FC = () => {
       if (user) {
         try {
           const enrollments = await enrollmentApi.getMyEnrollments();
-          const match = enrollments.find((e) => e.courseId === courseId);
+          const match = enrollments.find((e) => e.courseId === courseId && e.status !== 'CANCELLED');
           setEnrollment(match || null);
         } catch {
           setEnrollment(null);
@@ -119,6 +122,34 @@ export const CourseDetail: React.FC = () => {
       setEnrollment(enrolled);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to enroll');
+    } finally {
+      setEnrolling(false);
+    }
+  };
+
+  const handleUnenroll = async () => {
+    if (!enrollment) return;
+    try {
+      setUnenrolling(true);
+      setError(null);
+      await enrollmentApi.cancel(courseId!, enrollment.id);
+      setEnrollment(null);
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to unenroll');
+    } finally {
+      setUnenrolling(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
+    try {
+      setEnrolling(true);
+      setError(null);
+      const enrolled = await enrollmentApi.enroll(courseId!, paymentIntentId);
+      setEnrollment(enrolled);
+      setShowCheckout(false);
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to complete enrollment after payment');
     } finally {
       setEnrolling(false);
     }
@@ -232,7 +263,12 @@ export const CourseDetail: React.FC = () => {
 
       <div style={styles.card}>
         {course.thumbnailUrl && (
-          <img src={course.thumbnailUrl} alt={course.title} style={styles.thumbnail} />
+          <img
+            src={course.thumbnailUrl}
+            alt={course.title}
+            style={styles.thumbnail}
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+          />
         )}
 
         <div style={styles.cardContent}>
@@ -327,16 +363,31 @@ export const CourseDetail: React.FC = () => {
               </button>
             )}
             {!isTeacher && isEnrolled && (
-              <button
-                onClick={() => navigate(`/courses/${courseId}/learn`)}
-                style={styles.continueButton}
-              >
-                Continue Learning
-              </button>
+              <>
+                <button
+                  onClick={() => navigate(`/courses/${courseId}/learn`)}
+                  style={styles.continueButton}
+                >
+                  Continue Learning
+                </button>
+                <button
+                  onClick={handleUnenroll}
+                  disabled={unenrolling}
+                  style={styles.unenrollButton}
+                >
+                  {unenrolling ? 'Unenrolling...' : 'Unenroll'}
+                </button>
+              </>
             )}
-            {!isTeacher && !isEnrolled && user && (
+            {!isTeacher && !isEnrolled && user && !showCheckout && (
               <button
-                onClick={handleEnroll}
+                onClick={() => {
+                  if (course.price > 0) {
+                    setShowCheckout(true);
+                  } else {
+                    handleEnroll();
+                  }
+                }}
                 disabled={enrolling}
                 style={styles.enrollButton}
               >
@@ -348,6 +399,16 @@ export const CourseDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {showCheckout && course && (
+        <CheckoutForm
+          courseId={courseId!}
+          amount={course.price}
+          currency={course.currency || 'USD'}
+          onSuccess={handlePaymentSuccess}
+          onCancel={() => setShowCheckout(false)}
+        />
+      )}
 
       <div style={styles.modulesSection}>
         <h2 style={styles.modulesTitle}>Course Modules</h2>
@@ -361,13 +422,19 @@ export const CourseDetail: React.FC = () => {
                   style={styles.moduleHeader}
                   onClick={() => toggleModule(mod.id)}
                 >
-                  {mod.thumbnailUrl ? (
-                    <img src={mod.thumbnailUrl} alt={mod.title} style={styles.moduleThumbnail} />
-                  ) : (
+                  <div style={styles.moduleThumbnailWrapper}>
                     <div style={styles.moduleThumbnailPlaceholder}>
                       <span style={styles.moduleThumbnailNumber}>{idx + 1}</span>
                     </div>
-                  )}
+                    {mod.thumbnailUrl && (
+                      <img
+                        src={mod.thumbnailUrl}
+                        alt={mod.title}
+                        style={styles.moduleThumbnailOverlay}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    )}
+                  </div>
                   <div style={styles.moduleContentArea}>
                     <div style={styles.moduleInfo}>
                       <strong>{mod.title}</strong>
@@ -622,6 +689,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '15px',
     fontWeight: 'bold',
   },
+  unenrollButton: {
+    padding: '12px 24px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '15px',
+    fontWeight: 'bold',
+  },
   enrollButton: {
     padding: '12px 32px',
     backgroundColor: '#28a745',
@@ -657,12 +734,20 @@ const styles: { [key: string]: React.CSSProperties } = {
   moduleToggle: { fontFamily: 'monospace', fontSize: '14px', color: '#007bff', flexShrink: 0 },
   moduleInfo: { display: 'flex', justifyContent: 'space-between', flex: 1, alignItems: 'center' },
   moduleMeta: { fontSize: '13px', color: '#666' },
-  moduleThumbnail: {
+  moduleThumbnailWrapper: {
+    position: 'relative' as const,
     width: '120px',
     height: '80px',
+    flexShrink: 0,
+  },
+  moduleThumbnailOverlay: {
+    position: 'absolute' as const,
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
     objectFit: 'cover' as const,
     borderRadius: '6px',
-    flexShrink: 0,
   },
   moduleThumbnailPlaceholder: {
     width: '120px',

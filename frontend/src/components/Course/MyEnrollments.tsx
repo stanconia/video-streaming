@@ -10,6 +10,7 @@ export const MyEnrollments: React.FC = () => {
   const [enrollments, setEnrollments] = useState<CourseEnrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState<string | null>(null);
 
   useEffect(() => {
     loadEnrollments();
@@ -25,6 +26,19 @@ export const MyEnrollments: React.FC = () => {
       setError(err.response?.data?.error || 'Failed to load enrollments');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancel = async (enrollment: CourseEnrollment, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      setCancelling(enrollment.id);
+      await enrollmentApi.cancel(enrollment.courseId, enrollment.id);
+      setEnrollments(prev => prev.filter(en => en.id !== enrollment.id));
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to cancel enrollment');
+    } finally {
+      setCancelling(null);
     }
   };
 
@@ -129,6 +143,15 @@ export const MyEnrollments: React.FC = () => {
                     </div>
                   )}
                 </div>
+                {enrollment.status === 'ACTIVE' && (
+                  <button
+                    onClick={(e) => handleCancel(enrollment, e)}
+                    disabled={cancelling === enrollment.id}
+                    style={styles.cancelButton}
+                  >
+                    {cancelling === enrollment.id ? 'Cancelling...' : 'Unenroll'}
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -220,4 +243,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '13px',
   },
   label: { color: '#666', fontWeight: 'bold' },
+  cancelButton: {
+    marginTop: '12px',
+    padding: '8px 16px',
+    backgroundColor: '#dc3545',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontSize: '13px',
+    fontWeight: 'bold',
+    width: '100%',
+  },
 };

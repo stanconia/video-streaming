@@ -17,6 +17,10 @@ import com.videostreaming.scheduling.dto.CalendarEventResponse;
 import com.videostreaming.scheduling.repository.BookingRepository;
 import com.videostreaming.scheduling.repository.CalendarBlockRepository;
 import com.videostreaming.scheduling.repository.ScheduledClassRepository;
+import com.videostreaming.live.model.LiveSession;
+import com.videostreaming.live.model.LiveSessionStatus;
+import com.videostreaming.live.repository.LiveSessionRepository;
+import com.videostreaming.course.repository.CourseModuleRepository;
 import com.videostreaming.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -32,15 +36,21 @@ public class CalendarService {
     private final ScheduledClassRepository scheduledClassRepository;
     private final UserRepository userRepository;
     private final CalendarBlockRepository calendarBlockRepository;
+    private final LiveSessionRepository liveSessionRepository;
+    private final CourseModuleRepository courseModuleRepository;
 
     public CalendarService(BookingRepository bookingRepository,
                            ScheduledClassRepository scheduledClassRepository,
                            UserRepository userRepository,
-                           CalendarBlockRepository calendarBlockRepository) {
+                           CalendarBlockRepository calendarBlockRepository,
+                           LiveSessionRepository liveSessionRepository,
+                           CourseModuleRepository courseModuleRepository) {
         this.bookingRepository = bookingRepository;
         this.scheduledClassRepository = scheduledClassRepository;
         this.userRepository = userRepository;
         this.calendarBlockRepository = calendarBlockRepository;
+        this.liveSessionRepository = liveSessionRepository;
+        this.courseModuleRepository = courseModuleRepository;
     }
 
     public List<CalendarEventResponse> getCalendarEvents(String userId) {
@@ -80,6 +90,30 @@ public class CalendarService {
                         "teaching",
                         sc.getStatus().name(),
                         sc.getId()));
+            }
+        }
+
+        // Teacher's live sessions → "live_session" events
+        if (user.getRole() == UserRole.TEACHER) {
+            List<LiveSession> liveSessions = liveSessionRepository
+                    .findByTeacherUserIdOrderByScheduledAtDesc(userId);
+            for (LiveSession ls : liveSessions) {
+                if (ls.getStatus() == LiveSessionStatus.CANCELLED) continue;
+                String moduleTitle = null;
+                if (ls.getModuleId() != null) {
+                    moduleTitle = courseModuleRepository.findById(ls.getModuleId())
+                            .map(CourseModule::getTitle).orElse(null);
+                }
+                events.add(new CalendarEventResponse(
+                        ls.getId(),
+                        ls.getTitle(),
+                        ls.getScheduledAt().toLocalDate().toString(),
+                        ls.getScheduledAt().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                        ls.getDurationMinutes(),
+                        "live_session",
+                        ls.getStatus().name(),
+                        null,
+                        moduleTitle));
             }
         }
 

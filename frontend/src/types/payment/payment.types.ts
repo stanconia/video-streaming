@@ -1,8 +1,18 @@
-export interface StripeConnectStatus {
-  accountId: string | null;
-  onboardingUrl: string | null;
-  onboarded: boolean;
+export interface BankAccountStatus {
+  bankAccountAdded: boolean;
+  bankAccountLast4: string | null;
+  bankAccountHolderName: string | null;
+  transfersEnabled: boolean;
 }
+
+export interface SetupBankAccountRequest {
+  accountHolderName: string;
+  routingNumber: string;
+  accountNumber: string;
+}
+
+// Backward compat alias
+export type StripeConnectStatus = BankAccountStatus;
 
 export interface PayoutSummary {
   totalEarnings: number;
@@ -12,6 +22,8 @@ export interface PayoutSummary {
 }
 
 export interface TeacherEarning {
+  id: string;
+  type: string;
   classId: string;
   classTitle: string;
   studentName: string;

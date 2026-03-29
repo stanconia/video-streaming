@@ -155,7 +155,10 @@ describe('AuthContext', () => {
       displayName: 'Test User',
       role: 'STUDENT',
     };
-    localStorage.setItem('edulive_token', 'saved-token');
+    // Build a fake JWT with a future expiry so the restore logic accepts it
+    const payload = { exp: Math.floor(Date.now() / 1000) + 3600 };
+    const fakeToken = `header.${btoa(JSON.stringify(payload))}.signature`;
+    localStorage.setItem('edulive_token', fakeToken);
     localStorage.setItem('edulive_user', JSON.stringify(savedUser));
 
     const { result } = renderHook(() => useAuth(), { wrapper });
@@ -165,7 +168,7 @@ describe('AuthContext', () => {
       // Allow effects to flush
     });
 
-    expect(result.current.token).toBe('saved-token');
+    expect(result.current.token).toBe(fakeToken);
     expect(result.current.user).toEqual(savedUser);
     expect(result.current.isLoading).toBe(false);
   });

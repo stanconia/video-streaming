@@ -63,32 +63,28 @@ class GoogleCalendarLinkServiceTest {
     void generateLink_correctDateFormat() {
         LocalDateTime startDate = LocalDateTime.of(2025, 6, 15, 10, 30, 0);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
-        String expectedStart = startDate.format(fmt); // 20250615T103000
-        String expectedEnd = startDate.plusHours(1).format(fmt); // 20250615T113000
+        String expectedStart = startDate.format(fmt);
+        String expectedEnd = startDate.plusHours(1).format(fmt);
 
         String link = googleCalendarLinkService.generateLink(
                 "Event", "Description", startDate);
 
-        // The dates param should contain start/end in the correct format (URL-encoded)
-        // URLEncoder encodes / as %2F
         assertTrue(link.contains("dates="));
-        assertTrue(link.contains(expectedStart));
-        assertTrue(link.contains(expectedEnd));
+        // The "/" separator should NOT be URL-encoded
+        assertTrue(link.contains(expectedStart + "/" + expectedEnd));
     }
 
     @Test
     void generateLink_endDateIsOneHourAfterStart() {
         LocalDateTime startDate = LocalDateTime.of(2025, 12, 25, 14, 0, 0);
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss");
-
-        String expectedStart = startDate.format(fmt); // 20251225T140000
-        String expectedEnd = startDate.plusHours(1).format(fmt); // 20251225T150000
+        String expectedStart = startDate.format(fmt);
+        String expectedEnd = startDate.plusHours(1).format(fmt);
 
         String link = googleCalendarLinkService.generateLink(
                 "Christmas Event", "Holiday", startDate);
 
-        assertTrue(link.contains(expectedStart));
-        assertTrue(link.contains(expectedEnd));
+        assertTrue(link.contains(expectedStart + "/" + expectedEnd));
     }
 
     @Test

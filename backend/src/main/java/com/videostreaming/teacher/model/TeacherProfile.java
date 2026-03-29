@@ -50,6 +50,15 @@ public class TeacherProfile {
     @Column(nullable = false)
     private boolean stripeOnboarded;
 
+    @Column(columnDefinition = "varchar(4)")
+    private String bankAccountLast4;
+
+    @Column(columnDefinition = "varchar(100)")
+    private String bankAccountHolderName;
+
+    @Column(nullable = false)
+    private boolean bankAccountAdded;
+
     @Column(columnDefinition = "varchar(50)")
     private String backgroundCheckStatus;
 
@@ -88,6 +97,7 @@ public class TeacherProfile {
         averageRating = 0;
         reviewCount = 0;
         stripeOnboarded = false;
+        bankAccountAdded = false;
         totalEarnings = 0;
     }
 
@@ -133,6 +143,15 @@ public class TeacherProfile {
 
     public boolean isStripeOnboarded() { return stripeOnboarded; }
     public void setStripeOnboarded(boolean stripeOnboarded) { this.stripeOnboarded = stripeOnboarded; }
+
+    public String getBankAccountLast4() { return bankAccountLast4; }
+    public void setBankAccountLast4(String bankAccountLast4) { this.bankAccountLast4 = bankAccountLast4; }
+
+    public String getBankAccountHolderName() { return bankAccountHolderName; }
+    public void setBankAccountHolderName(String bankAccountHolderName) { this.bankAccountHolderName = bankAccountHolderName; }
+
+    public boolean isBankAccountAdded() { return bankAccountAdded; }
+    public void setBankAccountAdded(boolean bankAccountAdded) { this.bankAccountAdded = bankAccountAdded; }
 
     public String getBackgroundCheckStatus() { return backgroundCheckStatus; }
     public void setBackgroundCheckStatus(String backgroundCheckStatus) { this.backgroundCheckStatus = backgroundCheckStatus; }

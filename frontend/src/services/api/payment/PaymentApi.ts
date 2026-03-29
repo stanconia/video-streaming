@@ -30,15 +30,20 @@ export class PaymentApi {
           localStorage.removeItem(TOKEN_KEY);
           localStorage.removeItem('edulive_user');
           window.location.href = '/login';
+          return new Promise(() => {});
         }
         return Promise.reject(error);
       }
     );
   }
 
-  async createPaymentIntent(classId: string, amount: number, currency: string = 'USD'): Promise<{ clientSecret: string; paymentIntentId: string }> {
+  async createPaymentIntent(
+    params: { classId?: string; courseId?: string },
+    amount: number,
+    currency: string = 'USD'
+  ): Promise<{ clientSecret: string; paymentIntentId: string }> {
     const response = await this.client.post<{ clientSecret: string; paymentIntentId: string }>('/payments/create-intent', {
-      classId,
+      ...params,
       amount,
       currency,
     });

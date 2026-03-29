@@ -14,6 +14,7 @@ export const EditUserProfilePage: React.FC = () => {
   const [success, setSuccess] = useState('');
 
   // Form fields
+  const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [phone, setPhone] = useState('');
@@ -34,6 +35,7 @@ export const EditUserProfilePage: React.FC = () => {
   const loadProfile = async () => {
     try {
       const data = await profileApi.getMyProfile();
+      setEmail(data.email || '');
       setDisplayName(data.displayName || '');
       setBio(data.bio || '');
       setPhone(data.phone || '');
@@ -73,7 +75,7 @@ export const EditUserProfilePage: React.FC = () => {
     setError('');
     setSuccess('');
     try {
-      await profileApi.updateMyProfile({ displayName, bio, phone, location, profileImageUrl, subjectInterests: subjectInterests || undefined });
+      await profileApi.updateMyProfile({ email, displayName, bio, phone, location, profileImageUrl, subjectInterests: subjectInterests || undefined });
 
       // Save teacher-specific fields
       if (user?.role === 'TEACHER') {
@@ -109,6 +111,17 @@ export const EditUserProfilePage: React.FC = () => {
         {success && <div style={styles.success}>{success}</div>}
 
         <form onSubmit={handleSubmit}>
+          <div style={styles.field}>
+            <label style={styles.label}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              style={styles.input}
+              placeholder="your@email.com"
+            />
+          </div>
+
           <div style={styles.field}>
             <label style={styles.label}>Display Name</label>
             <input

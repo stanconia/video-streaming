@@ -146,10 +146,10 @@ class LiveSessionServiceTest {
     }
 
     @Test
-    void startSession_tooEarly_throws() {
+    void startSession_futureScheduled_stillStarts() {
+        // Time window check was removed — teachers can start sessions at any time
         String sessionId = "session-1";
         String teacherUserId = "teacher-1";
-        // Schedule far in the future (more than 1 hour)
         LocalDateTime futureTime = LocalDateTime.now().plusHours(3);
 
         LiveSession session = LiveSession.builder()
@@ -170,14 +170,38 @@ class LiveSessionServiceTest {
                 .published(true)
                 .build();
 
+        Room room = Room.builder()
+                .id("room-1")
+                .name("live-Live Q&A")
+                .active(true)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        LiveSession startedSession = LiveSession.builder()
+                .id(sessionId)
+                .courseId("course-1")
+                .teacherUserId(teacherUserId)
+                .title("Live Q&A")
+                .scheduledAt(futureTime)
+                .durationMinutes(60)
+                .status(LiveSessionStatus.LIVE)
+                .roomId("room-1")
+                .createdAt(LocalDateTime.now())
+                .build();
+
         when(liveSessionRepository.findById(sessionId)).thenReturn(Optional.of(session));
         when(courseRepository.findById("course-1")).thenReturn(Optional.of(course));
+        when(roomService.createRoom("live-Live Q&A")).thenReturn(room);
+        when(liveSessionRepository.save(any(LiveSession.class))).thenReturn(startedSession);
+        when(courseEnrollmentRepository.findByCourseIdAndStatusIn(
+                eq("course-1"), eq(List.of(EnrollmentStatus.ACTIVE)))).thenReturn(Collections.emptyList());
+        when(teacherProfileRepository.findByUserId(teacherUserId)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () ->
-                service.startSession(sessionId, teacherUserId));
+        LiveSessionResponse result = service.startSession(sessionId, teacherUserId);
 
-        assertTrue(exception.getMessage().contains("within 1 hour"));
-        verify(roomService, never()).createRoom(anyString());
+        assertNotNull(result);
+        assertEquals("LIVE", result.getStatus());
+        verify(roomService).createRoom("live-Live Q&A");
     }
 
     @Test

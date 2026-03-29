@@ -1,7 +1,9 @@
 package com.videostreaming.payment.controller;
 
+import com.videostreaming.payment.dto.SetupBankAccountRequest;
 import com.videostreaming.teacher.service.BackgroundCheckService;
 import com.videostreaming.payment.service.StripeConnectService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,23 +23,17 @@ public class StripeConnectController {
         this.backgroundCheckService = backgroundCheckService;
     }
 
-    @PostMapping("/create-account")
-    public ResponseEntity<?> createAccount(Authentication authentication) {
+    @PostMapping("/setup-bank-account")
+    public ResponseEntity<?> setupBankAccount(Authentication authentication,
+                                                @RequestBody SetupBankAccountRequest request,
+                                                HttpServletRequest httpRequest) {
         try {
             String userId = (String) authentication.getPrincipal();
-            return ResponseEntity.ok(stripeConnectService.createConnectAccount(userId));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    @GetMapping("/onboarding-link")
-    public ResponseEntity<?> getOnboardingLink(Authentication authentication,
-                                                 @RequestParam(defaultValue = "http://localhost:3000/stripe-connect") String returnUrl,
-                                                 @RequestParam(defaultValue = "http://localhost:3000/stripe-connect") String refreshUrl) {
-        try {
-            String userId = (String) authentication.getPrincipal();
-            return ResponseEntity.ok(stripeConnectService.createOnboardingLink(userId, returnUrl, refreshUrl));
+            String ipAddress = httpRequest.getHeader("X-Forwarded-For") != null
+                    ? httpRequest.getHeader("X-Forwarded-For").split(",")[0].trim()
+                    : httpRequest.getRemoteAddr();
+            return ResponseEntity.ok(
+                stripeConnectService.setupBankAccount(userId, request, ipAddress));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

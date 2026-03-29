@@ -15,6 +15,7 @@ export interface UserProfile {
 }
 
 export interface UpdateProfileRequest {
+  email?: string;
   displayName?: string;
   phone?: string;
   location?: string;
