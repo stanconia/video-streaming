@@ -1,0 +1,203 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # ─── Frontend Tests ───
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npx tsc --noEmit
+        name: TypeScript Check
+      - run: CI=true npx react-scripts test --watchAll=false --ci
+        name: Jest Tests
+
+  # ─── Backend Tests ───
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - run: mvn test -B
+        name: Maven Tests
+
+  # ─── Infrastructure Synth ───
+  infra-synth:
+    name: CDK Synth
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infrastructure
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: infrastructure/package-lock.json
+
+      - run: npm ci
+      - run: npx cdk synth --quiet
+        name: CDK Synth (validate templates)
+        env:
+          CDK_DEFAULT_ACCOUNT: "000000000000"
+          CDK_DEFAULT_REGION: us-east-1
+
+  # ─── Smoke Test ───
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    needs: [frontend-tests, backend-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: maven
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # Build backend JAR
+      - name: Build Backend
+        working-directory: backend
+        run: mvn package -DskipTests -B -q
+
+      # Start backend in background
+      - name: Start Backend
+        working-directory: backend
+        run: |
+          java -jar target/*.jar \
+            --server.port=8080 \
+            --spring.jpa.hibernate.ddl-auto=create-drop \
+            --spring.datasource.url=jdbc:h2:mem:smoketest \
+            --spring.datasource.driver-class-name=org.h2.Driver \
+            --jwt.secret=smokeTestSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm! \
+            --ollama.url=http://localhost:11434 \
+            --media-server.url=http://localhost:3000 \
+            --cors.allowed-origins=http://localhost:3001 &
+          echo $! > /tmp/backend.pid
+
+      # Wait for backend to be ready
+      - name: Wait for Backend Health
+        run: |
+          echo "Waiting for backend to start..."
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8080/health > /dev/null 2>&1; then
+              echo "Backend is healthy!"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend failed to start"
+          exit 1
+
+      # Run smoke tests
+      - name: Run Smoke Tests
+        run: |
+          echo "=== Smoke Test: Health Endpoint ==="
+          curl -sf http://localhost:8080/health | jq .
+
+          echo ""
+          echo "=== Smoke Test: Register User ==="
+          REGISTER_RESPONSE=$(curl -sf -X POST http://localhost:8080/api/auth/register \
+            -H "Content-Type: application/json" \
+            -d '{"email":"smoke@test.com","password":"SmokeTest123!","displayName":"Smoke Tester","role":"TEACHER"}')
+          echo "$REGISTER_RESPONSE" | jq .
+          TOKEN=$(echo "$REGISTER_RESPONSE" | jq -r '.token')
+
+          if [ "$TOKEN" = "null" ] || [ -z "$TOKEN" ]; then
+            echo "FAIL: Registration did not return a token"
+            exit 1
+          fi
+          echo "Token obtained: ${TOKEN:0:20}..."
+
+          echo ""
+          echo "=== Smoke Test: Create Course ==="
+          COURSE_RESPONSE=$(curl -sf -X POST http://localhost:8080/api/courses \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $TOKEN" \
+            -d '{"title":"Smoke Test Course","description":"CI smoke test","subject":"Testing","price":0,"currency":"USD","difficultyLevel":"BEGINNER","estimatedHours":1}')
+          echo "$COURSE_RESPONSE" | jq .
+          COURSE_ID=$(echo "$COURSE_RESPONSE" | jq -r '.id')
+
+          if [ "$COURSE_ID" = "null" ] || [ -z "$COURSE_ID" ]; then
+            echo "FAIL: Course creation did not return an ID"
+            exit 1
+          fi
+          echo "Course created: $COURSE_ID"
+
+          echo ""
+          echo "=== Smoke Test: Get Courses ==="
+          curl -sf http://localhost:8080/api/courses \
+            -H "Authorization: Bearer $TOKEN" | jq '. | length'
+
+          echo ""
+          echo "=== Smoke Test: Schedule Live Session ==="
+          SESSION_RESPONSE=$(curl -sf -X POST http://localhost:8080/api/live-sessions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $TOKEN" \
+            -d "{\"courseId\":\"$COURSE_ID\",\"title\":\"Smoke Test Session\",\"description\":\"CI test\",\"scheduledAt\":\"2099-01-01T10:00:00\",\"durationMinutes\":30}")
+          echo "$SESSION_RESPONSE" | jq .
+          SESSION_ID=$(echo "$SESSION_RESPONSE" | jq -r '.id')
+
+          if [ "$SESSION_ID" = "null" ] || [ -z "$SESSION_ID" ]; then
+            echo "FAIL: Live session creation did not return an ID"
+            exit 1
+          fi
+          echo "Live session scheduled: $SESSION_ID"
+
+          echo ""
+          echo "=== All Smoke Tests Passed ==="
+
+      # Build frontend (verify production build works)
+      - name: Build Frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          CI=false npm run build
+        env:
+          REACT_APP_API_URL: http://localhost:8080
+
+      # Cleanup
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ -f /tmp/backend.pid ]; then
+            kill $(cat /tmp/backend.pid) 2>/dev/null || true
+          fi
