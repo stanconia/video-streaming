@@ -432,7 +432,7 @@ class CourseServiceTest {
         stubToCourseResponseDependencies(course);
 
         CourseSearchResponse response = courseService.searchCourses(
-                "Java", null, null, null, null, "newest", 0, 10);
+                "Java", null, null, null, null, "newest", null, 0, 10);
 
         assertNotNull(response);
         assertEquals(1, response.getContent().size());
@@ -447,7 +447,7 @@ class CourseServiceTest {
                 any(), any(), any(Pageable.class))).thenReturn(emptyPage);
 
         CourseSearchResponse response = courseService.searchCourses(
-                "nonexistent", null, null, null, null, null, 0, 10);
+                "nonexistent", null, null, null, null, null, null, 0, 10);
 
         assertNotNull(response);
         assertTrue(response.getContent().isEmpty());

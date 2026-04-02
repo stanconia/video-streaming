@@ -23,6 +23,15 @@ public class ConsoleEmailService implements EmailService {
     }
 
     @Override
+    public void sendHtmlEmail(String to, String subject, String htmlBody) {
+        logger.info("=== HTML EMAIL ===");
+        logger.info("To: {}", to);
+        logger.info("Subject: {}", subject);
+        logger.info("HTML Body:\n{}", htmlBody);
+        logger.info("==================");
+    }
+
+    @Override
     public void sendTemplatedEmail(String to, String template, Map<String, String> variables) {
         String body = buildTemplate(template, variables);
         sendEmail(to, getSubjectForTemplate(template), body);
@@ -38,6 +47,7 @@ public class ConsoleEmailService implements EmailService {
             case "teacher_enrollment_notification" -> "New Student Enrolled - EduLive";
             case "live_session_scheduled" -> "Live Session Scheduled - EduLive";
             case "live_session_starting" -> "Live Session Starting Now! - EduLive";
+            case "password_reset" -> "Reset Your Password - EduLive";
             default -> "EduLive Notification";
         };
     }
@@ -91,6 +101,10 @@ public class ConsoleEmailService implements EmailService {
                     variables.getOrDefault("sessionTitle", ""),
                     variables.getOrDefault("courseTitle", ""),
                     variables.getOrDefault("roomId", ""));
+            case "password_reset" -> String.format(
+                    "Hi %s,\n\nWe received a request to reset your password. Click the link below to set a new password:\n\n%s\n\nThis link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email.\n\nBest,\nThe EduLive Team",
+                    variables.getOrDefault("displayName", "there"),
+                    variables.getOrDefault("resetLink", ""));
             default -> "You have a new notification from EduLive.";
         };
     }

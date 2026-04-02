@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { CourseSearchResponse } from '../../types/course/course.types';
+import { CourseSearchResponse, SearchFilterValues } from '../../types/course/course.types';
 import { courseApi } from '../../services/api/course/CourseApi';
+import { SearchFilters } from './SearchFilters';
 
 export const CourseList: React.FC = () => {
   const navigate = useNavigate();
@@ -19,12 +20,11 @@ export const CourseList: React.FC = () => {
   const minPrice = searchParams.get('minPrice') || '';
   const maxPrice = searchParams.get('maxPrice') || '';
   const sortBy = searchParams.get('sortBy') || 'newest';
+  const minRating = parseInt(searchParams.get('minRating') || '0', 10);
   const page = parseInt(searchParams.get('page') || '0', 10);
 
   // Local input state for search (submit on Enter/button)
   const [searchInput, setSearchInput] = useState(q);
-  const [minPriceInput, setMinPriceInput] = useState(minPrice);
-  const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
 
   useEffect(() => {
     courseApi.getSubjects().then(setSubjects).catch(() => {});
@@ -40,6 +40,7 @@ export const CourseList: React.FC = () => {
         minPrice: minPrice ? Number(minPrice) : undefined,
         maxPrice: maxPrice ? Number(maxPrice) : undefined,
         sortBy,
+        minRating: minRating > 0 ? minRating : undefined,
         page,
         size: 12,
       });
@@ -50,16 +51,14 @@ export const CourseList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [q, subject, difficulty, minPrice, maxPrice, sortBy, page]);
+  }, [q, subject, difficulty, minPrice, maxPrice, sortBy, minRating, page]);
 
   useEffect(() => {
     loadCourses();
   }, [loadCourses]);
 
-  // Sync local inputs when URL params change externally
+  // Sync local input when URL params change externally
   useEffect(() => { setSearchInput(q); }, [q]);
-  useEffect(() => { setMinPriceInput(minPrice); }, [minPrice]);
-  useEffect(() => { setMaxPriceInput(maxPrice); }, [maxPrice]);
 
   const updateParams = (updates: Record<string, string>) => {
     const params = new URLSearchParams(searchParams);
@@ -85,18 +84,43 @@ export const CourseList: React.FC = () => {
     if (e.key === 'Enter') handleSearch();
   };
 
-  const handlePriceApply = () => {
-    updateParams({
-      minPrice: minPriceInput ? String(Math.round(Number(minPriceInput) * 100)) : '',
-      maxPrice: maxPriceInput ? String(Math.round(Number(maxPriceInput) * 100)) : '',
-    });
-  };
-
   const clearFilters = () => {
     setSearchInput('');
-    setMinPriceInput('');
-    setMaxPriceInput('');
     setSearchParams({});
+  };
+
+  const filterValues: SearchFilterValues = useMemo(() => ({
+    subject,
+    difficulty,
+    minPrice: minPrice ? String(Number(minPrice) / 100) : '',
+    maxPrice: maxPrice ? String(Number(maxPrice) / 100) : '',
+    sortBy,
+    minRating,
+  }), [subject, difficulty, minPrice, maxPrice, sortBy, minRating]);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (subject) count++;
+    if (difficulty) count++;
+    if (minPrice || maxPrice) count++;
+    if (sortBy && sortBy !== 'newest') count++;
+    if (minRating > 0) count++;
+    return count;
+  }, [subject, difficulty, minPrice, maxPrice, sortBy, minRating]);
+
+  const handleFilterChange = (updates: Partial<SearchFilterValues>) => {
+    const paramUpdates: Record<string, string> = {};
+    if ('subject' in updates) paramUpdates.subject = updates.subject || '';
+    if ('difficulty' in updates) paramUpdates.difficulty = updates.difficulty || '';
+    if ('sortBy' in updates) paramUpdates.sortBy = updates.sortBy || '';
+    if ('minRating' in updates) paramUpdates.minRating = updates.minRating ? String(updates.minRating) : '';
+    if ('minPrice' in updates) {
+      paramUpdates.minPrice = updates.minPrice ? String(Math.round(Number(updates.minPrice) * 100)) : '';
+    }
+    if ('maxPrice' in updates) {
+      paramUpdates.maxPrice = updates.maxPrice ? String(Math.round(Number(updates.maxPrice) * 100)) : '';
+    }
+    updateParams(paramUpdates);
   };
 
   const handleTagClick = (tag: string) => {
@@ -109,7 +133,7 @@ export const CourseList: React.FC = () => {
   const totalPages = result?.totalPages || 0;
   const startItem = totalElements > 0 ? page * 12 + 1 : 0;
   const endItem = Math.min((page + 1) * 12, totalElements);
-  const hasFilters = q || subject || difficulty || minPrice || maxPrice || sortBy !== 'newest';
+  const hasFilters = q || subject || difficulty || minPrice || maxPrice || sortBy !== 'newest' || minRating > 0;
 
   const getDifficultyBadge = (level: string) => {
     const colorMap: Record<string, { bg: string; text: string }> = {
@@ -151,73 +175,26 @@ export const CourseList: React.FC = () => {
         <button onClick={handleSearch} style={styles.searchBtn}>Search</button>
       </div>
 
-      {/* Filter row */}
-      <div style={styles.filters}>
-        <select
-          value={subject}
-          onChange={(e) => updateParams({ subject: e.target.value })}
-          style={styles.filterSelect}
-        >
-          <option value="">All Subjects</option>
-          {subjects.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-
-        <select
-          value={difficulty}
-          onChange={(e) => updateParams({ difficulty: e.target.value })}
-          style={styles.filterSelect}
-        >
-          <option value="">All Levels</option>
-          <option value="BEGINNER">Beginner</option>
-          <option value="INTERMEDIATE">Intermediate</option>
-          <option value="ADVANCED">Advanced</option>
-        </select>
-
-        <div style={styles.priceRange}>
-          <input
-            type="number"
-            placeholder="Min $"
-            value={minPriceInput}
-            onChange={(e) => setMinPriceInput(e.target.value)}
-            style={styles.priceInput}
-            min="0"
-            step="0.01"
-          />
-          <span style={{ color: '#666' }}>-</span>
-          <input
-            type="number"
-            placeholder="Max $"
-            value={maxPriceInput}
-            onChange={(e) => setMaxPriceInput(e.target.value)}
-            style={styles.priceInput}
-            min="0"
-            step="0.01"
-          />
-          <button onClick={handlePriceApply} style={styles.priceBtn}>Apply</button>
-        </div>
-
-        <select
-          value={sortBy}
-          onChange={(e) => updateParams({ sortBy: e.target.value })}
-          style={styles.filterSelect}
-        >
-          <option value="newest">Newest</option>
-          <option value="title">Title A-Z</option>
-          <option value="price_asc">Price: Low to High</option>
-          <option value="price_desc">Price: High to Low</option>
-        </select>
-
-        {hasFilters && (
-          <button onClick={clearFilters} style={styles.clearBtn}>Clear Filters</button>
-        )}
-      </div>
+      {/* Advanced Filter Panel */}
+      <SearchFilters
+        subjects={subjects}
+        values={filterValues}
+        onChange={handleFilterChange}
+        onClear={clearFilters}
+        activeFilterCount={activeFilterCount}
+      />
 
       {/* Results summary */}
-      {!loading && totalElements > 0 && (
+      {!loading && (
         <div style={styles.resultsSummary}>
-          Showing {startItem}-{endItem} of {totalElements} courses
+          {totalElements > 0 ? (
+            <>
+              <strong>{totalElements} result{totalElements !== 1 ? 's' : ''} found</strong>
+              {' '}&mdash; showing {startItem}-{endItem}
+            </>
+          ) : hasFilters ? (
+            <span>No results match your filters</span>
+          ) : null}
         </div>
       )}
 
@@ -361,33 +338,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '14px',
     cursor: 'pointer',
     fontWeight: 'bold',
-  },
-  filters: { display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' as const, alignItems: 'center' },
-  filterSelect: {
-    padding: '8px 12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '13px',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-  },
-  priceRange: { display: 'flex', gap: '6px', alignItems: 'center' },
-  priceInput: {
-    width: '80px',
-    padding: '8px 10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '13px',
-    boxSizing: 'border-box' as const,
-  },
-  priceBtn: {
-    padding: '8px 12px',
-    backgroundColor: '#6c757d',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '12px',
-    cursor: 'pointer',
   },
   clearBtn: {
     padding: '8px 14px',

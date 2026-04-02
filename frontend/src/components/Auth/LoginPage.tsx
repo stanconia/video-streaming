@@ -76,6 +76,10 @@ export function LoginPage() {
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </button>
 
+          <div style={styles.forgotPassword}>
+            <Link to="/forgot-password" style={styles.forgotLink}>Forgot Password?</Link>
+          </div>
+
           <div style={styles.divider}>
             <span style={styles.dividerText}>or</span>
           </div>
@@ -164,6 +168,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: 'bold',
     cursor: 'pointer',
     marginTop: '8px',
+  },
+  forgotPassword: {
+    textAlign: 'right',
+    marginTop: '-8px',
+  },
+  forgotLink: {
+    color: '#007bff',
+    textDecoration: 'none',
+    fontSize: '13px',
   },
   linkText: {
     textAlign: 'center',

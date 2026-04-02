@@ -87,9 +87,25 @@ export const PlaybackPage: React.FC = () => {
             autoPlay={false}
             style={styles.videoPlayer}
             src={playbackUrl}
+            onError={() => setError('Failed to load video. The recording may still be processing.')}
           >
             Your browser does not support the video element.
           </video>
+        ) : recording.status === 'COMPLETED' ? (
+          <div style={styles.noPlayback}>
+            <p>Playback URL not available. Try refreshing.</p>
+            <button onClick={() => loadRecording(id!)} style={styles.retryButton}>Retry</button>
+          </div>
+        ) : recording.status === 'UPLOADING' || recording.status === 'STOPPING' ? (
+          <div style={styles.noPlayback}>
+            <div style={styles.processingSpinner} />
+            <p>Recording is being processed... This may take a minute.</p>
+            <button onClick={() => loadRecording(id!)} style={styles.retryButton}>Check Again</button>
+          </div>
+        ) : recording.status === 'FAILED' ? (
+          <div style={styles.noPlayback}>
+            <p>Recording failed: {recording.errorMessage || 'Unknown error'}</p>
+          </div>
         ) : (
           <div style={styles.noPlayback}>Recording not available for playback</div>
         )}
@@ -160,10 +176,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: '100%',
     height: '100%',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     color: '#999',
-    fontSize: '18px',
+    fontSize: '16px',
+    gap: '12px',
+  },
+  retryButton: {
+    padding: '8px 20px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '14px',
+  },
+  processingSpinner: {
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    border: '3px solid #333',
+    borderTopColor: '#007bff',
+    animation: 'spin 1s linear infinite',
   },
   info: {
     padding: '20px',

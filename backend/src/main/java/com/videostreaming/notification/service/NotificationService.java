@@ -3,7 +3,7 @@ package com.videostreaming.notification.service;
 import com.videostreaming.course.service.GoogleCalendarLinkService;
 import com.videostreaming.notification.model.Notification;
 import com.videostreaming.notification.model.NotificationType;
-import com.videostreaming.user.model.User;
+import com.videostreaming.notification.template.EmailTemplateService;
 import com.videostreaming.notification.dto.NotificationResponse;
 import com.videostreaming.notification.repository.NotificationRepository;
 import com.videostreaming.user.repository.UserRepository;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -25,14 +24,18 @@ public class NotificationService {
     private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
     private final EmailService emailService;
+    private final EmailTemplateService emailTemplateService;
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
     private final GoogleCalendarLinkService googleCalendarLinkService;
 
-    public NotificationService(EmailService emailService, UserRepository userRepository,
+    public NotificationService(EmailService emailService,
+                                EmailTemplateService emailTemplateService,
+                                UserRepository userRepository,
                                 NotificationRepository notificationRepository,
                                 GoogleCalendarLinkService googleCalendarLinkService) {
         this.emailService = emailService;
+        this.emailTemplateService = emailTemplateService;
         this.userRepository = userRepository;
         this.notificationRepository = notificationRepository;
         this.googleCalendarLinkService = googleCalendarLinkService;
@@ -40,11 +43,19 @@ public class NotificationService {
 
     public void sendWelcomeEmail(String userId) {
         userRepository.findById(userId).ifPresent(user -> {
-            emailService.sendTemplatedEmail(user.getEmail(), "welcome",
-                    Map.of("displayName", user.getDisplayName()));
+            String htmlBody = emailTemplateService.welcomeEmail(user.getDisplayName());
+            emailService.sendHtmlEmail(user.getEmail(), "Welcome to EduLive!", htmlBody);
             createNotification(userId, NotificationType.WELCOME,
                     "Welcome to EduLive!", "Welcome " + user.getDisplayName() + "! Start exploring classes.");
             logger.info("Sent welcome email to user {}", userId);
+        });
+    }
+
+    public void sendPasswordResetEmail(String userId, String resetLink) {
+        userRepository.findById(userId).ifPresent(user -> {
+            String htmlBody = emailTemplateService.passwordReset(user.getDisplayName(), resetLink);
+            emailService.sendHtmlEmail(user.getEmail(), "Reset Your Password - EduLive", htmlBody);
+            logger.info("Sent password reset email to user {}", userId);
         });
     }
 
@@ -69,6 +80,13 @@ public class NotificationService {
     public void sendCourseEnrollmentNotification(String studentUserId, String courseTitle) {
         createNotification(studentUserId, NotificationType.COURSE_ENROLLED,
                 "Course Enrolled", "You have successfully enrolled in '" + courseTitle + "'.");
+
+        userRepository.findById(studentUserId).ifPresent(student -> {
+            String htmlBody = emailTemplateService.enrollmentConfirmation(
+                    student.getDisplayName(), courseTitle, null);
+            emailService.sendHtmlEmail(student.getEmail(), "You're enrolled! - EduLive", htmlBody);
+        });
+
         logger.info("Sent course enrollment notification to user {}", studentUserId);
     }
 
@@ -194,14 +212,9 @@ public class NotificationService {
                 scheduledAt, durationMinutes);
 
         userRepository.findById(studentUserId).ifPresent(student -> {
-            Map<String, String> emailVars = new HashMap<>();
-            emailVars.put("studentName", student.getDisplayName());
-            emailVars.put("sessionTitle", sessionTitle);
-            emailVars.put("courseTitle", courseTitle);
-            emailVars.put("scheduledAt", formattedTime);
-            emailVars.put("duration", durationMinutes + " minutes");
-            emailVars.put("calendarLink", calendarLink);
-            emailService.sendTemplatedEmail(student.getEmail(), "live_session_scheduled", emailVars);
+            String htmlBody = emailTemplateService.sessionReminder(
+                    student.getDisplayName(), sessionTitle, formattedTime, calendarLink);
+            emailService.sendHtmlEmail(student.getEmail(), "Live Session Scheduled - EduLive", htmlBody);
         });
 
         logger.info("Sent live session scheduled notification to user {}", studentUserId);
@@ -232,12 +245,10 @@ public class NotificationService {
                 "{\"link\":\"/room/" + roomId + "/view\"}");
 
         userRepository.findById(studentUserId).ifPresent(student -> {
-            Map<String, String> emailVars = new HashMap<>();
-            emailVars.put("studentName", student.getDisplayName());
-            emailVars.put("sessionTitle", sessionTitle);
-            emailVars.put("courseTitle", courseTitle);
-            emailVars.put("roomId", roomId);
-            emailService.sendTemplatedEmail(student.getEmail(), "live_session_starting", emailVars);
+            String joinUrl = "/room/" + roomId + "/view";
+            String htmlBody = emailTemplateService.sessionReminder(
+                    student.getDisplayName(), sessionTitle, "Starting now!", joinUrl);
+            emailService.sendHtmlEmail(student.getEmail(), "Live Session Starting Now! - EduLive", htmlBody);
         });
 
         logger.info("Sent live session starting notification to user {}", studentUserId);

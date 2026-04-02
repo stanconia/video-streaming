@@ -83,8 +83,18 @@ export interface CourseSearchParams {
   minPrice?: number;
   maxPrice?: number;
   sortBy?: string;
+  minRating?: number;
   page?: number;
   size?: number;
+}
+
+export interface SearchFilterValues {
+  subject: string;
+  difficulty: string;
+  minPrice: string;
+  maxPrice: string;
+  sortBy: string;
+  minRating: number;
 }
 
 export interface CourseSearchResponse {

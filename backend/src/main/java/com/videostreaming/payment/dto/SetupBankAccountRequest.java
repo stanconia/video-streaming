@@ -1,9 +1,19 @@
 package com.videostreaming.payment.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 public class SetupBankAccountRequest {
 
+    @NotBlank(message = "Account holder name is required")
     private String accountHolderName;
+
+    @NotBlank(message = "Routing number is required")
+    @Pattern(regexp = "^\\d{9}$", message = "Routing number must be exactly 9 digits")
     private String routingNumber;
+
+    @NotBlank(message = "Account number is required")
+    @Pattern(regexp = "^\\d{4,17}$", message = "Account number must be between 4 and 17 digits")
     private String accountNumber;
 
     public SetupBankAccountRequest() {}
