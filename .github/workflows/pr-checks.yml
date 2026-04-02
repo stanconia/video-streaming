@@ -25,7 +25,7 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - run: npm install --legacy-peer-deps
+      - run: npm install
       - run: npx tsc --noEmit
         name: TypeScript Check
       - run: CI=true npx react-scripts test --watchAll=false --ci
@@ -186,7 +186,7 @@ jobs:
       - name: Build Frontend
         working-directory: frontend
         run: |
-          npm install --legacy-peer-deps
+          npm install
           CI=false npm run build
         env:
           REACT_APP_API_URL: http://localhost:8080
