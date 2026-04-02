@@ -188,6 +188,10 @@ public class RecordingService {
     }
 
     private RecordingResponse toResponse(Recording r, String playbackUrl) {
+        String captionUrl = null;
+        if (r.getCaptionS3Key() != null) {
+            captionUrl = s3Service.generatePresignedUrl(r.getCaptionS3Key(), 3600);
+        }
         return new RecordingResponse(
                 r.getId(),
                 r.getRoomId(),
@@ -197,6 +201,7 @@ public class RecordingService {
                 r.getDurationMs(),
                 r.getFileSizeBytes(),
                 playbackUrl,
+                captionUrl,
                 r.getCreatedAt(),
                 r.getCompletedAt()
         );

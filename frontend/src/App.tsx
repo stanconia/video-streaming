@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import './styles/theme.css';
 import './styles/responsive.css';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { BroadcasterView } from './components/Broadcaster/BroadcasterView';
 import { ViewerView } from './components/Viewer/ViewerView';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { LoginPage } from './components/Auth/LoginPage';
 import { RegisterPage } from './components/Auth/RegisterPage';
 import { ForgotPasswordPage } from './components/Auth/ForgotPasswordPage';
@@ -160,11 +162,13 @@ function AppContent() {
 function App() {
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || ''}>
-      <Router>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </Router>
+      <ThemeProvider>
+        <Router>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </Router>
+      </ThemeProvider>
     </GoogleOAuthProvider>
   );
 }
@@ -172,8 +176,10 @@ function App() {
 const styles: { [key: string]: React.CSSProperties } = {
   app: {
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'var(--bg-secondary)',
     fontFamily: 'Arial, sans-serif',
+    color: 'var(--text-primary)',
+    transition: 'background-color 0.2s, color 0.2s',
   },
   homePage: {
     padding: '20px',
@@ -183,9 +189,9 @@ const styles: { [key: string]: React.CSSProperties } = {
   welcome: {
     marginBottom: '30px',
     padding: '24px',
-    backgroundColor: 'white',
+    backgroundColor: 'var(--bg-card)',
     borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    boxShadow: 'var(--shadow)',
     textAlign: 'center',
   },
 };

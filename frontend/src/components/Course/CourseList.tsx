@@ -213,7 +213,7 @@ export const CourseList: React.FC = () => {
         </div>
       ) : (
         <>
-          <div style={styles.grid}>
+          <div style={styles.grid} className="course-grid">
             {courses.map((course) => (
               <div
                 key={course.id}

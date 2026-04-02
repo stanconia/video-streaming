@@ -9,6 +9,10 @@ jest.mock('../../context/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
+jest.mock('../../context/ThemeContext', () => ({
+  useTheme: () => ({ theme: 'light', isDark: false, toggleTheme: jest.fn() }),
+}));
+
 jest.mock('../Notification/NotificationBell', () => ({
   NotificationBell: () => <div data-testid="notification-bell">Notification Bell</div>,
 }));

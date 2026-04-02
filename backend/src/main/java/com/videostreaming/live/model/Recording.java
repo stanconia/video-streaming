@@ -45,12 +45,15 @@ public class Recording {
     @Column
     private String errorMessage;
 
+    @Column
+    private String captionS3Key;
+
     public Recording() {}
 
     public Recording(String id, String roomId, String roomName, String startedByUserId,
                      RecordingStatus status, String s3Key, String s3Bucket, Long durationMs,
                      Long fileSizeBytes, LocalDateTime createdAt, LocalDateTime completedAt,
-                     String errorMessage) {
+                     String errorMessage, String captionS3Key) {
         this.id = id;
         this.roomId = roomId;
         this.roomName = roomName;
@@ -63,6 +66,7 @@ public class Recording {
         this.createdAt = createdAt;
         this.completedAt = completedAt;
         this.errorMessage = errorMessage;
+        this.captionS3Key = captionS3Key;
     }
 
     @PrePersist
@@ -108,6 +112,9 @@ public class Recording {
     public String getErrorMessage() { return errorMessage; }
     public void setErrorMessage(String errorMessage) { this.errorMessage = errorMessage; }
 
+    public String getCaptionS3Key() { return captionS3Key; }
+    public void setCaptionS3Key(String captionS3Key) { this.captionS3Key = captionS3Key; }
+
     // Builder
     public static RecordingBuilder builder() {
         return new RecordingBuilder();
@@ -126,6 +133,7 @@ public class Recording {
         private LocalDateTime createdAt;
         private LocalDateTime completedAt;
         private String errorMessage;
+        private String captionS3Key;
 
         public RecordingBuilder id(String id) { this.id = id; return this; }
         public RecordingBuilder roomId(String roomId) { this.roomId = roomId; return this; }
@@ -139,10 +147,11 @@ public class Recording {
         public RecordingBuilder createdAt(LocalDateTime createdAt) { this.createdAt = createdAt; return this; }
         public RecordingBuilder completedAt(LocalDateTime completedAt) { this.completedAt = completedAt; return this; }
         public RecordingBuilder errorMessage(String errorMessage) { this.errorMessage = errorMessage; return this; }
+        public RecordingBuilder captionS3Key(String captionS3Key) { this.captionS3Key = captionS3Key; return this; }
 
         public Recording build() {
             return new Recording(id, roomId, roomName, startedByUserId, status, s3Key, s3Bucket,
-                    durationMs, fileSizeBytes, createdAt, completedAt, errorMessage);
+                    durationMs, fileSizeBytes, createdAt, completedAt, errorMessage, captionS3Key);
         }
     }
 }

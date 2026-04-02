@@ -63,6 +63,25 @@ export class RecordingApi {
     const response = await this.client.get<{ url: string }>(`/recordings/${id}/playback`);
     return response.data.url;
   }
+
+  async transcribeRecording(id: string): Promise<{ message: string; recordingId: string }> {
+    const response = await this.client.post<{ message: string; recordingId: string }>(
+      `/recordings/${id}/transcribe`
+    );
+    return response.data;
+  }
+
+  async getCaptionUrl(id: string): Promise<string | null> {
+    try {
+      const response = await this.client.get<{ url: string }>(`/recordings/${id}/captions`);
+      return response.data.url;
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        return null;
+      }
+      throw err;
+    }
+  }
 }
 
 export const recordingApi = new RecordingApi();

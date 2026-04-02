@@ -1,0 +1,196 @@
+/* ===== Theme CSS Custom Properties ===== */
+
+:root, [data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --border-color: #dee2e6;
+  --shadow: 0 2px 4px rgba(0,0,0,0.1);
+  --accent: #007bff;
+  --accent-hover: #0056b3;
+  --success: #28a745;
+  --danger: #dc3545;
+  --warning: #ffc107;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-card: #1c2128;
+  --bg-input: #21262d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --border-color: #30363d;
+  --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  --accent: #58a6ff;
+  --accent-hover: #79c0ff;
+  --success: #3fb950;
+  --danger: #f85149;
+  --warning: #d29922;
+}
+
+/* ===== Base body styles ===== */
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* ===== Common element overrides ===== */
+
+/* Cards and panels */
+[data-theme="dark"] .navbar,
+[data-theme="dark"] nav[style] {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Generic card-like containers using inline background: white / backgroundColor: white */
+[data-theme="dark"] div[style*="background-color: white"],
+[data-theme="dark"] div[style*="backgroundColor: white"],
+[data-theme="dark"] div[style*="background: white"],
+[data-theme="dark"] div[style*="background-color: rgb(255, 255, 255)"],
+[data-theme="dark"] div[style*="backgroundColor:\"white\""] {
+  background-color: var(--bg-card) !important;
+}
+
+[data-theme="dark"] div[style*="background-color: #f5f5f5"],
+[data-theme="dark"] div[style*="backgroundColor: \"#f5f5f5\""],
+[data-theme="dark"] div[style*="background-color: rgb(245, 245, 245)"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Text color overrides */
+[data-theme="dark"] h1, [data-theme="dark"] h2,
+[data-theme="dark"] h3, [data-theme="dark"] h4,
+[data-theme="dark"] h5, [data-theme="dark"] h6 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] p {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] label {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] span {
+  color: var(--text-secondary);
+}
+
+/* Links */
+a {
+  color: var(--accent);
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Inputs and textareas */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* Buttons - preserve colored buttons, fix plain ones */
+[data-theme="dark"] button {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] button[style*="background: none"],
+[data-theme="dark"] button[style*="background:none"] {
+  color: var(--text-secondary) !important;
+}
+
+/* Tables */
+[data-theme="dark"] table {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] th {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] td {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] tr:hover {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Borders */
+[data-theme="dark"] hr {
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] div[style*="border-bottom: 1px solid"],
+[data-theme="dark"] div[style*="borderBottom: \"1px solid"] {
+  border-color: var(--border-color) !important;
+}
+
+/* Scrollbar styling for dark mode */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ===== Theme toggle button ===== */
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.theme-toggle:hover {
+  background: var(--border-color);
+}
+
+/* ===== Auth pages dark overrides ===== */
+
+[data-theme="dark"] .auth-card {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
