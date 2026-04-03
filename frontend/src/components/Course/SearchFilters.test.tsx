@@ -64,7 +64,7 @@ describe('SearchFilters', () => {
     expect(screen.getByText('Difficulty')).toBeInTheDocument();
     expect(screen.getByText('All')).toBeInTheDocument();
     expect(screen.getByText('Beginner')).toBeInTheDocument();
-    expect(screen.getByText('Intermediate')).toBeInTheDocument();
+    expect(screen.getByText('Inter.')).toBeInTheDocument();
     expect(screen.getByText('Advanced')).toBeInTheDocument();
   });
 

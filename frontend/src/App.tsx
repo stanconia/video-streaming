@@ -47,17 +47,7 @@ import { UserProfilePage } from './components/Profile/UserProfilePage';
 import { EditUserProfilePage } from './components/Profile/EditUserProfilePage';
 import { ProgressDashboard } from './components/Progress/ProgressDashboard';
 import { CourseProgressDetail } from './components/Progress/CourseProgressDetail';
-
-function HomePage() {
-  return (
-    <div style={styles.homePage}>
-      <div style={styles.welcome}>
-        <h1>Welcome to LearningHaven</h1>
-        <p>Live teaching marketplace - broadcast, learn, and connect</p>
-      </div>
-    </div>
-  );
-}
+import { HomePage } from './components/Home/HomePage';
 
 function BroadcastPage() {
   const navigate = useNavigate();
@@ -182,19 +172,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: 'Arial, sans-serif',
     color: 'var(--text-primary)',
     transition: 'background-color 0.2s, color 0.2s',
-  },
-  homePage: {
-    padding: '20px',
-    maxWidth: '1200px',
-    margin: '0 auto',
-  },
-  welcome: {
-    marginBottom: '30px',
-    padding: '24px',
-    backgroundColor: 'var(--bg-card)',
-    borderRadius: '8px',
-    boxShadow: 'var(--shadow)',
-    textAlign: 'center',
   },
 };
 
