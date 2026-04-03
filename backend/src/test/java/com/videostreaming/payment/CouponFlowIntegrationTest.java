@@ -37,7 +37,8 @@ class CouponFlowIntegrationTest extends AbstractIntegrationTest {
                 "role", "TEACHER",
                 "headline", "Expert Teacher",
                 "subjects", "Finance",
-                "experienceYears", 7
+                "experienceYears", 7,
+                "dateOfBirth", "1990-01-15"
         ));
 
         String teacherResponse = mockMvc.perform(post("/api/auth/register")

@@ -19,6 +19,8 @@ public class CourseResponse {
     private String difficultyLevel;
     private int estimatedHours;
     private boolean published;
+    private Integer minAge;
+    private Integer maxAge;
     private String tags;
     private int moduleCount;
     private int lessonCount;
@@ -33,7 +35,8 @@ public class CourseResponse {
                           String teacherHeadline, String teacherProfileImageUrl, Double teacherAverageRating,
                           String title, String description, String subject, BigDecimal price, String currency,
                           String thumbnailUrl, String difficultyLevel, int estimatedHours,
-                          boolean published, String tags, int moduleCount, int lessonCount,
+                          boolean published, Integer minAge, Integer maxAge,
+                          String tags, int moduleCount, int lessonCount,
                           int enrolledCount, Double averageRating,
                           LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
@@ -51,6 +54,8 @@ public class CourseResponse {
         this.difficultyLevel = difficultyLevel;
         this.estimatedHours = estimatedHours;
         this.published = published;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
         this.tags = tags;
         this.moduleCount = moduleCount;
         this.lessonCount = lessonCount;
@@ -104,6 +109,12 @@ public class CourseResponse {
 
     public boolean isPublished() { return published; }
     public void setPublished(boolean published) { this.published = published; }
+
+    public Integer getMinAge() { return minAge; }
+    public void setMinAge(Integer minAge) { this.minAge = minAge; }
+
+    public Integer getMaxAge() { return maxAge; }
+    public void setMaxAge(Integer maxAge) { this.maxAge = maxAge; }
 
     public String getTags() { return tags; }
     public void setTags(String tags) { this.tags = tags; }

@@ -36,7 +36,8 @@ class LiveSessionFlowIntegrationTest extends AbstractIntegrationTest {
                 "role", "TEACHER",
                 "headline", "Live Session Expert",
                 "subjects", "Computer Science",
-                "experienceYears", 4
+                "experienceYears", 4,
+                "dateOfBirth", "1990-01-15"
         ));
 
         String teacherResponse = mockMvc.perform(post("/api/auth/register")

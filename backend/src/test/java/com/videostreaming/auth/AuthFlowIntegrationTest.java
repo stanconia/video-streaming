@@ -30,6 +30,7 @@ class AuthFlowIntegrationTest extends AbstractIntegrationTest {
                 "Alice Student",
                 "STUDENT"
         );
+        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -50,6 +51,7 @@ class AuthFlowIntegrationTest extends AbstractIntegrationTest {
                 "Bob Teacher",
                 "TEACHER"
         );
+        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
         request.setHeadline("Expert Java Instructor");
         request.setSubjects("Java, Spring Boot");
         request.setExperienceYears(8);
@@ -71,6 +73,7 @@ class AuthFlowIntegrationTest extends AbstractIntegrationTest {
                 "Carol Duplicate",
                 "STUDENT"
         );
+        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -92,6 +95,7 @@ class AuthFlowIntegrationTest extends AbstractIntegrationTest {
                 "Dave Login",
                 "STUDENT"
         );
+        registerRequest.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,6 +122,7 @@ class AuthFlowIntegrationTest extends AbstractIntegrationTest {
                 "Eve BadPass",
                 "STUDENT"
         );
+        registerRequest.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)

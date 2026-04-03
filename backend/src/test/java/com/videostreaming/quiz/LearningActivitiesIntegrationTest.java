@@ -42,7 +42,8 @@ class LearningActivitiesIntegrationTest extends AbstractIntegrationTest {
                 "role", "TEACHER",
                 "headline", "Expert Educator",
                 "subjects", "Mathematics",
-                "experienceYears", 5
+                "experienceYears", 5,
+                "dateOfBirth", "1990-01-15"
         ));
 
         String teacherResponse = mockMvc.perform(post("/api/auth/register")
@@ -62,7 +63,8 @@ class LearningActivitiesIntegrationTest extends AbstractIntegrationTest {
                 "email", "student.activities@example.com",
                 "password", "Password123!",
                 "displayName", "Activities Student",
-                "role", "STUDENT"
+                "role", "STUDENT",
+                "dateOfBirth", "1990-01-15"
         ));
 
         String studentResponse = mockMvc.perform(post("/api/auth/register")

@@ -80,6 +80,10 @@ describe('RegisterPage', () => {
     await user.type(screen.getByPlaceholderText('Your name'), 'John Doe');
     await user.type(screen.getByPlaceholderText('you@example.com'), 'john@test.com');
     await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
+
+    const dobInput = screen.getByTestId('dob-input');
+    await user.type(dobInput, '2000-01-15');
+
     await user.click(screen.getByRole('button', { name: 'Create Account' }));
 
     await waitFor(() => {
@@ -89,6 +93,7 @@ describe('RegisterPage', () => {
           email: 'john@test.com',
           password: 'password123',
           role: 'STUDENT',
+          dateOfBirth: '2000-01-15',
         })
       );
     });
@@ -128,6 +133,9 @@ describe('RegisterPage', () => {
     await user.type(screen.getByPlaceholderText('Your name'), 'Jane Teacher');
     await user.type(screen.getByPlaceholderText('you@example.com'), 'jane@test.com');
     await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
+
+    const dobInput = screen.getByTestId('dob-input');
+    await user.type(dobInput, '1985-06-20');
 
     // Select Teacher role
     await user.click(screen.getByLabelText('Teacher'));
@@ -189,6 +197,7 @@ describe('RegisterPage', () => {
     await user.type(screen.getByPlaceholderText('Your name'), 'John');
     await user.type(screen.getByPlaceholderText('you@example.com'), 'taken@test.com');
     await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
+    await user.type(screen.getByTestId('dob-input'), '2000-01-01');
     await user.click(screen.getByRole('button', { name: 'Create Account' }));
 
     await waitFor(() => {

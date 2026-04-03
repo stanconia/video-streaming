@@ -40,6 +40,7 @@ class ReviewFlowIntegrationTest extends AbstractIntegrationTest {
                 "Prof Review",
                 "TEACHER"
         );
+        teacherReq.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
         teacherReq.setHeadline("Experienced Educator");
         teacherReq.setSubjects("Mathematics");
         teacherReq.setExperienceYears(8);
@@ -67,6 +68,7 @@ class ReviewFlowIntegrationTest extends AbstractIntegrationTest {
                 "Sara Student",
                 "STUDENT"
         );
+        studentReq.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
 
         MvcResult studentResult = mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)

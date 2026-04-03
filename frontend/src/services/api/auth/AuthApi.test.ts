@@ -80,6 +80,7 @@ describe('AuthApi', () => {
         password: 'password123',
         displayName: 'New User',
         role: 'TEACHER',
+        dateOfBirth: '1990-01-01',
       });
 
       expect(mockedAxios.post).toHaveBeenCalledWith('/api/auth/register', {
@@ -87,6 +88,7 @@ describe('AuthApi', () => {
         password: 'password123',
         displayName: 'New User',
         role: 'TEACHER',
+        dateOfBirth: '1990-01-01',
       });
       expect(result).toEqual(mockResponse.data);
     });

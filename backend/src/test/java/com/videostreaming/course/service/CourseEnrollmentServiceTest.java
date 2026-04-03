@@ -161,6 +161,8 @@ class CourseEnrollmentServiceTest {
         Course course = buildCourse(courseId, "teacher-1");
 
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        User student = buildUser(studentUserId, "Test Student");
+        when(userRepository.findById(studentUserId)).thenReturn(Optional.of(student));
         when(courseEnrollmentRepository.existsByCourseIdAndStudentUserIdAndStatus(
                 courseId, studentUserId, EnrollmentStatus.ACTIVE)).thenReturn(true);
 

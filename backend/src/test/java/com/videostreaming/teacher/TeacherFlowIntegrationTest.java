@@ -39,6 +39,7 @@ class TeacherFlowIntegrationTest extends AbstractIntegrationTest {
                 "Prof Flow",
                 "TEACHER"
         );
+        teacherReq.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
         teacherReq.setHeadline("Expert in Mathematics");
         teacherReq.setSubjects("Math,Science");
         teacherReq.setExperienceYears(10);
@@ -67,6 +68,7 @@ class TeacherFlowIntegrationTest extends AbstractIntegrationTest {
                 "Sam Student",
                 "STUDENT"
         );
+        studentReq.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
 
         MvcResult studentResult = mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)

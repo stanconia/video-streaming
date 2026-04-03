@@ -71,6 +71,8 @@ describe('CreateCourse', () => {
       difficultyLevel: 'BEGINNER' as const,
       estimatedHours: 1,
       published: false,
+      minAge: null,
+      maxAge: null,
       tags: null,
       moduleCount: 0,
       lessonCount: 0,

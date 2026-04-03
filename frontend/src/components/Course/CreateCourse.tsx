@@ -18,6 +18,8 @@ export const CreateCourse: React.FC = () => {
     currency: 'USD',
     difficultyLevel: 'BEGINNER',
     estimatedHours: 1,
+    minAge: undefined,
+    maxAge: undefined,
   });
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
@@ -62,6 +64,8 @@ export const CreateCourse: React.FC = () => {
       const request: CreateCourseRequest = {
         ...form,
         price: priceInCents,
+        minAge: form.minAge || undefined,
+        maxAge: form.maxAge || undefined,
         tags: tags.length > 0 ? tags.join(',') : undefined,
       };
       const created = await courseApi.createCourse(request);
@@ -167,6 +171,37 @@ export const CreateCourse: React.FC = () => {
                 value={form.estimatedHours}
                 onChange={(e) =>
                   setForm({ ...form, estimatedHours: parseInt(e.target.value) || 1 })
+                }
+                style={styles.input}
+              />
+            </div>
+          </div>
+
+          <div style={styles.row} className="form-row">
+            <div style={styles.field}>
+              <label style={styles.label}>Minimum Age</label>
+              <input
+                type="number"
+                min="5"
+                max="100"
+                placeholder="e.g., 8"
+                value={form.minAge ?? ''}
+                onChange={(e) =>
+                  setForm({ ...form, minAge: e.target.value ? parseInt(e.target.value) : undefined })
+                }
+                style={styles.input}
+              />
+            </div>
+            <div style={styles.field}>
+              <label style={styles.label}>Maximum Age</label>
+              <input
+                type="number"
+                min="5"
+                max="100"
+                placeholder="e.g., 15"
+                value={form.maxAge ?? ''}
+                onChange={(e) =>
+                  setForm({ ...form, maxAge: e.target.value ? parseInt(e.target.value) : undefined })
                 }
                 style={styles.input}
               />

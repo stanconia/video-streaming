@@ -43,7 +43,8 @@ class NotificationFlowIntegrationTest extends AbstractIntegrationTest {
                 "email", "notify-user@example.com",
                 "password", "Password123!",
                 "displayName", "Notify User",
-                "role", "STUDENT"
+                "role", "STUDENT",
+                "dateOfBirth", "1990-01-15"
         ));
 
         MvcResult result = mockMvc.perform(post("/api/auth/register")

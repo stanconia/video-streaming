@@ -51,6 +51,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: response.email,
       displayName: response.displayName,
       role: response.role,
+      requiresParentalConsent: response.requiresParentalConsent,
+      parentalConsentGranted: response.parentalConsentGranted,
     };
     localStorage.setItem(TOKEN_KEY, response.token);
     localStorage.setItem(USER_KEY, JSON.stringify(authUser));
@@ -65,6 +67,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: response.email,
       displayName: response.displayName,
       role: response.role,
+      requiresParentalConsent: response.requiresParentalConsent,
+      parentalConsentGranted: response.parentalConsentGranted,
     };
     localStorage.setItem(TOKEN_KEY, response.token);
     localStorage.setItem(USER_KEY, JSON.stringify(authUser));
@@ -79,6 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email: response.email,
       displayName: response.displayName,
       role: response.role,
+      requiresParentalConsent: response.requiresParentalConsent,
+      parentalConsentGranted: response.parentalConsentGranted,
     };
     localStorage.setItem(TOKEN_KEY, response.token);
     localStorage.setItem(USER_KEY, JSON.stringify(authUser));

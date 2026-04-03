@@ -103,6 +103,8 @@ public class CourseService {
                 .difficultyLevel(request.getDifficultyLevel() != null
                         ? DifficultyLevel.valueOf(request.getDifficultyLevel()) : null)
                 .estimatedHours(request.getEstimatedHours())
+                .minAge(request.getMinAge())
+                .maxAge(request.getMaxAge())
                 .tags(request.getTags())
                 .build();
 
@@ -132,6 +134,8 @@ public class CourseService {
             course.setDifficultyLevel(DifficultyLevel.valueOf(request.getDifficultyLevel()));
         }
         course.setEstimatedHours(request.getEstimatedHours());
+        course.setMinAge(request.getMinAge());
+        course.setMaxAge(request.getMaxAge());
         course.setTags(request.getTags());
 
         course = courseRepository.save(course);
@@ -542,6 +546,8 @@ public class CourseService {
                 course.getDifficultyLevel() != null ? course.getDifficultyLevel().name() : null,
                 course.getEstimatedHours(),
                 course.isPublished(),
+                course.getMinAge(),
+                course.getMaxAge(),
                 course.getTags(),
                 moduleCount,
                 lessonCount,

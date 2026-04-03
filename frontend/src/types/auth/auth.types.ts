@@ -3,6 +3,8 @@ export interface AuthUser {
   email: string;
   displayName: string;
   role: 'TEACHER' | 'STUDENT' | 'ADMIN';
+  requiresParentalConsent?: boolean;
+  parentalConsentGranted?: boolean;
 }
 
 export interface LoginRequest {
@@ -15,6 +17,8 @@ export interface RegisterRequest {
   password: string;
   displayName: string;
   role: 'TEACHER' | 'STUDENT' | 'ADMIN';
+  dateOfBirth: string;
+  parentEmail?: string;
   phone?: string;
   location?: string;
   bio?: string;
@@ -31,4 +35,6 @@ export interface AuthResponse {
   email: string;
   displayName: string;
   role: 'TEACHER' | 'STUDENT' | 'ADMIN';
+  requiresParentalConsent: boolean;
+  parentalConsentGranted: boolean;
 }
