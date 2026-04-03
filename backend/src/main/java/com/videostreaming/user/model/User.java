@@ -140,7 +140,7 @@ public class User {
     public String getParentEmail() { return parentEmail; }
     public void setParentEmail(String parentEmail) { this.parentEmail = parentEmail; }
 
-    public boolean isParentalConsentGranted() { return parentalConsentGranted != null ? parentalConsentGranted : true; }
+    public Boolean getParentalConsentGranted() { return parentalConsentGranted != null ? parentalConsentGranted : true; }
     public void setParentalConsentGranted(Boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; }
 
     public String getAuthProvider() { return authProvider; }

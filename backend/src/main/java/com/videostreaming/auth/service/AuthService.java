@@ -151,7 +151,7 @@ public class AuthService {
         String token = jwtService.generateToken(user);
 
         return new AuthResponse(token, user.getId(), user.getEmail(), user.getDisplayName(),
-                user.getRole().name(), requiresConsent, user.isParentalConsentGranted());
+                user.getRole().name(), requiresConsent, user.getParentalConsentGranted());
     }
 
     public AuthResponse loginWithGoogle(String idTokenString) {
