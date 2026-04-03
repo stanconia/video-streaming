@@ -858,6 +858,23 @@ input[type="button"] {
   }
 }
 
+/* Landing page grids (dark theme) */
+@media (max-width: 767px) {
+  .landing-feat-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .landing-test-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .landing-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .landing-stats-grid > div {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  }
+}
+
 /* Quick actions grid */
 .quick-actions-grid {
   display: grid;
