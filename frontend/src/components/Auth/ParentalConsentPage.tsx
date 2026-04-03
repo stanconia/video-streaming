@@ -32,7 +32,7 @@ export function ParentalConsentPage() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h1 style={styles.title}>LearningHaven</h1>
+        <h1 style={styles.title}>MindMint</h1>
         <h2 style={styles.subtitle}>Parental Consent</h2>
 
         {status === 'loading' && (
@@ -72,7 +72,7 @@ export function ParentalConsentPage() {
         )}
 
         <div style={{ textAlign: 'center', marginTop: '24px' }}>
-          <Link to="/" style={styles.link}>Go to LearningHaven</Link>
+          <Link to="/" style={styles.link}>Go to MindMint</Link>
         </div>
       </div>
     </div>

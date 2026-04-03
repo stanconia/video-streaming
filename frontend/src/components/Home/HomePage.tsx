@@ -26,7 +26,7 @@ function LandingPage() {
       {/* Navbar */}
       <nav style={L.nav}>
         <div style={L.navInner}>
-          <span style={L.brand}>Learning<span style={{ color: '#a78bfa' }}>Haven</span></span>
+          <span style={L.brand}>Mind<span style={{ color: '#a78bfa' }}>Mint</span></span>
           <div style={L.navActions}>
             <button onClick={() => navigate('/login')} style={L.btnSignIn}>Log In</button>
             <button onClick={() => navigate('/register')} style={L.btnGetStarted}>Get Started</button>
@@ -181,13 +181,13 @@ function LandingPage() {
       {/* Footer */}
       <footer style={L.footer}>
         <div style={L.footerInner}>
-          <span style={L.brand}>Learning<span style={{ color: '#a78bfa' }}>Haven</span></span>
+          <span style={L.brand}>Mind<span style={{ color: '#a78bfa' }}>Mint</span></span>
           <div style={L.footerLinks}>
             {['Courses', 'Mind Pros', 'About', 'Privacy', 'Terms'].map((t) => (
               <span key={t} style={L.footerLink}>{t}</span>
             ))}
           </div>
-          <span style={L.footerCopy}>&copy; 2026 LearningHaven</span>
+          <span style={L.footerCopy}>&copy; 2026 MindMint</span>
         </div>
       </footer>
     </div>
