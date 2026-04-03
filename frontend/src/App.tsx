@@ -108,7 +108,7 @@ function AppContent() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/parental-consent" element={<ParentalConsentPage />} />
         <Route path="/force-logout" element={<ForceLogout />} />
-        <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/room/:roomId/broadcast" element={<ProtectedRoute><BroadcastPage /></ProtectedRoute>} />
         <Route path="/room/:roomId/view" element={<ProtectedRoute><ViewPage /></ProtectedRoute>} />
         <Route path="/recordings" element={<ProtectedRoute><RecordingsList /></ProtectedRoute>} />

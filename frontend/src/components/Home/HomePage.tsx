@@ -11,6 +11,7 @@ import { Course } from '../../types/course/course.types';
 import { CourseEnrollment } from '../../types/course/enrollment.types';
 import { LiveSession } from '../../types/live/liveSession.types';
 import { TeacherProfile } from '../../types/social/teacher.types';
+import { EarningsChart } from '../Dashboard/EarningsChart';
 
 // ──────────────────────────────────────────────
 // Landing page for unauthenticated users
@@ -27,6 +28,17 @@ function LandingPage() {
 
   return (
     <div>
+      {/* Landing Navbar */}
+      <div style={styles.landingNav}>
+        <div style={styles.landingNavInner}>
+          <span style={styles.landingBrand}>LearningHaven</span>
+          <div style={styles.landingNavLinks}>
+            <button onClick={() => navigate('/login')} style={styles.landingNavLink}>Log In</button>
+            <button onClick={() => navigate('/register')} style={styles.landingSignup}>Sign Up</button>
+          </div>
+        </div>
+      </div>
+
       {/* Hero */}
       <div style={styles.landingHero}>
         <h1 style={styles.landingTitle}>Learn from Expert Teachers, Live</h1>
@@ -40,6 +52,7 @@ function LandingPage() {
         </div>
       </div>
 
+      <div style={styles.landingContent}>
       {/* How it works */}
       <div style={styles.sectionCenter}>
         <h2 style={styles.sectionTitleCenter}>How It Works</h2>
@@ -115,6 +128,7 @@ function LandingPage() {
         <p style={styles.ctaSub}>Join LearningHaven today and get access to courses from expert teachers.</p>
         <button onClick={() => navigate('/register')} style={styles.btnPrimary}>Create Free Account</button>
       </div>
+      </div>
     </div>
   );
 }
@@ -152,7 +166,8 @@ function StudentHome({ user }: { user: { displayName: string } }) {
         </p>
         <div style={styles.heroActions}>
           <button onClick={() => navigate('/courses')} style={styles.btnPrimary}>Browse Courses</button>
-          <button onClick={() => navigate('/dashboard/student')} style={styles.btnSecondary}>My Dashboard</button>
+          <button onClick={() => navigate('/my-enrollments')} style={styles.btnSecondary}>My Enrollments</button>
+          <button onClick={() => navigate('/progress')} style={styles.btnSecondary}>My Progress</button>
         </div>
       </div>
 
@@ -205,6 +220,40 @@ function StudentHome({ user }: { user: { displayName: string } }) {
                   </div>
                   <div style={styles.progressText}>
                     <span>{Math.round(e.progressPercentage)}% complete</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Enrollments */}
+      {data && data.recentEnrollments.length > 0 && (
+        <div style={styles.section}>
+          <div style={styles.sectionHeader}>
+            <h2 style={styles.sectionTitleText}>Recent Enrollments</h2>
+            <Link to="/my-enrollments" style={styles.sectionLink}>View All &rarr;</Link>
+          </div>
+          <div style={styles.sessionList}>
+            {data.recentEnrollments.map((e) => (
+              <div key={e.id} style={{ ...styles.sessionCard, cursor: 'pointer' }}
+                   onClick={() => navigate(`/courses/${e.courseId}/learn`)}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <div style={styles.sessionTitle}>{e.courseTitle}</div>
+                    <span style={{
+                      padding: '4px 12px', borderRadius: '16px', fontSize: '11px', fontWeight: 600,
+                      background: e.status === 'COMPLETED' ? 'var(--success-light)' : 'var(--accent-light)',
+                      color: e.status === 'COMPLETED' ? 'var(--success)' : 'var(--accent)',
+                    }}>{e.status}</span>
+                  </div>
+                  <div style={styles.progressBarBg}>
+                    <div style={{ ...styles.progressBarFill, width: `${e.progressPercentage}%` }} />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+                    <span style={styles.progressText}>{Math.round(e.progressPercentage)}% complete</span>
+                    <span style={styles.progressText}>Enrolled {new Date(e.enrolledAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
@@ -330,7 +379,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
         </p>
         <div style={styles.heroActions}>
           <button onClick={() => navigate('/courses/create')} style={styles.btnPrimary}>Create Course</button>
-          <button onClick={() => navigate('/dashboard/teacher')} style={styles.btnSecondary}>My Dashboard</button>
+          <button onClick={() => navigate('/my-courses')} style={styles.btnSecondary}>My Courses</button>
           <button onClick={() => navigate('/earnings')} style={styles.btnSecondary}>View Earnings</button>
         </div>
       </div>
@@ -362,6 +411,13 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
           </div>
         ))}
       </div>
+
+      {/* Earnings Chart */}
+      {data && data.monthlyEarnings.length > 0 && (
+        <div style={styles.section}>
+          <EarningsChart data={data.monthlyEarnings} />
+        </div>
+      )}
 
       {/* Upcoming Sessions */}
       {sessions.length > 0 && (
@@ -404,7 +460,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
 export function HomePage() {
   const { user } = useAuth();
 
-  if (!user) return <div className="page-container" style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}><LandingPage /></div>;
+  if (!user) return <div><LandingPage /></div>;
 
   return (
     <div className="page-container" style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -631,4 +687,27 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   ctaTitle: { fontSize: '28px', fontWeight: 700, marginBottom: '12px' },
   ctaSub: { fontSize: '16px', opacity: 0.9, marginBottom: '24px' },
+
+  // Landing navbar
+  landingNav: {
+    background: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)',
+    padding: '12px 24px', position: 'sticky' as const, top: 0, zIndex: 50,
+  },
+  landingNavInner: {
+    maxWidth: '1200px', margin: '0 auto', display: 'flex',
+    alignItems: 'center', justifyContent: 'space-between',
+  },
+  landingBrand: { fontSize: '20px', fontWeight: 700, color: 'var(--accent)' },
+  landingNavLinks: { display: 'flex', alignItems: 'center', gap: '12px' },
+  landingNavLink: {
+    background: 'none', border: 'none', color: 'var(--accent)',
+    fontSize: '14px', fontWeight: 500, cursor: 'pointer', padding: '8px 16px',
+  },
+  landingSignup: {
+    padding: '8px 20px', background: 'var(--accent)', color: '#fff',
+    border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
+  },
+  landingContent: {
+    maxWidth: '1200px', margin: '0 auto', padding: '0 24px',
+  },
 };
