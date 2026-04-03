@@ -156,7 +156,7 @@ describe('CreateCourse', () => {
 
     render(<CreateCourse />);
 
-    const backButton = screen.getByText('Back to My Courses');
+    const backButton = screen.getByText(/Back to My Courses/);
     expect(backButton).toBeInTheDocument();
 
     await user.click(backButton);

@@ -58,7 +58,7 @@ export const TeacherProfilePage: React.FC = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span key={i} style={{ color: i <= Math.round(rating) ? '#ffc107' : '#ddd', fontSize: '18px' }}>
+        <span key={i} style={{ color: i <= Math.round(rating) ? 'var(--warning)' : 'var(--border-color)', fontSize: '18px' }}>
           &#9733;
         </span>
       );
@@ -67,14 +67,17 @@ export const TeacherProfilePage: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className="page-container" style={styles.container}>
       <button onClick={() => navigate('/teachers')} style={styles.backButton}>
         &#8592; Back to Teachers
       </button>
 
       <div style={styles.profileCard}>
+        {/* Cover Banner */}
+        <div className="cover-banner" style={styles.coverBanner} />
+
         {/* Header: Avatar + Name */}
-        <div style={styles.headerSection}>
+        <div className="profile-header" style={styles.headerSection}>
           {profile.profileImageUrl ? (
             <img src={profile.profileImageUrl} alt={profile.displayName} style={styles.avatar} />
           ) : (
@@ -106,7 +109,7 @@ export const TeacherProfilePage: React.FC = () => {
         </div>
 
         {/* Stat Cards */}
-        <div style={styles.statsRow}>
+        <div className="stats-grid" style={styles.statsRow}>
           <div style={styles.statCard}>
             <div style={styles.statIcon}>&#9733;</div>
             <div style={styles.statValue}>{profile.averageRating.toFixed(1)}</div>
@@ -172,71 +175,85 @@ export const TeacherProfilePage: React.FC = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: { padding: '24px', maxWidth: '800px', margin: '0 auto' },
-  loading: { textAlign: 'center', padding: '40px', color: '#666' },
-  error: { color: '#721c24', padding: '12px', backgroundColor: '#f8d7da', borderRadius: '4px' },
+  loading: { textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' },
+  error: { color: '#721c24', padding: '12px', backgroundColor: '#f8d7da', borderRadius: '8px' },
   backButton: {
-    padding: '8px 16px', backgroundColor: 'transparent', color: '#007bff',
-    border: '1px solid #007bff', borderRadius: '4px', cursor: 'pointer',
+    padding: '8px 16px', backgroundColor: 'transparent', color: 'var(--accent)',
+    border: '1px solid var(--accent)', borderRadius: '8px', cursor: 'pointer',
     fontSize: '14px', marginBottom: '20px',
   },
   profileCard: {
-    backgroundColor: 'white', borderRadius: '12px', padding: '32px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginBottom: '24px',
+    backgroundColor: 'var(--bg-card)', borderRadius: '12px',
+    boxShadow: 'var(--shadow)', marginBottom: '24px', overflow: 'hidden',
+  },
+  coverBanner: {
+    height: '120px',
+    background: 'linear-gradient(135deg, var(--accent), #6a11cb)',
+    borderRadius: '12px 12px 0 0',
   },
   headerSection: {
-    display: 'flex', alignItems: 'flex-start', gap: '24px', marginBottom: '24px',
+    display: 'flex', alignItems: 'flex-start', gap: '24px',
+    marginBottom: '24px', padding: '0 32px',
+    marginTop: '-48px',
   },
   avatar: {
     width: '120px', height: '120px', borderRadius: '50%',
-    objectFit: 'cover' as const, border: '3px solid #e9ecef', flexShrink: 0,
+    objectFit: 'cover' as const, border: '4px solid var(--bg-card)', flexShrink: 0,
+    boxShadow: 'var(--shadow)',
   },
   avatarPlaceholder: {
     width: '120px', height: '120px', borderRadius: '50%',
-    backgroundColor: '#007bff', display: 'flex', alignItems: 'center',
+    backgroundColor: 'var(--accent)', display: 'flex', alignItems: 'center',
     justifyContent: 'center', fontSize: '48px', fontWeight: 'bold',
-    color: 'white', flexShrink: 0,
+    color: 'var(--bg-card)', flexShrink: 0,
+    border: '4px solid var(--bg-card)', boxShadow: 'var(--shadow)',
   },
-  headerInfo: { flex: 1 },
+  headerInfo: { flex: 1, paddingTop: '52px' },
   nameRow: { display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const },
-  name: { margin: 0, fontSize: '28px', color: '#1a1a1a' },
+  name: { margin: 0, fontSize: '28px', color: 'var(--text-primary)' },
   verifiedBadge: {
     padding: '4px 12px', backgroundColor: '#d4edda', color: '#155724',
     borderRadius: '16px', fontSize: '12px', fontWeight: 'bold',
   },
-  headline: { color: '#555', fontSize: '16px', margin: '8px 0 0 0', lineHeight: '1.4' },
-  memberSince: { color: '#999', fontSize: '13px', margin: '8px 0 0 0' },
+  headline: { color: 'var(--text-secondary)', fontSize: '16px', margin: '8px 0 0 0', lineHeight: '1.4' },
+  memberSince: { color: 'var(--text-muted)', fontSize: '13px', margin: '8px 0 0 0' },
   statsRow: {
     display: 'flex', gap: '16px', marginBottom: '24px',
-    borderTop: '1px solid #f0f0f0', borderBottom: '1px solid #f0f0f0',
-    padding: '20px 0',
+    borderTop: '1px solid var(--bg-secondary)', borderBottom: '1px solid var(--bg-secondary)',
+    padding: '20px 32px',
   },
   statCard: {
     flex: 1, display: 'flex', flexDirection: 'column' as const,
-    alignItems: 'center', padding: '12px', backgroundColor: '#f8f9fa',
-    borderRadius: '10px',
+    alignItems: 'center', padding: '12px', backgroundColor: 'var(--bg-secondary)',
+    borderRadius: '12px',
   },
   statIcon: { fontSize: '20px', marginBottom: '4px' },
-  statValue: { fontSize: '24px', fontWeight: 'bold', color: '#1a1a1a' },
-  statLabel: { fontSize: '12px', color: '#888', marginTop: '2px', textAlign: 'center' as const },
-  section: { marginBottom: '20px' },
-  sectionTitle: { margin: '0 0 10px 0', fontSize: '16px', color: '#333', fontWeight: '600' },
-  bio: { color: '#444', fontSize: '15px', lineHeight: '1.7', margin: 0 },
+  statValue: { fontSize: '24px', fontWeight: 'bold', color: 'var(--text-primary)' },
+  statLabel: { fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px', textAlign: 'center' as const },
+  section: { marginBottom: '20px', padding: '0 32px' },
+  sectionTitle: { margin: '0 0 10px 0', fontSize: '16px', color: 'var(--text-primary)', fontWeight: '600' },
+  bio: { color: 'var(--text-secondary)', fontSize: '15px', lineHeight: '1.7', margin: 0 },
   subjects: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px' },
   subjectTag: {
-    padding: '6px 14px', backgroundColor: '#e8f4fd', color: '#0277bd',
-    borderRadius: '20px', fontSize: '13px', fontWeight: '500',
+    padding: '6px 14px', backgroundColor: 'var(--accent-light)', color: 'var(--accent)',
+    borderRadius: '16px', fontSize: '13px', fontWeight: '500',
   },
   editButton: {
-    marginTop: '16px', padding: '10px 24px', backgroundColor: '#007bff',
-    color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer',
+    margin: '16px 32px 32px 32px', padding: '10px 24px', backgroundColor: 'var(--accent)',
+    color: 'var(--bg-card)', border: 'none', borderRadius: '8px', cursor: 'pointer',
     fontSize: '14px', fontWeight: 'bold',
   },
   reviewsSection: {
-    backgroundColor: 'white', borderRadius: '12px', padding: '32px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    backgroundColor: 'var(--bg-card)', borderRadius: '12px', padding: '32px',
+    boxShadow: 'var(--shadow)',
   },
   reviewsTitle: { margin: '0 0 8px 0', fontSize: '20px' },
   ratingOverview: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' },
-  ratingText: { fontSize: '14px', color: '#666' },
-  favButton: { background: 'none', border: 'none', fontSize: '28px', cursor: 'pointer', padding: '4px 8px' },
+  ratingText: { fontSize: '14px', color: 'var(--text-secondary)' },
+  favButton: {
+    background: 'none', border: '1px solid var(--border-color)', fontSize: '20px',
+    cursor: 'pointer', width: '40px', height: '40px', borderRadius: '50%',
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    padding: 0,
+  },
 };

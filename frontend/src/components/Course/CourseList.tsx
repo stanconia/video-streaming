@@ -150,8 +150,8 @@ export const CourseList: React.FC = () => {
     return (
       <span
         style={{
-          padding: '3px 10px',
-          borderRadius: '12px',
+          padding: '4px 12px',
+          borderRadius: '16px',
           fontSize: '11px',
           fontWeight: 'bold',
           backgroundColor: color.bg,
@@ -165,7 +165,11 @@ export const CourseList: React.FC = () => {
 
   return (
     <div style={styles.container} className="page-container">
-      <h1 style={styles.pageTitle}>Browse Courses</h1>
+      {/* Hero Banner */}
+      <div style={styles.heroBanner}>
+        <h1 style={styles.heroTitle}>Explore Courses</h1>
+        <p style={styles.heroSubtitle}>Discover top-rated courses from expert instructors worldwide</p>
+      </div>
 
       {/* Search row */}
       <div style={styles.searchRow}>
@@ -223,6 +227,7 @@ export const CourseList: React.FC = () => {
               <div
                 key={course.id}
                 style={styles.card}
+                className="course-card"
                 onClick={() => navigate(`/courses/${course.id}`)}
               >
                 <div style={styles.thumbnailWrapper}>
@@ -283,11 +288,13 @@ export const CourseList: React.FC = () => {
                     </div>
                   )}
                   <div style={styles.priceRow}>
-                    <span style={styles.price}>
-                      {course.price > 0
-                        ? `$${(course.price / 100).toFixed(2)}`
-                        : 'Free'}
-                    </span>
+                    {course.price > 0 ? (
+                      <span style={styles.price}>
+                        ${(course.price / 100).toFixed(2)}
+                      </span>
+                    ) : (
+                      <span style={styles.freeBadge}>Free</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -324,51 +331,73 @@ export const CourseList: React.FC = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: { padding: '20px', maxWidth: '1200px', margin: '0 auto' },
-  pageTitle: { marginBottom: '20px' },
-  searchRow: { display: 'flex', gap: '8px', marginBottom: '12px' },
+  heroBanner: {
+    background: 'linear-gradient(135deg, var(--accent), var(--accent-hover))',
+    borderRadius: '12px',
+    padding: '48px 32px',
+    marginBottom: '28px',
+    textAlign: 'center' as const,
+    color: '#fff',
+  },
+  heroTitle: {
+    margin: '0 0 8px 0',
+    fontSize: '32px',
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  heroSubtitle: {
+    margin: 0,
+    fontSize: '16px',
+    opacity: 0.9,
+    color: '#fff',
+  },
+  searchRow: { display: 'flex', gap: '12px', marginBottom: '16px' },
   searchInput: {
     flex: 1,
-    padding: '10px 14px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '12px 16px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '14px',
     boxSizing: 'border-box' as const,
+    backgroundColor: 'var(--bg-card)',
+    color: 'var(--text-primary)',
   },
   searchBtn: {
-    padding: '10px 20px',
-    backgroundColor: '#007bff',
-    color: 'white',
+    padding: '12px 24px',
+    backgroundColor: 'var(--accent)',
+    color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     fontSize: '14px',
     cursor: 'pointer',
     fontWeight: 'bold',
   },
   clearBtn: {
-    padding: '8px 14px',
-    backgroundColor: '#dc3545',
-    color: 'white',
+    padding: '10px 18px',
+    backgroundColor: 'var(--danger)',
+    color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     fontSize: '13px',
     cursor: 'pointer',
   },
-  resultsSummary: { fontSize: '13px', color: '#666', marginBottom: '16px' },
+  resultsSummary: { fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' },
   error: {
-    color: '#721c24',
-    padding: '12px',
+    color: 'var(--danger)',
+    padding: '14px 16px',
     marginBottom: '20px',
-    backgroundColor: '#f8d7da',
-    borderRadius: '4px',
+    backgroundColor: 'var(--bg-secondary)',
+    borderRadius: '8px',
+    border: '1px solid var(--danger)',
   },
-  loading: { textAlign: 'center', padding: '40px', color: '#666', fontSize: '16px' },
+  loading: { textAlign: 'center', padding: '48px', color: 'var(--text-secondary)', fontSize: '16px' },
   empty: {
     textAlign: 'center',
-    padding: '60px 20px',
-    color: '#666',
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    padding: '64px 20px',
+    color: 'var(--text-secondary)',
+    backgroundColor: 'var(--bg-card)',
+    borderRadius: '12px',
+    boxShadow: 'var(--shadow)',
   },
   grid: {
     display: 'grid',
@@ -376,12 +405,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: '20px',
   },
   card: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    backgroundColor: 'var(--bg-card)',
+    borderRadius: '12px',
+    boxShadow: 'var(--shadow)',
     cursor: 'pointer',
     overflow: 'hidden',
-    transition: 'box-shadow 0.2s',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+    border: '1px solid var(--border-color)',
   },
   thumbnailWrapper: {
     position: 'relative' as const,
@@ -401,52 +431,62 @@ const styles: { [key: string]: React.CSSProperties } = {
   thumbnailPlaceholder: {
     width: '100%',
     height: '180px',
-    backgroundColor: '#e9ecef',
+    background: 'linear-gradient(135deg, var(--bg-secondary), var(--border-color))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  thumbnailText: { fontSize: '18px', color: '#868e96', fontWeight: 'bold' },
-  cardBody: { padding: '16px' },
+  thumbnailText: { fontSize: '18px', color: 'var(--text-muted)', fontWeight: 'bold' },
+  cardBody: { padding: '20px' },
   cardTitleRow: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     gap: '8px',
-    marginBottom: '4px',
+    marginBottom: '6px',
   },
-  courseTitle: { margin: 0, fontSize: '16px', fontWeight: 'bold' },
-  teacherName: { fontSize: '13px', color: '#007bff', marginBottom: '12px', cursor: 'pointer' },
-  detailsGrid: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px 16px', marginBottom: '8px' },
-  detail: { fontSize: '13px' },
-  label: { color: '#666', fontWeight: 'bold', marginRight: '4px' },
-  tagsRow: { display: 'flex', flexWrap: 'wrap' as const, gap: '4px', marginBottom: '8px' },
+  courseTitle: { margin: 0, fontSize: '16px', fontWeight: 'bold', color: 'var(--text-primary)' },
+  teacherName: { fontSize: '13px', color: 'var(--accent)', marginBottom: '14px', cursor: 'pointer' },
+  detailsGrid: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px 16px', marginBottom: '12px' },
+  detail: { fontSize: '13px', color: 'var(--text-primary)' },
+  label: { color: 'var(--text-secondary)', fontWeight: 'bold', marginRight: '4px' },
+  tagsRow: { display: 'flex', flexWrap: 'wrap' as const, gap: '6px', marginBottom: '12px' },
   tag: {
-    padding: '2px 8px',
-    backgroundColor: '#e9ecef',
-    borderRadius: '10px',
+    padding: '4px 10px',
+    backgroundColor: 'var(--bg-secondary)',
+    borderRadius: '16px',
     fontSize: '11px',
-    color: '#495057',
+    color: 'var(--text-secondary)',
     cursor: 'pointer',
   },
-  priceRow: { borderTop: '1px solid #eee', paddingTop: '10px' },
-  price: { fontWeight: 'bold', color: '#28a745', fontSize: '16px' },
+  priceRow: { borderTop: '1px solid var(--border-color)', paddingTop: '12px' },
+  price: { fontWeight: 'bold', color: 'var(--text-primary)', fontSize: '18px' },
+  freeBadge: {
+    display: 'inline-block',
+    padding: '4px 14px',
+    backgroundColor: 'var(--success)',
+    color: '#fff',
+    borderRadius: '16px',
+    fontSize: '13px',
+    fontWeight: 'bold',
+  },
   pagination: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     gap: '16px',
-    marginTop: '32px',
+    marginTop: '36px',
     paddingBottom: '20px',
   },
   pageBtn: {
-    padding: '8px 20px',
-    backgroundColor: '#007bff',
-    color: 'white',
+    padding: '10px 24px',
+    backgroundColor: 'var(--accent)',
+    color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     fontSize: '14px',
     cursor: 'pointer',
+    fontWeight: '500',
   },
-  pageInfo: { fontSize: '14px', color: '#666' },
+  pageInfo: { fontSize: '14px', color: 'var(--text-secondary)' },
 };

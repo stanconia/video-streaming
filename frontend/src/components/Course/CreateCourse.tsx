@@ -83,11 +83,11 @@ export const CreateCourse: React.FC = () => {
   return (
     <div style={styles.container} className="page-container">
       <button onClick={() => navigate('/my-courses')} style={styles.backButton}>
-        Back to My Courses
+        &#8592; Back to My Courses
       </button>
 
       <div style={styles.formCard}>
-        <h1>Create a Course</h1>
+        <h1 style={styles.heading}>Create a Course</h1>
         <p style={styles.subtitle}>Set up your new course, then add modules and lessons in the builder</p>
 
         {error && <div style={styles.error}>{error}</div>}
@@ -241,12 +241,17 @@ export const CreateCourse: React.FC = () => {
               </div>
             )}
             {!thumbnailPreview && (
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleThumbnailSelect}
-                style={styles.fileInput}
-              />
+              <label style={styles.uploadArea}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnailSelect}
+                  style={{ display: 'none' }}
+                />
+                <span style={styles.uploadIcon}>&#128247;</span>
+                <span style={styles.uploadText}>Click to upload a thumbnail image</span>
+                <span style={styles.uploadHint}>PNG, JPG or GIF, max 5MB</span>
+              </label>
             )}
           </div>
 
@@ -263,87 +268,100 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: { padding: '20px', maxWidth: '700px', margin: '0 auto' },
   backButton: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
+    backgroundColor: 'transparent',
+    color: 'var(--accent)',
+    border: '1px solid var(--accent)',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     marginBottom: '20px',
+    fontWeight: 500,
   },
   formCard: {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '24px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    backgroundColor: 'var(--bg-card)',
+    borderRadius: '12px',
+    padding: '32px',
+    boxShadow: 'var(--shadow)',
   },
-  subtitle: { color: '#666', marginBottom: '24px' },
+  heading: {
+    color: 'var(--text-primary)',
+    marginTop: 0,
+    marginBottom: '8px',
+  },
+  subtitle: { color: 'var(--text-secondary)', marginBottom: '28px', fontSize: '15px' },
   error: {
-    color: '#721c24',
-    padding: '12px',
-    marginBottom: '16px',
-    backgroundColor: '#f8d7da',
-    borderRadius: '4px',
+    color: 'var(--danger)',
+    padding: '12px 16px',
+    marginBottom: '20px',
+    backgroundColor: 'var(--danger-light)',
+    borderRadius: '8px',
+    fontSize: '14px',
   },
-  field: { marginBottom: '16px', flex: 1 },
+  field: { marginBottom: '20px', flex: 1 },
   label: {
     display: 'block',
-    fontWeight: 'bold',
-    marginBottom: '6px',
-    color: '#333',
+    fontWeight: 600,
+    marginBottom: '8px',
+    color: 'var(--text-primary)',
     fontSize: '14px',
   },
   input: {
     width: '100%',
-    padding: '10px 12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '12px 14px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '14px',
     boxSizing: 'border-box' as const,
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
   textarea: {
     width: '100%',
-    padding: '10px 12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '12px 14px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '14px',
     boxSizing: 'border-box' as const,
     resize: 'vertical' as const,
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
   select: {
     width: '100%',
-    padding: '10px 12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '12px 14px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '14px',
     boxSizing: 'border-box' as const,
-    backgroundColor: 'white',
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
   row: { display: 'flex', gap: '16px' },
   tagContainer: {
     display: 'flex',
     flexWrap: 'wrap' as const,
-    gap: '6px',
-    padding: '8px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    minHeight: '42px',
+    gap: '8px',
+    padding: '10px 12px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
+    minHeight: '46px',
     alignItems: 'center',
+    backgroundColor: 'var(--bg-secondary)',
   },
   tag: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '4px',
-    padding: '4px 10px',
-    backgroundColor: '#e9ecef',
-    borderRadius: '12px',
-    fontSize: '12px',
-    color: '#495057',
+    gap: '6px',
+    padding: '4px 12px',
+    backgroundColor: 'var(--border-color)',
+    borderRadius: '16px',
+    fontSize: '13px',
+    color: 'var(--text-secondary)',
   },
   tagRemove: {
     cursor: 'pointer',
     fontWeight: 'bold',
-    color: '#868e96',
+    color: 'var(--text-muted)',
     marginLeft: '2px',
   },
   tagInput: {
@@ -353,9 +371,34 @@ const styles: { [key: string]: React.CSSProperties } = {
     flex: 1,
     minWidth: '120px',
     padding: '2px 4px',
+    backgroundColor: 'transparent',
+    color: 'var(--text-primary)',
   },
-  fileInput: {
+  uploadArea: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '28px 20px',
+    border: '2px dashed var(--border-color)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    textAlign: 'center' as const,
+    backgroundColor: 'var(--bg-secondary)',
+    gap: '6px',
+  },
+  uploadIcon: {
+    fontSize: '28px',
+    marginBottom: '4px',
+  },
+  uploadText: {
     fontSize: '14px',
+    color: 'var(--text-primary)',
+    fontWeight: 500,
+  },
+  uploadHint: {
+    fontSize: '12px',
+    color: 'var(--text-muted)',
   },
   thumbnailPreviewWrap: {
     display: 'flex',
@@ -366,27 +409,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: '120px',
     height: '80px',
     objectFit: 'cover' as const,
-    borderRadius: '4px',
-    border: '1px solid #ddd',
+    borderRadius: '8px',
+    border: '1px solid var(--border-color)',
   },
   removeThumbnail: {
-    padding: '4px 10px',
-    backgroundColor: '#dc3545',
-    color: 'white',
+    padding: '6px 14px',
+    backgroundColor: 'var(--danger)',
+    color: 'var(--bg-card)',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '12px',
+    fontSize: '13px',
+    fontWeight: 500,
   },
   submitButton: {
-    padding: '12px 32px',
-    backgroundColor: '#28a745',
-    color: 'white',
+    width: '100%',
+    padding: '14px 32px',
+    backgroundColor: 'var(--success)',
+    color: 'var(--bg-card)',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '16px',
     fontWeight: 'bold',
-    marginTop: '8px',
+    marginTop: '12px',
   },
 };

@@ -127,7 +127,7 @@ export const EditUserProfilePage: React.FC = () => {
   if (loading) return <div style={styles.loading}>Loading...</div>;
 
   return (
-    <div style={styles.container}>
+    <div className="page-container" style={styles.container}>
       <button onClick={() => navigate(-1)} style={styles.backButton}>Back</button>
 
       <div style={styles.card}>
@@ -243,7 +243,7 @@ export const EditUserProfilePage: React.FC = () => {
                 />
               </div>
 
-              <div style={styles.row}>
+              <div className="form-row" style={styles.row}>
                 <div style={styles.field}>
                   <label style={styles.label}>Hourly Rate ($)</label>
                   <input
@@ -292,72 +292,77 @@ const styles: { [key: string]: React.CSSProperties } = {
   loading: {
     textAlign: 'center',
     padding: '40px',
-    color: '#666',
+    color: 'var(--text-secondary)',
   },
   backButton: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
-    color: 'white',
+    backgroundColor: 'var(--accent)',
+    color: 'var(--bg-card)',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     marginBottom: '20px',
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: 'var(--bg-card)',
     borderRadius: '12px',
     padding: '32px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    boxShadow: 'var(--shadow)',
   },
   title: {
     margin: '0 0 4px 0',
     fontSize: '24px',
+    color: 'var(--text-primary)',
   },
   subtitle: {
-    color: '#666',
+    color: 'var(--text-secondary)',
     marginBottom: '24px',
   },
   error: {
-    color: '#721c24',
+    color: 'var(--danger)',
     padding: '12px',
     marginBottom: '16px',
-    backgroundColor: '#f8d7da',
-    borderRadius: '4px',
+    backgroundColor: 'var(--danger-light, rgba(220, 53, 69, 0.1))',
+    borderRadius: '8px',
   },
   success: {
-    color: '#155724',
+    color: 'var(--success)',
     padding: '12px',
     marginBottom: '16px',
-    backgroundColor: '#d4edda',
-    borderRadius: '4px',
+    backgroundColor: 'var(--success-light, rgba(40, 167, 69, 0.1))',
+    borderRadius: '8px',
   },
   field: {
-    marginBottom: '16px',
+    marginBottom: '20px',
   },
   label: {
     display: 'block',
     fontWeight: 'bold',
     marginBottom: '6px',
-    color: '#333',
+    color: 'var(--text-primary)',
     fontSize: '14px',
   },
   input: {
     width: '100%',
-    padding: '10px 12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '12px 14px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '14px',
     boxSizing: 'border-box' as const,
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
   textarea: {
     width: '100%',
-    padding: '10px 12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
+    padding: '12px 14px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '14px',
     boxSizing: 'border-box' as const,
     resize: 'vertical' as const,
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
   },
   imagePreview: {
     width: '80px',
@@ -365,7 +370,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: '50%',
     objectFit: 'cover' as const,
     marginTop: '8px',
-    border: '1px solid #ddd',
+    border: '1px solid var(--border-color)',
   },
   actions: {
     display: 'flex',
@@ -374,33 +379,33 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   saveButton: {
     padding: '10px 24px',
-    backgroundColor: '#28a745',
-    color: 'white',
+    backgroundColor: 'var(--success)',
+    color: 'var(--bg-card)',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     fontWeight: 'bold',
   },
   cancelButton: {
     padding: '10px 24px',
-    backgroundColor: '#6c757d',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
+    backgroundColor: 'transparent',
+    color: 'var(--text-secondary)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
   },
   sectionDivider: {
     marginTop: '24px',
     paddingTop: '20px',
-    borderTop: '1px solid #eee',
+    borderTop: '1px solid var(--border-color)',
     marginBottom: '16px',
   },
   sectionTitle: {
     margin: 0,
     fontSize: '18px',
-    color: '#333',
+    color: 'var(--text-primary)',
   },
   row: {
     display: 'flex',

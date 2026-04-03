@@ -179,7 +179,7 @@ describe('CourseList', () => {
 
     expect(screen.getByPlaceholderText('Search courses by title, subject, teacher, or tags...')).toBeInTheDocument();
     expect(screen.getByText('Search')).toBeInTheDocument();
-    expect(screen.getByText('Browse Courses')).toBeInTheDocument();
+    expect(screen.getByText('Explore Courses')).toBeInTheDocument();
   });
 
   it('renders tags on course cards', async () => {
