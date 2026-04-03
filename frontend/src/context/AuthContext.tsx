@@ -12,6 +12,7 @@ interface AuthContextType {
   login: (request: LoginRequest) => Promise<void>;
   register: (request: RegisterRequest) => Promise<void>;
   loginWithGoogle: (credential: string) => Promise<void>;
+  updateUser: (updates: Partial<AuthUser>) => void;
   logout: () => void;
 }
 
@@ -92,6 +93,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(authUser);
   }, []);
 
+  const updateUser = useCallback((updates: Partial<AuthUser>) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, ...updates };
+      localStorage.setItem(USER_KEY, JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
@@ -100,7 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, register, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, register, loginWithGoogle, updateUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
