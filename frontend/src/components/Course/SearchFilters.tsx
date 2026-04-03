@@ -52,7 +52,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             onClick={() => onChange({ minRating: values.minRating === star ? 0 : star })}
             style={{
               ...styles.starBtn,
-              color: star <= minRating ? '#f59e0b' : '#4b5563',
+              color: star <= minRating ? 'var(--warning)' : 'var(--text-muted)',
             }}
             title={`${star} star${star > 1 ? 's' : ''} & up`}
           >
@@ -88,8 +88,6 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
       {isExpanded && (
         <div style={styles.body}>
-          {/* Row 1: Subject, Difficulty, Sort */}
-          <div style={styles.filterRow}>
             <div style={styles.filterGroup}>
               <label style={styles.label}>Subject</label>
               <select
@@ -114,11 +112,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                   onChange={(e) => { setCountrySearch(e.target.value); setIsCountryDropdownOpen(true); }}
                   onFocus={() => setIsCountryDropdownOpen(true)}
                   onBlur={() => setTimeout(() => setIsCountryDropdownOpen(false), 200)}
-                  style={{
-                    ...styles.select,
-                    width: '100%',
-                    color: values.country && !countrySearch ? '#f3f4f6' : '#f3f4f6',
-                  }}
+                  style={styles.select}
                 />
                 {values.country && (
                   <button
@@ -142,7 +136,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                         key={c}
                         style={{
                           ...styles.countryOption,
-                          backgroundColor: values.country === c ? '#4b5563' : 'transparent',
+                          backgroundColor: values.country === c ? 'var(--accent-light)' : 'transparent',
                         }}
                         onMouseDown={() => { onChange({ country: c }); setCountrySearch(''); setIsCountryDropdownOpen(false); }}
                       >
@@ -150,7 +144,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                       </div>
                     ))}
                     {filteredCountries.length === 0 && (
-                      <div style={{ ...styles.countryOption, color: '#6b7280', fontStyle: 'italic' }}>
+                      <div style={{ ...styles.countryOption, color: 'var(--text-muted)', fontStyle: 'italic' }}>
                         No countries found
                       </div>
                     )}
@@ -165,7 +159,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 {[
                   { value: '', label: 'All' },
                   { value: 'BEGINNER', label: 'Beginner' },
-                  { value: 'INTERMEDIATE', label: 'Intermediate' },
+                  { value: 'INTERMEDIATE', label: 'Inter.' },
                   { value: 'ADVANCED', label: 'Advanced' },
                 ].map((opt) => (
                   <button
@@ -173,8 +167,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                     onClick={() => onChange({ difficulty: opt.value })}
                     style={{
                       ...styles.btnGroupItem,
-                      backgroundColor: values.difficulty === opt.value ? '#8b5cf6' : '#374151',
-                      color: values.difficulty === opt.value ? '#fff' : '#d1d5db',
+                      backgroundColor: values.difficulty === opt.value ? 'var(--accent)' : 'var(--bg-secondary)',
+                      color: values.difficulty === opt.value ? '#fff' : 'var(--text-secondary)',
+                      borderColor: values.difficulty === opt.value ? 'var(--accent)' : 'var(--border-color)',
                     }}
                   >
                     {opt.label}
@@ -197,10 +192,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                 <option value="popular">Most Popular</option>
               </select>
             </div>
-          </div>
 
-          {/* Row 2: Price range, Rating */}
-          <div style={styles.filterRow}>
             <div style={styles.filterGroup}>
               <label style={styles.label}>Price Range</label>
               <div style={styles.priceRow}>
@@ -236,7 +228,6 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             <div style={styles.filterGroup}>
               {renderStars(values.minRating)}
             </div>
-          </div>
         </div>
       )}
     </div>
@@ -245,19 +236,19 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    backgroundColor: '#1f2937',
-    borderRadius: '8px',
+    backgroundColor: 'var(--bg-card)',
+    borderRadius: '12px',
     marginBottom: '20px',
-    border: '1px solid #374151',
+    border: '1px solid var(--border-color)',
     overflow: 'hidden',
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: '12px 16px',
-    backgroundColor: '#111827',
-    borderBottom: '1px solid #374151',
+    padding: '14px 16px',
+    backgroundColor: 'var(--bg-secondary)',
+    borderBottom: '1px solid var(--border-color)',
   },
   toggleBtn: {
     display: 'flex',
@@ -265,7 +256,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: '8px',
     background: 'none',
     border: 'none',
-    color: '#f3f4f6',
+    color: 'var(--text-primary)',
     fontSize: '14px',
     fontWeight: 'bold',
     cursor: 'pointer',
@@ -273,13 +264,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   toggleIcon: {
     fontSize: '10px',
-    color: '#9ca3af',
+    color: 'var(--text-muted)',
   },
   badge: {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8b5cf6',
+    backgroundColor: 'var(--accent)',
     color: '#fff',
     borderRadius: '10px',
     fontSize: '11px',
@@ -289,111 +280,108 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: '0 6px',
   },
   clearAllBtn: {
-    padding: '6px 12px',
-    backgroundColor: '#dc2626',
+    padding: '6px 14px',
+    backgroundColor: 'var(--danger)',
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     fontSize: '12px',
     cursor: 'pointer',
     fontWeight: '600',
   },
   body: {
     padding: '16px',
-    display: 'flex',
-    flexDirection: 'column',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
     gap: '16px',
-  },
-  filterRow: {
-    display: 'flex',
-    gap: '16px',
-    flexWrap: 'wrap' as const,
-    alignItems: 'flex-end',
   },
   filterGroup: {
     display: 'flex',
     flexDirection: 'column' as const,
     gap: '6px',
-    minWidth: '150px',
+    minWidth: 0,
   },
   label: {
-    fontSize: '12px',
+    fontSize: '11px',
     fontWeight: '600',
-    color: '#9ca3af',
+    color: 'var(--text-muted)',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
   },
   select: {
-    padding: '8px 12px',
-    backgroundColor: '#374151',
-    color: '#f3f4f6',
-    border: '1px solid #4b5563',
-    borderRadius: '6px',
+    padding: '10px 12px',
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '13px',
     cursor: 'pointer',
     outline: 'none',
+    width: '100%',
+    boxSizing: 'border-box' as const,
   },
   btnGroup: {
     display: 'flex',
-    gap: '2px',
-    borderRadius: '6px',
-    overflow: 'hidden',
+    flexWrap: 'wrap' as const,
+    gap: '4px',
   },
   btnGroupItem: {
-    padding: '8px 12px',
-    border: 'none',
+    padding: '7px 12px',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '12px',
     cursor: 'pointer',
     fontWeight: '500',
-    transition: 'background-color 0.15s',
+    transition: 'all 0.15s',
+    whiteSpace: 'nowrap' as const,
   },
   priceRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
+    gap: '6px',
+    flexWrap: 'wrap' as const,
   },
   currencySign: {
-    color: '#9ca3af',
+    color: 'var(--text-muted)',
     fontSize: '14px',
     fontWeight: '600',
   },
   priceInput: {
-    width: '80px',
-    padding: '8px 8px',
-    backgroundColor: '#374151',
-    color: '#f3f4f6',
-    border: '1px solid #4b5563',
-    borderRadius: '6px',
+    width: '70px',
+    padding: '10px 8px',
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-primary)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '8px',
     fontSize: '13px',
     outline: 'none',
     boxSizing: 'border-box' as const,
   },
   priceDash: {
-    color: '#6b7280',
+    color: 'var(--text-muted)',
     fontSize: '16px',
-    margin: '0 2px',
   },
   applyPriceBtn: {
-    padding: '8px 14px',
-    backgroundColor: '#8b5cf6',
+    padding: '10px 14px',
+    backgroundColor: 'var(--accent)',
     color: '#fff',
     border: 'none',
-    borderRadius: '6px',
+    borderRadius: '8px',
     fontSize: '12px',
     cursor: 'pointer',
     fontWeight: '600',
-    marginLeft: '4px',
   },
   starRow: {
     display: 'flex',
     alignItems: 'center',
     gap: '4px',
+    flexWrap: 'wrap' as const,
     paddingTop: '2px',
   },
   starLabel: {
-    fontSize: '12px',
+    fontSize: '11px',
     fontWeight: '600',
-    color: '#9ca3af',
+    color: 'var(--text-muted)',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
     marginRight: '4px',
@@ -408,12 +396,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   starText: {
     fontSize: '12px',
-    color: '#9ca3af',
+    color: 'var(--text-muted)',
     marginLeft: '6px',
   },
   countryContainer: {
     position: 'relative' as const,
-    width: '180px',
+    width: '100%',
   },
   countryClearBtn: {
     position: 'absolute' as const,
@@ -422,7 +410,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     transform: 'translateY(-50%)',
     background: 'none',
     border: 'none',
-    color: '#9ca3af',
+    color: 'var(--text-muted)',
     fontSize: '14px',
     cursor: 'pointer',
     padding: '0 4px',
@@ -435,15 +423,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     right: 0,
     maxHeight: '200px',
     overflowY: 'auto' as const,
-    backgroundColor: '#374151',
-    border: '1px solid #4b5563',
-    borderRadius: '0 0 6px 6px',
+    backgroundColor: 'var(--bg-card)',
+    border: '1px solid var(--border-color)',
+    borderRadius: '0 0 8px 8px',
     zIndex: 10,
   },
   countryOption: {
-    padding: '8px 12px',
+    padding: '10px 12px',
     fontSize: '13px',
-    color: '#f3f4f6',
+    color: 'var(--text-primary)',
     cursor: 'pointer',
   },
 };
