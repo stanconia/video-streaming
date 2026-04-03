@@ -13,6 +13,12 @@ jest.mock('../../services/api/course/CourseApi', () => ({
   },
 }));
 
+jest.mock('../shared/SubjectSelector', () => ({
+  SubjectSelector: ({ value, onChange, placeholder }: any) => (
+    <input data-testid="subject-selector" value={value} onChange={(e: any) => onChange(e.target.value)} placeholder={placeholder || 'Select subject'} />
+  ),
+}));
+
 jest.mock('../../context/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
@@ -89,7 +95,7 @@ describe('CreateCourse', () => {
       screen.getByPlaceholderText('Describe what students will learn in this course...'),
       'Learn React from scratch'
     );
-    await user.type(screen.getByPlaceholderText('e.g., Web Development'), 'Web Dev');
+    await user.type(screen.getByTestId('subject-selector'), 'Web Dev');
 
     // Clear the default price and type new price
     const priceInput = screen.getByDisplayValue('0');
@@ -134,7 +140,7 @@ describe('CreateCourse', () => {
       screen.getByPlaceholderText('Describe what students will learn in this course...'),
       'Test description'
     );
-    await user.type(screen.getByPlaceholderText('e.g., Web Development'), 'Test');
+    await user.type(screen.getByTestId('subject-selector'), 'Test');
 
     await user.click(screen.getByRole('button', { name: 'Create Course' }));
 
@@ -178,7 +184,7 @@ describe('CreateCourse', () => {
       screen.getByPlaceholderText('Describe what students will learn in this course...'),
       'Description'
     );
-    await user.type(screen.getByPlaceholderText('e.g., Web Development'), 'Subject');
+    await user.type(screen.getByTestId('subject-selector'), 'Subject');
 
     await user.click(screen.getByRole('button', { name: 'Create Course' }));
 

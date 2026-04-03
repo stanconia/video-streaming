@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TeacherProfileRequest } from '../../types/social/teacher.types';
 import { teacherApi } from '../../services/api/social/TeacherApi';
 import { useAuth } from '../../context/AuthContext';
+import { MultiSubjectSelector } from '../shared/MultiSubjectSelector';
 
 export const EditProfile: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export const EditProfile: React.FC = () => {
     hourlyRate: 0,
     experienceYears: 0,
   });
+  const [subjectsArr, setSubjectsArr] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +29,9 @@ export const EditProfile: React.FC = () => {
     try {
       setLoading(true);
       const profile = await teacherApi.getMyProfile();
+      const subjectsStr = profile.subjects || '';
+      const parsed = subjectsStr ? subjectsStr.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
+      setSubjectsArr(parsed);
       setForm({
         bio: profile.bio || '',
         headline: profile.headline || '',
@@ -47,7 +52,8 @@ export const EditProfile: React.FC = () => {
     try {
       setSaving(true);
       setError(null);
-      await teacherApi.updateProfile(form);
+      const subjects = subjectsArr.length > 0 ? subjectsArr.join(', ') : '';
+      await teacherApi.updateProfile({ ...form, subjects });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
@@ -94,13 +100,10 @@ export const EditProfile: React.FC = () => {
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label}>Subjects (comma-separated)</label>
-            <input
-              type="text"
-              placeholder="e.g., Math, Physics, Chemistry"
-              value={form.subjects}
-              onChange={(e) => setForm({ ...form, subjects: e.target.value })}
-              style={styles.input}
+            <label style={styles.label}>Subjects</label>
+            <MultiSubjectSelector
+              selected={subjectsArr}
+              onChange={setSubjectsArr}
             />
           </div>
 

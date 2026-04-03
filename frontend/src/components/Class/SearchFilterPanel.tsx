@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SearchFilters } from '../../types/admin/search.types';
+import { SubjectSelector } from '../shared/SubjectSelector';
 
 interface SearchFilterPanelProps {
   onSearch: (filters: SearchFilters) => void;
@@ -39,14 +40,13 @@ export const SearchFilterPanel: React.FC<SearchFilterPanelProps> = ({ onSearch }
           onKeyDown={handleKeyDown}
           style={styles.searchInput}
         />
-        <input
-          type="text"
-          placeholder="Subject"
-          value={filters.subject || ''}
-          onChange={(e) => update({ subject: e.target.value })}
-          onKeyDown={handleKeyDown}
-          style={styles.subjectInput}
-        />
+        <div style={styles.subjectInput}>
+          <SubjectSelector
+            value={filters.subject || ''}
+            onChange={(value) => update({ subject: value })}
+            placeholder="Subject"
+          />
+        </div>
         <button onClick={handleSearch} style={styles.searchButton}>Search</button>
         <button onClick={() => setExpanded(!expanded)} style={styles.filterToggle}>
           {expanded ? 'Less Filters' : 'More Filters'}

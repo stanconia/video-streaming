@@ -84,6 +84,7 @@ export interface CourseSearchParams {
   maxPrice?: number;
   sortBy?: string;
   minRating?: number;
+  country?: string;
   page?: number;
   size?: number;
 }
@@ -95,6 +96,7 @@ export interface SearchFilterValues {
   maxPrice: string;
   sortBy: string;
   minRating: number;
+  country: string;
 }
 
 export interface CourseSearchResponse {

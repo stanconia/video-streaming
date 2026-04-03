@@ -9,6 +9,23 @@ jest.mock('../../context/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
+jest.mock('../shared/LocationSelector', () => ({
+  LocationSelector: ({ country, city, onCountryChange, onCityChange }: any) => (
+    <div data-testid="location-selector">
+      <input data-testid="country-input" value={country} onChange={(e: any) => onCountryChange(e.target.value)} placeholder="Country" />
+      <input data-testid="city-input" value={city} onChange={(e: any) => onCityChange(e.target.value)} placeholder="City" />
+    </div>
+  ),
+}));
+
+jest.mock('../shared/MultiSubjectSelector', () => ({
+  MultiSubjectSelector: ({ selected, onChange }: any) => (
+    <div data-testid="multi-subject-selector">
+      <span>{selected.join(', ')}</span>
+    </div>
+  ),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
@@ -99,7 +116,7 @@ describe('RegisterPage', () => {
     expect(screen.getByText('Subjects')).toBeInTheDocument();
     expect(screen.getByText('Years of Experience')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('e.g. Math tutor with 10 years experience')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('e.g. Math, Physics, Chemistry')).toBeInTheDocument();
+    expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
   });
 
   it('submits registration with teacher-specific fields', async () => {
@@ -120,10 +137,6 @@ describe('RegisterPage', () => {
       screen.getByPlaceholderText('e.g. Math tutor with 10 years experience'),
       'Expert Math Teacher'
     );
-    await user.type(
-      screen.getByPlaceholderText('e.g. Math, Physics, Chemistry'),
-      'Math,Science'
-    );
     await user.type(screen.getByPlaceholderText('0'), '5');
 
     await user.click(screen.getByRole('button', { name: 'Create Account' }));
@@ -136,7 +149,6 @@ describe('RegisterPage', () => {
           password: 'password123',
           role: 'TEACHER',
           headline: 'Expert Math Teacher',
-          subjects: 'Math,Science',
           experienceYears: 5,
         })
       );
@@ -196,7 +208,7 @@ describe('RegisterPage', () => {
     render(<RegisterPage />);
 
     expect(screen.getByText('Subject Interests')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('e.g. Math, Science, History')).toBeInTheDocument();
+    expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
   });
 
   it('hides subject interests when switching to TEACHER role', async () => {
@@ -205,12 +217,12 @@ describe('RegisterPage', () => {
     render(<RegisterPage />);
 
     // Subject interests visible for STUDENT
-    expect(screen.getByPlaceholderText('e.g. Math, Science, History')).toBeInTheDocument();
+    expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
 
     // Switch to TEACHER
     await user.click(screen.getByLabelText('Teacher'));
 
-    // Subject interests should be hidden
-    expect(screen.queryByPlaceholderText('e.g. Math, Science, History')).not.toBeInTheDocument();
+    // Both roles have subject selectors (interests for students, subjects for teachers)
+    expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
   });
 });

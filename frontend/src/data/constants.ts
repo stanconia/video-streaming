@@ -1,0 +1,127 @@
+export const SUBJECTS = [
+  // Sciences & Math
+  'Mathematics',
+  'Physics',
+  'Chemistry',
+  'Biology',
+  'Statistics',
+  // Technology & Computing
+  'Computer Science',
+  'Artificial Intelligence',
+  'Machine Learning',
+  'Data Science',
+  'Algorithms & Data Structures',
+  'Web Development',
+  'Mobile Development',
+  'Cybersecurity',
+  'Cloud Computing',
+  'Software Engineering',
+  // Languages
+  'English',
+  'French',
+  'Spanish',
+  'Arabic',
+  'Mandarin',
+  'German',
+  // Business & Economics
+  'Business Administration',
+  'Economics',
+  'Accounting',
+  'Finance',
+  'Marketing',
+  'Entrepreneurship',
+  // Humanities & Social Sciences
+  'History',
+  'Geography',
+  'Political Science',
+  'Psychology',
+  'Sociology',
+  'Philosophy',
+  // Religious Studies
+  'Christian Studies',
+  'Islamic Studies',
+  'Religious Studies',
+  // Arts & Creative
+  'Music',
+  'Fine Arts',
+  'Graphic Design',
+  'Photography',
+  'Film Studies',
+  // Health & Wellness
+  'Medicine',
+  'Nursing',
+  'Public Health',
+  'Nutrition',
+  // Engineering
+  'Electrical Engineering',
+  'Mechanical Engineering',
+  'Civil Engineering',
+  // Education
+  'Education',
+  'Special Education',
+  // General
+  'General Studies',
+  'Test Preparation',
+  'Personal Development',
+  'Other',
+] as const;
+
+export type Subject = typeof SUBJECTS[number];
+
+export const COUNTRIES_WITH_CITIES: Record<string, string[]> = {
+  'United States': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Francisco', 'Seattle', 'Denver', 'Boston', 'Atlanta', 'Miami'],
+  'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Leeds', 'Glasgow', 'Liverpool', 'Edinburgh', 'Bristol', 'Cardiff', 'Belfast'],
+  'Canada': ['Toronto', 'Vancouver', 'Montreal', 'Calgary', 'Ottawa', 'Edmonton', 'Winnipeg', 'Quebec City'],
+  'Nigeria': ['Lagos', 'Abuja', 'Kano', 'Ibadan', 'Port Harcourt', 'Benin City', 'Kaduna', 'Enugu', 'Owerri', 'Calabar'],
+  'South Africa': ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Port Elizabeth', 'Bloemfontein'],
+  'Ghana': ['Accra', 'Kumasi', 'Tamale', 'Takoradi', 'Cape Coast'],
+  'Kenya': ['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru', 'Eldoret'],
+  'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan'],
+  'India': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur'],
+  'Pakistan': ['Karachi', 'Lahore', 'Islamabad', 'Faisalabad', 'Rawalpindi', 'Peshawar'],
+  'Bangladesh': ['Dhaka', 'Chittagong', 'Khulna', 'Rajshahi', 'Sylhet'],
+  'Germany': ['Berlin', 'Munich', 'Hamburg', 'Frankfurt', 'Cologne', 'Stuttgart', 'Düsseldorf'],
+  'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Bordeaux', 'Strasbourg'],
+  'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Canberra'],
+  'Brazil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza', 'Belo Horizonte'],
+  'Mexico': ['Mexico City', 'Guadalajara', 'Monterrey', 'Puebla', 'Cancún', 'Tijuana'],
+  'Japan': ['Tokyo', 'Osaka', 'Yokohama', 'Nagoya', 'Kyoto', 'Fukuoka'],
+  'South Korea': ['Seoul', 'Busan', 'Incheon', 'Daegu', 'Daejeon'],
+  'China': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Hangzhou'],
+  'UAE': ['Dubai', 'Abu Dhabi', 'Sharjah', 'Ajman'],
+  'Saudi Arabia': ['Riyadh', 'Jeddah', 'Mecca', 'Medina', 'Dammam'],
+  'Turkey': ['Istanbul', 'Ankara', 'Izmir', 'Antalya', 'Bursa'],
+  'Indonesia': ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bali'],
+  'Philippines': ['Manila', 'Cebu', 'Davao', 'Quezon City'],
+  'Singapore': ['Singapore'],
+  'Malaysia': ['Kuala Lumpur', 'George Town', 'Johor Bahru', 'Ipoh'],
+  'Thailand': ['Bangkok', 'Chiang Mai', 'Phuket', 'Pattaya'],
+  'Vietnam': ['Ho Chi Minh City', 'Hanoi', 'Da Nang', 'Hai Phong'],
+  'Russia': ['Moscow', 'Saint Petersburg', 'Novosibirsk', 'Yekaterinburg'],
+  'Italy': ['Rome', 'Milan', 'Naples', 'Turin', 'Florence'],
+  'Spain': ['Madrid', 'Barcelona', 'Valencia', 'Seville', 'Bilbao'],
+  'Netherlands': ['Amsterdam', 'Rotterdam', 'The Hague', 'Utrecht'],
+  'Sweden': ['Stockholm', 'Gothenburg', 'Malmö'],
+  'Norway': ['Oslo', 'Bergen', 'Trondheim'],
+  'Denmark': ['Copenhagen', 'Aarhus', 'Odense'],
+  'Ireland': ['Dublin', 'Cork', 'Galway', 'Limerick'],
+  'New Zealand': ['Auckland', 'Wellington', 'Christchurch'],
+  'Argentina': ['Buenos Aires', 'Córdoba', 'Rosario', 'Mendoza'],
+  'Colombia': ['Bogotá', 'Medellín', 'Cali', 'Barranquilla'],
+  'Chile': ['Santiago', 'Valparaíso', 'Concepción'],
+  'Peru': ['Lima', 'Arequipa', 'Cusco'],
+  'Ethiopia': ['Addis Ababa', 'Dire Dawa', 'Mekelle'],
+  'Tanzania': ['Dar es Salaam', 'Dodoma', 'Zanzibar City'],
+  'Uganda': ['Kampala', 'Entebbe', 'Gulu'],
+  'Rwanda': ['Kigali', 'Butare', 'Gisenyi'],
+  'Morocco': ['Casablanca', 'Marrakech', 'Rabat', 'Fez'],
+  'Tunisia': ['Tunis', 'Sfax', 'Sousse'],
+  'Cameroon': ['Yaoundé', 'Douala', 'Bamenda'],
+  'Senegal': ['Dakar', 'Thiès', 'Saint-Louis'],
+};
+
+export const COUNTRIES = Object.keys(COUNTRIES_WITH_CITIES).sort();
+
+export function getCitiesForCountry(country: string): string[] {
+  return COUNTRIES_WITH_CITIES[country] || [];
+}

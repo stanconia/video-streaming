@@ -52,7 +52,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -180,7 +180,9 @@ public class CourseService {
 
     public CourseSearchResponse searchCourses(String query, String subject, String difficulty,
                                                BigDecimal minPrice, BigDecimal maxPrice,
-                                               String sortBy, Integer minRating, int page, int size) {
+                                               String sortBy, Integer minRating,
+                                               String country, String userId,
+                                               int page, int size) {
         Sort sort = buildSort(sortBy);
         PageRequest pageable = PageRequest.of(page, size, sort);
 
@@ -192,6 +194,16 @@ public class CourseService {
                 .stream()
                 .map(this::toCourseResponse)
                 .collect(Collectors.toList());
+
+        // Apply country filter: keep only courses where teacher's country matches
+        if (country != null && !country.isBlank()) {
+            courses = courses.stream()
+                    .filter(c -> {
+                        String teacherCountry = getTeacherCountry(c.getTeacherUserId());
+                        return country.equalsIgnoreCase(teacherCountry);
+                    })
+                    .collect(Collectors.toList());
+        }
 
         // Apply minRating filter in-memory (averageRating is computed, not a DB column)
         if (minRating != null && minRating > 0) {
@@ -208,6 +220,11 @@ public class CourseService {
                     .collect(Collectors.toList());
         }
 
+        // Apply personalized ranking if an authenticated user is provided
+        if (userId != null && !userId.isBlank()) {
+            courses = applyPersonalizedRanking(courses, userId);
+        }
+
         return new CourseSearchResponse(
                 courses,
                 coursePage.getNumber(),
@@ -216,6 +233,90 @@ public class CourseService {
                 coursePage.getTotalPages(),
                 coursePage.hasNext(),
                 coursePage.hasPrevious());
+    }
+
+    /**
+     * Parse country from a location string formatted as "City, Country".
+     */
+    private String parseCountryFromLocation(String location) {
+        if (location == null || location.isBlank()) {
+            return null;
+        }
+        String trimmed = location.trim();
+        int lastComma = trimmed.lastIndexOf(',');
+        if (lastComma >= 0 && lastComma < trimmed.length() - 1) {
+            return trimmed.substring(lastComma + 1).trim();
+        }
+        // If no comma, treat the whole string as the country
+        return trimmed;
+    }
+
+    /**
+     * Get the country portion of a teacher's location.
+     */
+    private String getTeacherCountry(String teacherUserId) {
+        return userRepository.findById(teacherUserId)
+                .map(user -> parseCountryFromLocation(user.getLocation()))
+                .orElse(null);
+    }
+
+    /**
+     * Re-sort the current page of courses based on personalized relevance scoring.
+     * +2 if the teacher's country matches the user's country
+     * +1 for each matching subject interest
+     * Results are sorted by score descending, preserving original order for ties.
+     */
+    private List<CourseResponse> applyPersonalizedRanking(List<CourseResponse> courses, String userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return courses;
+        }
+        User user = userOpt.get();
+        String userCountry = parseCountryFromLocation(user.getLocation());
+        Set<String> userInterests = new HashSet<>();
+        if (user.getSubjectInterests() != null && !user.getSubjectInterests().isBlank()) {
+            for (String interest : user.getSubjectInterests().split(",")) {
+                userInterests.add(interest.trim().toLowerCase());
+            }
+        }
+
+        // If there's nothing to personalize on, skip
+        if (userCountry == null && userInterests.isEmpty()) {
+            return courses;
+        }
+
+        // Cache teacher countries to avoid repeated DB lookups
+        Map<String, String> teacherCountryCache = new HashMap<>();
+
+        // Build scored list preserving original index for stable sort
+        List<CourseResponse> scored = new ArrayList<>(courses);
+        Map<CourseResponse, Integer> scoreMap = new HashMap<>();
+
+        for (CourseResponse course : scored) {
+            int score = 0;
+
+            // Country match: +2
+            if (userCountry != null) {
+                String teacherCountry = teacherCountryCache.computeIfAbsent(
+                        course.getTeacherUserId(), this::getTeacherCountry);
+                if (userCountry.equalsIgnoreCase(teacherCountry)) {
+                    score += 2;
+                }
+            }
+
+            // Subject interest match: +1 per matching interest
+            if (!userInterests.isEmpty() && course.getSubject() != null) {
+                if (userInterests.contains(course.getSubject().toLowerCase())) {
+                    score += 1;
+                }
+            }
+
+            scoreMap.put(course, score);
+        }
+
+        // Stable sort by score descending (preserves existing order for equal scores)
+        scored.sort((a, b) -> Integer.compare(scoreMap.getOrDefault(b, 0), scoreMap.getOrDefault(a, 0)));
+        return scored;
     }
 
     private Sort buildSort(String sortBy) {

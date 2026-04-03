@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
+import { LocationSelector } from '../shared/LocationSelector';
+import { MultiSubjectSelector } from '../shared/MultiSubjectSelector';
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -10,11 +12,12 @@ export function RegisterPage() {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<'TEACHER' | 'STUDENT'>('STUDENT');
-  const [location, setLocation] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
-  const [subjectInterests, setSubjectInterests] = useState('');
+  const [subjectInterestsArr, setSubjectInterestsArr] = useState<string[]>([]);
   const [headline, setHeadline] = useState('');
-  const [subjects, setSubjects] = useState('');
+  const [subjectsArr, setSubjectsArr] = useState<string[]>([]);
   const [experienceYears, setExperienceYears] = useState<number | ''>('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,11 +41,14 @@ export function RegisterPage() {
     setIsSubmitting(true);
 
     try {
+      const location = city && country ? `${city}, ${country}` : country || undefined;
+      const subjectInterests = subjectInterestsArr.length > 0 ? subjectInterestsArr.join(', ') : undefined;
+      const subjects = subjectsArr.length > 0 ? subjectsArr.join(', ') : undefined;
       await register({
         email, password, displayName, role,
-        location: location || undefined,
+        location,
         bio: bio || undefined,
-        subjectInterests: subjectInterests || undefined,
+        subjectInterests,
         headline: role === 'TEACHER' && headline ? headline : undefined,
         subjects: role === 'TEACHER' && subjects ? subjects : undefined,
         experienceYears: role === 'TEACHER' && experienceYears ? Number(experienceYears) : undefined,
@@ -141,12 +147,11 @@ export function RegisterPage() {
 
           <div style={styles.field}>
             <label style={styles.label}>Location <span style={styles.optional}>(optional)</span></label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              style={styles.input}
-              placeholder="e.g. New York, NY"
+            <LocationSelector
+              country={country}
+              city={city}
+              onCountryChange={setCountry}
+              onCityChange={setCity}
             />
           </div>
 
@@ -163,12 +168,9 @@ export function RegisterPage() {
           {role === 'STUDENT' && (
             <div style={styles.field}>
               <label style={styles.label}>Subject Interests <span style={styles.optional}>(optional)</span></label>
-              <input
-                type="text"
-                value={subjectInterests}
-                onChange={(e) => setSubjectInterests(e.target.value)}
-                style={styles.input}
-                placeholder="e.g. Math, Science, History"
+              <MultiSubjectSelector
+                selected={subjectInterestsArr}
+                onChange={setSubjectInterestsArr}
               />
             </div>
           )}
@@ -188,12 +190,9 @@ export function RegisterPage() {
               </div>
               <div style={styles.field}>
                 <label style={styles.label}>Subjects</label>
-                <input
-                  type="text"
-                  value={subjects}
-                  onChange={(e) => setSubjects(e.target.value)}
-                  style={styles.input}
-                  placeholder="e.g. Math, Physics, Chemistry"
+                <MultiSubjectSelector
+                  selected={subjectsArr}
+                  onChange={setSubjectsArr}
                 />
               </div>
               <div style={styles.field}>
