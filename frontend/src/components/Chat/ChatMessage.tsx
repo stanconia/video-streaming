@@ -39,7 +39,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       {!message.isOwnMessage && (
         <div style={getSenderNameStyle(isBroadcaster)}>
           {message.senderName}
-          {isBroadcaster && ' (Teacher)'}
+          {isBroadcaster && ' (Mind Pro)'}
         </div>
       )}
       <div style={{

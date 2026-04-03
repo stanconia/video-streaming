@@ -58,12 +58,12 @@ describe('TeacherDashboard', () => {
     render(<TeacherDashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Teacher Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Mind Pro Dashboard')).toBeInTheDocument();
     });
 
     // Check stat cards are rendered
     expect(screen.getByTestId('stat-Total Earnings')).toBeInTheDocument();
-    expect(screen.getByTestId('stat-Total Students')).toBeInTheDocument();
+    expect(screen.getByTestId('stat-Total Mind Learners')).toBeInTheDocument();
     expect(screen.getByTestId('stat-Total Courses')).toBeInTheDocument();
     expect(screen.getByTestId('stat-Avg Rating')).toBeInTheDocument();
     expect(screen.getByTestId('stat-Total Reviews')).toBeInTheDocument();

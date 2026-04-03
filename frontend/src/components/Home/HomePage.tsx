@@ -41,14 +41,14 @@ function LandingPage() {
 
       {/* Hero */}
       <div style={styles.landingHero}>
-        <h1 style={styles.landingTitle}>Learn from Expert Teachers, Live</h1>
+        <h1 style={styles.landingTitle}>Learn from Expert Mind Pros, Live</h1>
         <p style={styles.landingSub}>
           Join thousands of students learning through interactive live classes,
           structured courses, and a supportive community.
         </p>
         <div style={styles.heroActions}>
           <button onClick={() => navigate('/register')} style={styles.btnPrimary}>Get Started Free</button>
-          <button onClick={() => navigate('/register')} style={styles.btnSecondary}>Become a Teacher</button>
+          <button onClick={() => navigate('/register')} style={styles.btnSecondary}>Become a Mind Pro</button>
         </div>
       </div>
 
@@ -125,7 +125,7 @@ function LandingPage() {
       {/* CTA */}
       <div style={styles.ctaBanner}>
         <h2 style={styles.ctaTitle}>Ready to Start Learning?</h2>
-        <p style={styles.ctaSub}>Join LearningHaven today and get access to courses from expert teachers.</p>
+        <p style={styles.ctaSub}>Join LearningHaven today and get access to courses from expert Mind Pros.</p>
         <button onClick={() => navigate('/register')} style={styles.btnPrimary}>Create Free Account</button>
       </div>
       </div>
@@ -330,7 +330,7 @@ function StudentHome({ user }: { user: { displayName: string } }) {
       {teachers.length > 0 && (
         <div style={styles.section}>
           <div style={styles.sectionHeader}>
-            <h2 style={styles.sectionTitleText}>Top Teachers</h2>
+            <h2 style={styles.sectionTitleText}>Top Mind Pros</h2>
             <Link to="/teachers" style={styles.sectionLink}>View All &rarr;</Link>
           </div>
           <div style={styles.teacherGrid} className="course-grid">
@@ -343,7 +343,7 @@ function StudentHome({ user }: { user: { displayName: string } }) {
                     : t.displayName.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                 </div>
                 <div style={styles.teacherName}>{t.displayName}</div>
-                <div style={styles.teacherSubject}>{t.subjects?.split(',')[0] || 'Teacher'}</div>
+                <div style={styles.teacherSubject}>{t.subjects?.split(',')[0] || 'Mind Pro'}</div>
                 {t.averageRating > 0 && (
                   <div style={styles.teacherStars}>{'\u2605'} {t.averageRating.toFixed(1)}</div>
                 )}
@@ -387,7 +387,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
       {/* Stats */}
       {data && (
         <div style={styles.statsRow} className="stats-grid">
-          <div style={styles.statCard}><div style={styles.statLabel}>Total Students</div><div style={{ ...styles.statValue, color: 'var(--accent)' }}>{data.totalStudents}</div></div>
+          <div style={styles.statCard}><div style={styles.statLabel}>Total Mind Learners</div><div style={{ ...styles.statValue, color: 'var(--accent)' }}>{data.totalStudents}</div></div>
           <div style={styles.statCard}><div style={styles.statLabel}>Active Courses</div><div style={styles.statValue}>{data.totalClasses}</div></div>
           <div style={styles.statCard}><div style={styles.statLabel}>Total Earnings</div><div style={{ ...styles.statValue, color: 'var(--success)' }}>${data.totalEarnings.toFixed(2)}</div></div>
           <div style={styles.statCard}><div style={styles.statLabel}>Avg Rating</div><div style={{ ...styles.statValue, color: 'var(--warning)' }}>{data.averageRating.toFixed(1)} {'\u2605'}</div></div>

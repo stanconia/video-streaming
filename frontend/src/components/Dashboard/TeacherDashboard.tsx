@@ -33,11 +33,11 @@ export const TeacherDashboard: React.FC = () => {
 
   return (
     <div style={styles.container} className="page-container">
-      <h1 style={styles.pageTitle}>Teacher Dashboard</h1>
+      <h1 style={styles.pageTitle}>Mind Pro Dashboard</h1>
 
       <div style={styles.statsGrid} className="stats-grid">
         <StatCard label="Total Earnings" value={`$${data.totalEarnings.toFixed(2)}`} color="#28a745" />
-        <StatCard label="Total Students" value={data.totalStudents} color="#007bff" />
+        <StatCard label="Total Mind Learners" value={data.totalStudents} color="#007bff" />
         <StatCard label="Total Courses" value={data.totalClasses} color="#6f42c1" />
         <StatCard label="Avg Rating" value={data.averageRating.toFixed(1)} color="#ffc107" />
         <StatCard label="Total Reviews" value={data.totalReviews} color="#17a2b8" />

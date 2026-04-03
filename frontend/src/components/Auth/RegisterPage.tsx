@@ -183,7 +183,7 @@ export function RegisterPage() {
                   checked={role === 'TEACHER'}
                   onChange={() => setRole('TEACHER')}
                 />
-                Teacher
+                Mind Pro
               </label>
               <label style={styles.radioLabel}>
                 <input
@@ -193,7 +193,7 @@ export function RegisterPage() {
                   checked={role === 'STUDENT'}
                   onChange={() => setRole('STUDENT')}
                 />
-                Student
+                Mind Learner
               </label>
             </div>
           </div>
@@ -260,7 +260,7 @@ export function RegisterPage() {
 
           {role === 'TEACHER' && (
             <>
-              <div style={styles.divider}>Teacher Details</div>
+              <div style={styles.divider}>Mind Pro Details</div>
               <div style={styles.field}>
                 <label style={styles.label}>Headline</label>
                 <input

@@ -36,8 +36,8 @@ export const AdminDashboard: React.FC = () => {
 
       <div style={styles.statsGrid}>
         <StatCard label="Total Users" value={stats.totalUsers} color="#007bff" />
-        <StatCard label="Teachers" value={stats.totalTeachers} color="#28a745" />
-        <StatCard label="Students" value={stats.totalStudents} color="#6f42c1" />
+        <StatCard label="Mind Pros" value={stats.totalTeachers} color="#28a745" />
+        <StatCard label="Mind Learners" value={stats.totalStudents} color="#6f42c1" />
         <StatCard label="Total Courses" value={stats.totalCourses} color="#fd7e14" />
         <StatCard label="Total Enrollments" value={stats.totalEnrollments} color="#17a2b8" />
         <StatCard label="Revenue" value={`$${stats.totalRevenue.toFixed(2)}`} color="#28a745" />
@@ -50,8 +50,8 @@ export const AdminDashboard: React.FC = () => {
           <p style={styles.navCardDesc}>View and manage platform users</p>
         </div>
         <div style={styles.navCard} onClick={() => navigate('/admin/applications')}>
-          <h3 style={styles.navCardTitle}>Teacher Applications</h3>
-          <p style={styles.navCardDesc}>Review pending teacher applications ({stats.pendingApplications})</p>
+          <h3 style={styles.navCardTitle}>Mind Pro Applications</h3>
+          <p style={styles.navCardDesc}>Review pending Mind Pro applications ({stats.pendingApplications})</p>
         </div>
         <div style={styles.navCard} onClick={() => navigate('/admin/stats')}>
           <h3 style={styles.navCardTitle}>Platform Stats</h3>

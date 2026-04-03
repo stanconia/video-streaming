@@ -70,7 +70,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({ reviews, teacherUserId, 
 
           {review.teacherReply && (
             <div style={styles.replyBox}>
-              <span style={styles.replyLabel}>Teacher reply:</span>
+              <span style={styles.replyLabel}>Mind Pro reply:</span>
               <p style={styles.replyText}>{review.teacherReply}</p>
             </div>
           )}

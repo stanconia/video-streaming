@@ -48,7 +48,7 @@ export const TeacherList: React.FC = () => {
   return (
     <div className="page-container" style={styles.container}>
       <div className="hero-banner" style={styles.heroBanner}>
-        <h1 style={styles.heroTitle}>Find Your Teacher</h1>
+        <h1 style={styles.heroTitle}>Find Your Mind Pro</h1>
         <p style={styles.heroSubtitle}>Browse expert educators and find the perfect match for your learning goals</p>
       </div>
 

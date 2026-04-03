@@ -67,8 +67,8 @@ describe('RegisterPage', () => {
     expect(screen.getByPlaceholderText('Your name')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('At least 6 characters')).toBeInTheDocument();
-    expect(screen.getByLabelText('Teacher')).toBeInTheDocument();
-    expect(screen.getByLabelText('Student')).toBeInTheDocument();
+    expect(screen.getByLabelText('Mind Pro')).toBeInTheDocument();
+    expect(screen.getByLabelText('Mind Learner')).toBeInTheDocument();
   });
 
   it('submits registration with form data', async () => {
@@ -109,14 +109,14 @@ describe('RegisterPage', () => {
     render(<RegisterPage />);
 
     // Initially, teacher fields should not be visible (STUDENT is default)
-    expect(screen.queryByText('Teacher Details')).not.toBeInTheDocument();
+    expect(screen.queryByText('Mind Pro Details')).not.toBeInTheDocument();
     expect(screen.queryByPlaceholderText('e.g. Math tutor with 10 years experience')).not.toBeInTheDocument();
 
     // Select Teacher role
-    await user.click(screen.getByLabelText('Teacher'));
+    await user.click(screen.getByLabelText('Mind Pro'));
 
     // Now teacher-specific fields should appear
-    expect(screen.getByText('Teacher Details')).toBeInTheDocument();
+    expect(screen.getByText('Mind Pro Details')).toBeInTheDocument();
     expect(screen.getByText('Headline')).toBeInTheDocument();
     expect(screen.getByText('Subjects')).toBeInTheDocument();
     expect(screen.getByText('Years of Experience')).toBeInTheDocument();
@@ -138,7 +138,7 @@ describe('RegisterPage', () => {
     await user.type(dobInput, '1985-06-20');
 
     // Select Teacher role
-    await user.click(screen.getByLabelText('Teacher'));
+    await user.click(screen.getByLabelText('Mind Pro'));
 
     // Fill teacher-specific fields
     await user.type(
@@ -229,7 +229,7 @@ describe('RegisterPage', () => {
     expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
 
     // Switch to TEACHER
-    await user.click(screen.getByLabelText('Teacher'));
+    await user.click(screen.getByLabelText('Mind Pro'));
 
     // Both roles have subject selectors (interests for students, subjects for teachers)
     expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
