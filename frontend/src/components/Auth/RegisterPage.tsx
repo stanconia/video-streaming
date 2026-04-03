@@ -12,6 +12,8 @@ export function RegisterPage() {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<'TEACHER' | 'STUDENT'>('STUDENT');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [parentEmail, setParentEmail] = useState('');
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
@@ -21,6 +23,16 @@ export function RegisterPage() {
   const [experienceYears, setExperienceYears] = useState<number | ''>('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [consentPending, setConsentPending] = useState(false);
+
+  const isUnder13 = dateOfBirth ? (() => {
+    const dob = new Date(dateOfBirth);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+    return age < 13;
+  })() : false;
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     setError('');
@@ -41,11 +53,23 @@ export function RegisterPage() {
     setIsSubmitting(true);
 
     try {
+      if (!dateOfBirth) {
+        setError('Date of birth is required');
+        setIsSubmitting(false);
+        return;
+      }
+      if (isUnder13 && !parentEmail) {
+        setError('Parent/guardian email is required for users under 13');
+        setIsSubmitting(false);
+        return;
+      }
       const location = city && country ? `${city}, ${country}` : country || undefined;
       const subjectInterests = subjectInterestsArr.length > 0 ? subjectInterestsArr.join(', ') : undefined;
       const subjects = subjectsArr.length > 0 ? subjectsArr.join(', ') : undefined;
       await register({
         email, password, displayName, role,
+        dateOfBirth,
+        parentEmail: isUnder13 ? parentEmail : undefined,
         location,
         bio: bio || undefined,
         subjectInterests,
@@ -53,13 +77,42 @@ export function RegisterPage() {
         subjects: role === 'TEACHER' && subjects ? subjects : undefined,
         experienceYears: role === 'TEACHER' && experienceYears ? Number(experienceYears) : undefined,
       });
-      navigate('/');
+      if (isUnder13) {
+        setConsentPending(true);
+      } else {
+        navigate('/');
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Registration failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (consentPending) {
+    return (
+      <div style={styles.container} className="page-container">
+        <div style={styles.card} className="auth-card">
+          <h1 style={styles.title}>LearningHaven</h1>
+          <h2 style={styles.subtitle}>Parental Consent Required</h2>
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <p style={{ marginBottom: '16px', color: '#333' }}>
+              Your account has been created, but since you are under 13, we need your parent or guardian's permission before you can use the platform.
+            </p>
+            <p style={{ marginBottom: '16px', color: '#666' }}>
+              We've sent an email to <strong>{parentEmail}</strong> with a link to approve your account.
+            </p>
+            <p style={{ color: '#999', fontSize: '14px' }}>
+              Once your parent/guardian approves, you can log in and start learning.
+            </p>
+            <Link to="/login" style={{ ...styles.button, display: 'inline-block', textDecoration: 'none', marginTop: '20px' }}>
+              Go to Login
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container} className="page-container">
@@ -144,6 +197,36 @@ export function RegisterPage() {
               </label>
             </div>
           </div>
+
+          <div style={styles.field}>
+            <label style={styles.label}>Date of Birth</label>
+            <input
+              type="date"
+              data-testid="dob-input"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+              required
+              style={styles.input}
+              max={new Date().toISOString().split('T')[0]}
+            />
+          </div>
+
+          {isUnder13 && (
+            <div style={styles.field}>
+              <label style={styles.label}>Parent/Guardian Email</label>
+              <input
+                type="email"
+                value={parentEmail}
+                onChange={(e) => setParentEmail(e.target.value)}
+                required
+                style={styles.input}
+                placeholder="parent@example.com"
+              />
+              <span style={{ fontSize: '12px', color: '#e67e22', marginTop: '4px', display: 'block' }}>
+                Required for users under 13 (COPPA compliance). Your parent/guardian will receive an email to approve your account.
+              </span>
+            </div>
+          )}
 
           <div style={styles.field}>
             <label style={styles.label}>Location <span style={styles.optional}>(optional)</span></label>

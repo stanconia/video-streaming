@@ -11,6 +11,7 @@ import { LoginPage } from './components/Auth/LoginPage';
 import { RegisterPage } from './components/Auth/RegisterPage';
 import { ForgotPasswordPage } from './components/Auth/ForgotPasswordPage';
 import { ResetPasswordPage } from './components/Auth/ResetPasswordPage';
+import { ParentalConsentPage } from './components/Auth/ParentalConsentPage';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import { RecordingsList } from './components/Recording/RecordingsList';
 import { PlaybackPage } from './components/Recording/PlaybackPage';
@@ -104,7 +105,7 @@ function ForceLogout() {
 
 function AppContent() {
   const location = useLocation();
-  const hideNavbar = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname) ||
+  const hideNavbar = ['/login', '/register', '/forgot-password', '/reset-password', '/parental-consent'].includes(location.pathname) ||
     location.pathname.includes('/broadcast') || location.pathname.includes('/view');
 
   return (
@@ -115,6 +116,7 @@ function AppContent() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/parental-consent" element={<ParentalConsentPage />} />
         <Route path="/force-logout" element={<ForceLogout />} />
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/room/:roomId/broadcast" element={<ProtectedRoute><BroadcastPage /></ProtectedRoute>} />

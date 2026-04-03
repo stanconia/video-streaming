@@ -14,6 +14,8 @@ export interface Course {
   difficultyLevel: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   estimatedHours: number;
   published: boolean;
+  minAge: number | null;
+  maxAge: number | null;
   tags: string | null;
   moduleCount: number;
   lessonCount: number;
@@ -32,6 +34,8 @@ export interface CreateCourseRequest {
   thumbnailUrl?: string;
   difficultyLevel: string;
   estimatedHours: number;
+  minAge?: number;
+  maxAge?: number;
   tags?: string;
 }
 

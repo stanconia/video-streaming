@@ -48,6 +48,12 @@ public class Course {
     private boolean published = false;
 
     @Column
+    private Integer minAge;
+
+    @Column
+    private Integer maxAge;
+
+    @Column
     private String tags;
 
     @Column(nullable = false)
@@ -61,8 +67,8 @@ public class Course {
     public Course(String id, String teacherUserId, String title, String description, String subject,
                   BigDecimal price, String currency, String thumbnailUrl, String thumbnailKey,
                   DifficultyLevel difficultyLevel,
-                  int estimatedHours, boolean published, String tags, LocalDateTime createdAt,
-                  LocalDateTime updatedAt) {
+                  int estimatedHours, boolean published, Integer minAge, Integer maxAge,
+                  String tags, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.teacherUserId = teacherUserId;
         this.title = title;
@@ -75,6 +81,8 @@ public class Course {
         this.difficultyLevel = difficultyLevel;
         this.estimatedHours = estimatedHours;
         this.published = published;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
         this.tags = tags;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -127,6 +135,12 @@ public class Course {
     public boolean isPublished() { return published; }
     public void setPublished(boolean published) { this.published = published; }
 
+    public Integer getMinAge() { return minAge; }
+    public void setMinAge(Integer minAge) { this.minAge = minAge; }
+
+    public Integer getMaxAge() { return maxAge; }
+    public void setMaxAge(Integer maxAge) { this.maxAge = maxAge; }
+
     public String getTags() { return tags; }
     public void setTags(String tags) { this.tags = tags; }
 
@@ -154,6 +168,8 @@ public class Course {
         private DifficultyLevel difficultyLevel;
         private int estimatedHours;
         private boolean published = false;
+        private Integer minAge;
+        private Integer maxAge;
         private String tags;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -170,13 +186,15 @@ public class Course {
         public CourseBuilder difficultyLevel(DifficultyLevel difficultyLevel) { this.difficultyLevel = difficultyLevel; return this; }
         public CourseBuilder estimatedHours(int estimatedHours) { this.estimatedHours = estimatedHours; return this; }
         public CourseBuilder published(boolean published) { this.published = published; return this; }
+        public CourseBuilder minAge(Integer minAge) { this.minAge = minAge; return this; }
+        public CourseBuilder maxAge(Integer maxAge) { this.maxAge = maxAge; return this; }
         public CourseBuilder tags(String tags) { this.tags = tags; return this; }
         public CourseBuilder createdAt(LocalDateTime createdAt) { this.createdAt = createdAt; return this; }
         public CourseBuilder updatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; return this; }
 
         public Course build() {
             return new Course(id, teacherUserId, title, description, subject, price, currency,
-                    thumbnailUrl, thumbnailKey, difficultyLevel, estimatedHours, published, tags, createdAt, updatedAt);
+                    thumbnailUrl, thumbnailKey, difficultyLevel, estimatedHours, published, minAge, maxAge, tags, createdAt, updatedAt);
         }
     }
 }

@@ -7,6 +7,9 @@ import com.videostreaming.auth.dto.LoginRequest;
 import com.videostreaming.auth.dto.RegisterRequest;
 import com.videostreaming.auth.dto.ResetPasswordRequest;
 import com.videostreaming.auth.service.AuthService;
+import com.videostreaming.course.model.CourseEnrollment;
+import com.videostreaming.course.model.EnrollmentStatus;
+import com.videostreaming.course.repository.CourseEnrollmentRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +22,11 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final CourseEnrollmentRepository courseEnrollmentRepository;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, CourseEnrollmentRepository courseEnrollmentRepository) {
         this.authService = authService;
+        this.courseEnrollmentRepository = courseEnrollmentRepository;
     }
 
     @PostMapping("/register")
@@ -62,6 +67,30 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Authentication failed"));
+        }
+    }
+
+    @GetMapping("/parental-consent")
+    public ResponseEntity<?> handleParentalConsent(@RequestParam String token, @RequestParam String action) {
+        try {
+            Map<String, String> result = authService.handleParentalConsent(token, action);
+
+            // If this is an enrollment consent, activate or cancel the enrollment
+            if ("ENROLLMENT".equals(result.get("consentType")) && result.get("enrollmentId") != null) {
+                CourseEnrollment enrollment = courseEnrollmentRepository.findById(result.get("enrollmentId")).orElse(null);
+                if (enrollment != null && enrollment.getStatus() == EnrollmentStatus.PENDING_PARENT_APPROVAL) {
+                    if ("APPROVED".equals(result.get("status"))) {
+                        enrollment.setStatus(EnrollmentStatus.ACTIVE);
+                    } else {
+                        enrollment.setStatus(EnrollmentStatus.CANCELLED);
+                    }
+                    courseEnrollmentRepository.save(enrollment);
+                }
+            }
+
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Consent processing failed"));
         }
     }
 

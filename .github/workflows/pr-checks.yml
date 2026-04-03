@@ -134,7 +134,7 @@ jobs:
           echo "=== Smoke Test: Register User ==="
           REGISTER_RESPONSE=$(curl -sf -X POST http://localhost:8080/api/auth/register \
             -H "Content-Type: application/json" \
-            -d '{"email":"smoke@test.com","password":"SmokeTest123!","displayName":"Smoke Tester","role":"TEACHER"}')
+            -d '{"email":"smoke@test.com","password":"SmokeTest123!","displayName":"Smoke Tester","role":"TEACHER","dateOfBirth":"1990-01-15"}')
           echo "$REGISTER_RESPONSE" | jq .
           TOKEN=$(echo "$REGISTER_RESPONSE" | jq -r '.token')
 

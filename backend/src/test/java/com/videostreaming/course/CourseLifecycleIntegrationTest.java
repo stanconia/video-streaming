@@ -38,7 +38,8 @@ class CourseLifecycleIntegrationTest extends AbstractIntegrationTest {
                 "role", "TEACHER",
                 "headline", "Expert Educator",
                 "subjects", "Mathematics",
-                "experienceYears", 5
+                "experienceYears", 5,
+                "dateOfBirth", "1990-01-15"
         ));
 
         MvcResult teacherResult = mockMvc.perform(post("/api/auth/register")
@@ -58,7 +59,8 @@ class CourseLifecycleIntegrationTest extends AbstractIntegrationTest {
                 "email", "student.lifecycle@example.com",
                 "password", "Password123!",
                 "displayName", "Lifecycle Student",
-                "role", "STUDENT"
+                "role", "STUDENT",
+                "dateOfBirth", "1990-01-15"
         ));
 
         MvcResult studentResult = mockMvc.perform(post("/api/auth/register")

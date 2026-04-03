@@ -1,11 +1,13 @@
 package com.videostreaming.auth.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.videostreaming.auth.dto.AuthResponse;
 import com.videostreaming.auth.dto.GoogleLoginRequest;
 import com.videostreaming.auth.dto.LoginRequest;
 import com.videostreaming.auth.dto.RegisterRequest;
 import com.videostreaming.auth.service.AuthService;
+import com.videostreaming.course.repository.CourseEnrollmentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,9 @@ class AuthControllerTest {
     @Mock
     private AuthService authService;
 
+    @Mock
+    private CourseEnrollmentRepository courseEnrollmentRepository;
+
     @InjectMocks
     private AuthController controller;
 
@@ -39,12 +44,14 @@ class AuthControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Test
     void register_validRequest_returns201() throws Exception {
         // given
         RegisterRequest request = new RegisterRequest("test@example.com", "password123", "Test User", "STUDENT");
+        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
         AuthResponse response = new AuthResponse("jwt-token-123", "user-1", "test@example.com", "Test User", "STUDENT");
 
         when(authService.register(any(RegisterRequest.class))).thenReturn(response);
@@ -65,6 +72,7 @@ class AuthControllerTest {
     void register_duplicateEmail_returns400() throws Exception {
         // given
         RegisterRequest request = new RegisterRequest("existing@example.com", "password123", "Test User", "STUDENT");
+        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
 
         when(authService.register(any(RegisterRequest.class)))
                 .thenThrow(new RuntimeException("Email already registered"));

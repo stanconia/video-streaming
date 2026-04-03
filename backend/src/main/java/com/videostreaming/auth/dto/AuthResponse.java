@@ -6,6 +6,8 @@ public class AuthResponse {
     private String email;
     private String displayName;
     private String role;
+    private boolean requiresParentalConsent;
+    private boolean parentalConsentGranted;
 
     public AuthResponse() {}
 
@@ -15,6 +17,17 @@ public class AuthResponse {
         this.email = email;
         this.displayName = displayName;
         this.role = role;
+    }
+
+    public AuthResponse(String token, String userId, String email, String displayName, String role,
+                         boolean requiresParentalConsent, boolean parentalConsentGranted) {
+        this.token = token;
+        this.userId = userId;
+        this.email = email;
+        this.displayName = displayName;
+        this.role = role;
+        this.requiresParentalConsent = requiresParentalConsent;
+        this.parentalConsentGranted = parentalConsentGranted;
     }
 
     public String getToken() { return token; }
@@ -31,4 +44,10 @@ public class AuthResponse {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public boolean isRequiresParentalConsent() { return requiresParentalConsent; }
+    public void setRequiresParentalConsent(boolean requiresParentalConsent) { this.requiresParentalConsent = requiresParentalConsent; }
+
+    public boolean isParentalConsentGranted() { return parentalConsentGranted; }
+    public void setParentalConsentGranted(boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; }
 }

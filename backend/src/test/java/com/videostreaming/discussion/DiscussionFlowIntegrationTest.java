@@ -36,7 +36,8 @@ class DiscussionFlowIntegrationTest extends AbstractIntegrationTest {
                 "role", "TEACHER",
                 "headline", "Discussion Expert",
                 "subjects", "General",
-                "experienceYears", 3
+                "experienceYears", 3,
+                "dateOfBirth", "1990-01-15"
         ));
 
         String teacherResponse = mockMvc.perform(post("/api/auth/register")
@@ -56,7 +57,8 @@ class DiscussionFlowIntegrationTest extends AbstractIntegrationTest {
                 "email", "student.discussion@example.com",
                 "password", "Password123!",
                 "displayName", "Discussion Student",
-                "role", "STUDENT"
+                "role", "STUDENT",
+                "dateOfBirth", "1990-01-15"
         ));
 
         String studentResponse = mockMvc.perform(post("/api/auth/register")

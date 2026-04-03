@@ -20,6 +20,8 @@ const mockAuthResponse = {
   email: 'test@example.com',
   displayName: 'Test User',
   role: 'STUDENT' as const,
+  requiresParentalConsent: false,
+  parentalConsentGranted: true,
 };
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -60,6 +62,8 @@ describe('AuthContext', () => {
       email: 'test@example.com',
       displayName: 'Test User',
       role: 'STUDENT',
+      requiresParentalConsent: false,
+      parentalConsentGranted: true,
     });
     expect(localStorage.getItem('edulive_token')).toBe('test-token-123');
     expect(JSON.parse(localStorage.getItem('edulive_user')!)).toEqual({
@@ -67,6 +71,8 @@ describe('AuthContext', () => {
       email: 'test@example.com',
       displayName: 'Test User',
       role: 'STUDENT',
+      requiresParentalConsent: false,
+      parentalConsentGranted: true,
     });
   });
 
@@ -85,6 +91,7 @@ describe('AuthContext', () => {
         password: 'password123',
         displayName: 'Test User',
         role: 'TEACHER',
+        dateOfBirth: '1990-01-01',
       });
     });
 
@@ -93,6 +100,7 @@ describe('AuthContext', () => {
       password: 'password123',
       displayName: 'Test User',
       role: 'TEACHER',
+      dateOfBirth: '1990-01-01',
     });
     expect(result.current.token).toBe('test-token-123');
     expect(result.current.user).toEqual({
@@ -100,6 +108,8 @@ describe('AuthContext', () => {
       email: 'test@example.com',
       displayName: 'Test User',
       role: 'TEACHER',
+      requiresParentalConsent: false,
+      parentalConsentGranted: true,
     });
     expect(localStorage.getItem('edulive_token')).toBe('test-token-123');
   });
@@ -120,6 +130,8 @@ describe('AuthContext', () => {
       email: 'test@example.com',
       displayName: 'Test User',
       role: 'STUDENT',
+      requiresParentalConsent: false,
+      parentalConsentGranted: true,
     });
     expect(localStorage.getItem('edulive_token')).toBe('test-token-123');
   });

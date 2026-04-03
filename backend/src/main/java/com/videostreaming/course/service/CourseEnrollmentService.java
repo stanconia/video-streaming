@@ -1,5 +1,7 @@
 package com.videostreaming.course.service;
 
+import com.videostreaming.auth.model.ParentalConsent;
+import com.videostreaming.auth.service.AuthService;
 import com.videostreaming.notification.service.EmailService;
 import com.videostreaming.notification.service.NotificationService;
 import com.videostreaming.user.model.*;
@@ -41,7 +43,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,6 +71,7 @@ public class CourseEnrollmentService {
     private final CalendarBlockService calendarBlockService;
     private final LiveSessionRepository liveSessionRepository;
     private final StripePaymentGateway stripePaymentGateway;
+    private final AuthService authService;
 
     public CourseEnrollmentService(CourseEnrollmentRepository courseEnrollmentRepository,
                                    CourseRepository courseRepository,
@@ -79,7 +84,8 @@ public class CourseEnrollmentService {
                                    GoogleCalendarLinkService googleCalendarLinkService,
                                    CalendarBlockService calendarBlockService,
                                    LiveSessionRepository liveSessionRepository,
-                                   StripePaymentGateway stripePaymentGateway) {
+                                   StripePaymentGateway stripePaymentGateway,
+                                   AuthService authService) {
         this.courseEnrollmentRepository = courseEnrollmentRepository;
         this.courseRepository = courseRepository;
         this.lessonRepository = lessonRepository;
@@ -92,6 +98,7 @@ public class CourseEnrollmentService {
         this.calendarBlockService = calendarBlockService;
         this.liveSessionRepository = liveSessionRepository;
         this.stripePaymentGateway = stripePaymentGateway;
+        this.authService = authService;
     }
 
     @Transactional
@@ -100,9 +107,30 @@ public class CourseEnrollmentService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
 
+        User student = userRepository.findById(studentUserId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        // Age eligibility check
+        if (student.getDateOfBirth() != null) {
+            int studentAge = Period.between(student.getDateOfBirth(), LocalDate.now()).getYears();
+
+            if (course.getMinAge() != null && studentAge < course.getMinAge()) {
+                throw new RuntimeException("You must be at least " + course.getMinAge() + " years old to enroll in this course");
+            }
+            if (course.getMaxAge() != null && studentAge > course.getMaxAge()) {
+                throw new RuntimeException("This course is for students " + course.getMaxAge() + " years old and under");
+            }
+
+            // COPPA: under-13 needs parental consent to be granted first
+            if (studentAge < 13 && !student.isParentalConsentGranted()) {
+                throw new RuntimeException("Parental consent is required before enrolling. Please ask your parent/guardian to approve your account first.");
+            }
+        }
+
         // Check for existing active enrollment first (before payment verification)
         boolean isPaidCourse = course.getPrice() != null && course.getPrice().compareTo(BigDecimal.ZERO) > 0;
-        if (courseEnrollmentRepository.existsByCourseIdAndStudentUserIdAndStatus(courseId, studentUserId, EnrollmentStatus.ACTIVE)) {
+        if (courseEnrollmentRepository.existsByCourseIdAndStudentUserIdAndStatus(courseId, studentUserId, EnrollmentStatus.ACTIVE)
+            || courseEnrollmentRepository.existsByCourseIdAndStudentUserIdAndStatus(courseId, studentUserId, EnrollmentStatus.PENDING_PARENT_APPROVAL)) {
             throw new RuntimeException("You are already enrolled in this course");
         }
 
@@ -163,7 +191,7 @@ public class CourseEnrollmentService {
             }
 
             try {
-                User student = userRepository.findById(studentUserId).orElse(null);
+                User studentUser = userRepository.findById(studentUserId).orElse(null);
                 String teacherName = "EduLive Teacher";
                 if (course.getTeacherUserId() != null) {
                     teacherName = userRepository.findById(course.getTeacherUserId())
@@ -173,19 +201,19 @@ public class CourseEnrollmentService {
                 List<CourseEnrollmentResponse.SessionCalendarLink> sessionLinks = buildSessionCalendarLinks(courseId, course.getTitle());
                 String calendarLinksSection = buildCalendarLinksSection(sessionLinks);
 
-                if (student != null) {
+                if (studentUser != null) {
                     Map<String, String> emailVars = new HashMap<>();
-                    emailVars.put("studentName", student.getDisplayName());
+                    emailVars.put("studentName", studentUser.getDisplayName());
                     emailVars.put("courseName", course.getTitle());
                     emailVars.put("teacherName", teacherName);
                     if (!calendarLinksSection.isEmpty()) {
                         emailVars.put("calendarLinks", calendarLinksSection);
                     }
-                    emailService.sendTemplatedEmail(student.getEmail(), "enrollment_confirmation", emailVars);
+                    emailService.sendTemplatedEmail(studentUser.getEmail(), "enrollment_confirmation", emailVars);
                 }
 
                 if (course.getTeacherUserId() != null) {
-                    String studentDisplayName = student != null ? student.getDisplayName() : "A student";
+                    String studentDisplayName = studentUser != null ? studentUser.getDisplayName() : "A student";
                     notificationService.sendNewStudentEnrolledNotification(
                             course.getTeacherUserId(), studentDisplayName, course.getTitle(), courseId);
                 }
@@ -202,16 +230,35 @@ public class CourseEnrollmentService {
             return toEnrollmentResponse(prev);
         }
 
+        // Determine if under-13 needs parental approval per-enrollment
+        boolean needsParentApproval = false;
+        if (student.getDateOfBirth() != null) {
+            int studentAge = Period.between(student.getDateOfBirth(), LocalDate.now()).getYears();
+            needsParentApproval = studentAge < 13;
+        }
+
+        EnrollmentStatus initialStatus = needsParentApproval
+                ? EnrollmentStatus.PENDING_PARENT_APPROVAL : EnrollmentStatus.ACTIVE;
+
         CourseEnrollment enrollment = CourseEnrollment.builder()
                 .courseId(courseId)
                 .studentUserId(studentUserId)
                 .paymentIntentId(paymentIntentId)
                 .paidAmount(paidAmount)
-                .status(EnrollmentStatus.ACTIVE)
+                .status(initialStatus)
                 .build();
 
         enrollment = courseEnrollmentRepository.save(enrollment);
-        logger.info("Student {} enrolled in course '{}'", studentUserId, course.getTitle());
+        logger.info("Student {} enrolled in course '{}' with status {}", studentUserId, course.getTitle(), initialStatus);
+
+        // Send parental approval email for under-13
+        if (needsParentApproval && student.getParentEmail() != null) {
+            authService.sendParentalConsentEmail(student, ParentalConsent.ConsentType.ENROLLMENT,
+                    courseId, enrollment.getId());
+            logger.info("Parental approval request sent for enrollment {} in course '{}'",
+                    enrollment.getId(), course.getTitle());
+            return toEnrollmentResponse(enrollment);
+        }
 
         // Calculate escrow for paid courses
         if (isPaidCourse && paidAmount != null) {
@@ -239,7 +286,6 @@ public class CourseEnrollmentService {
 
         // Send enrollment email and generate calendar link
         try {
-            User student = userRepository.findById(studentUserId).orElse(null);
             String teacherName = "EduLive Teacher";
             if (course.getTeacherUserId() != null) {
                 teacherName = userRepository.findById(course.getTeacherUserId())
@@ -249,20 +295,18 @@ public class CourseEnrollmentService {
             List<CourseEnrollmentResponse.SessionCalendarLink> sessionLinks = buildSessionCalendarLinks(courseId, course.getTitle());
             String calendarLinksSection = buildCalendarLinksSection(sessionLinks);
 
-            if (student != null) {
-                Map<String, String> emailVars = new HashMap<>();
-                emailVars.put("studentName", student.getDisplayName());
-                emailVars.put("courseName", course.getTitle());
-                emailVars.put("teacherName", teacherName);
-                if (!calendarLinksSection.isEmpty()) {
-                    emailVars.put("calendarLinks", calendarLinksSection);
-                }
-                emailService.sendTemplatedEmail(student.getEmail(), "enrollment_confirmation", emailVars);
+            Map<String, String> emailVars = new HashMap<>();
+            emailVars.put("studentName", student.getDisplayName());
+            emailVars.put("courseName", course.getTitle());
+            emailVars.put("teacherName", teacherName);
+            if (!calendarLinksSection.isEmpty()) {
+                emailVars.put("calendarLinks", calendarLinksSection);
             }
+            emailService.sendTemplatedEmail(student.getEmail(), "enrollment_confirmation", emailVars);
 
             // Notify teacher about new enrollment
             if (course.getTeacherUserId() != null) {
-                String studentDisplayName = student != null ? student.getDisplayName() : "A student";
+                String studentDisplayName = student.getDisplayName();
                 notificationService.sendNewStudentEnrolledNotification(
                         course.getTeacherUserId(), studentDisplayName, course.getTitle(), courseId);
             }

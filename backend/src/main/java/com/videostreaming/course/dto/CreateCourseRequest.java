@@ -20,6 +20,8 @@ public class CreateCourseRequest {
     private String thumbnailUrl;
     private String difficultyLevel;
     private int estimatedHours;
+    private Integer minAge;
+    private Integer maxAge;
     private String tags;
 
     public CreateCourseRequest() {}
@@ -47,6 +49,12 @@ public class CreateCourseRequest {
 
     public int getEstimatedHours() { return estimatedHours; }
     public void setEstimatedHours(int estimatedHours) { this.estimatedHours = estimatedHours; }
+
+    public Integer getMinAge() { return minAge; }
+    public void setMinAge(Integer minAge) { this.minAge = minAge; }
+
+    public Integer getMaxAge() { return maxAge; }
+    public void setMaxAge(Integer maxAge) { this.maxAge = maxAge; }
 
     public String getTags() { return tags; }
     public void setTags(String tags) { this.tags = tags; }

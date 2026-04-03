@@ -6,8 +6,11 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.videostreaming.auth.model.ParentalConsent;
 import com.videostreaming.auth.model.PasswordResetToken;
+import com.videostreaming.auth.repository.ParentalConsentRepository;
 import com.videostreaming.auth.repository.PasswordResetTokenRepository;
+import com.videostreaming.notification.service.EmailService;
 import com.videostreaming.notification.service.NotificationService;
 import com.videostreaming.teacher.model.TeacherProfile;
 import com.videostreaming.user.model.User;
@@ -24,8 +27,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -37,8 +44,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final NotificationService notificationService;
+    private final EmailService emailService;
     private final TeacherProfileRepository teacherProfileRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final ParentalConsentRepository parentalConsentRepository;
 
     @Value("${google.client-id:}")
     private String googleClientId;
@@ -51,14 +60,18 @@ public class AuthService {
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
                        JwtService jwtService, NotificationService notificationService,
+                       EmailService emailService,
                        TeacherProfileRepository teacherProfileRepository,
-                       PasswordResetTokenRepository passwordResetTokenRepository) {
+                       PasswordResetTokenRepository passwordResetTokenRepository,
+                       ParentalConsentRepository parentalConsentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.notificationService = notificationService;
+        this.emailService = emailService;
         this.teacherProfileRepository = teacherProfileRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.parentalConsentRepository = parentalConsentRepository;
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -66,11 +79,26 @@ public class AuthService {
             throw new RuntimeException("Email already registered");
         }
 
+        // Calculate age from date of birth
+        boolean isMinor = false;
+        if (request.getDateOfBirth() != null) {
+            int age = Period.between(request.getDateOfBirth(), LocalDate.now()).getYears();
+            isMinor = age < 13;
+
+            // COPPA: require parent email for under-13
+            if (isMinor && (request.getParentEmail() == null || request.getParentEmail().isBlank())) {
+                throw new RuntimeException("Parent/guardian email is required for users under 13");
+            }
+        }
+
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .displayName(request.getDisplayName())
                 .role(UserRole.valueOf(request.getRole()))
+                .dateOfBirth(request.getDateOfBirth())
+                .parentEmail(isMinor ? request.getParentEmail() : null)
+                .parentalConsentGranted(!isMinor)
                 .build();
 
         user.setPhone(request.getPhone());
@@ -95,11 +123,18 @@ public class AuthService {
             teacherProfileRepository.save(profile);
         }
 
+        // COPPA: send parental consent email for under-13
+        if (isMinor) {
+            sendParentalConsentEmail(user, ParentalConsent.ConsentType.REGISTRATION, null, null);
+            logger.info("Parental consent request sent for under-13 user {}", user.getId());
+        }
+
         notificationService.sendWelcomeEmail(user.getId());
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getDisplayName(), user.getRole().name());
+        return new AuthResponse(token, user.getId(), user.getEmail(), user.getDisplayName(),
+                user.getRole().name(), isMinor, !isMinor);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -110,9 +145,13 @@ public class AuthService {
             throw new RuntimeException("Invalid email or password");
         }
 
+        boolean requiresConsent = user.getDateOfBirth() != null
+                && Period.between(user.getDateOfBirth(), LocalDate.now()).getYears() < 13;
+
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getDisplayName(), user.getRole().name());
+        return new AuthResponse(token, user.getId(), user.getEmail(), user.getDisplayName(),
+                user.getRole().name(), requiresConsent, user.isParentalConsentGranted());
     }
 
     public AuthResponse loginWithGoogle(String idTokenString) {
@@ -247,6 +286,86 @@ public class AuthService {
         });
 
         // Always return silently - don't reveal whether email exists
+    }
+
+    @Transactional
+    public void sendParentalConsentEmail(User user, ParentalConsent.ConsentType consentType,
+                                          String courseId, String enrollmentId) {
+        String consentToken = UUID.randomUUID().toString();
+        LocalDateTime expiresAt = LocalDateTime.now().plusDays(7);
+
+        ParentalConsent consent = new ParentalConsent(
+                user.getId(), user.getParentEmail(), consentToken, consentType, expiresAt);
+        if (courseId != null) consent.setCourseId(courseId);
+        if (enrollmentId != null) consent.setEnrollmentId(enrollmentId);
+        parentalConsentRepository.save(consent);
+
+        String approveLink = frontendUrl + "/parental-consent?token=" + consentToken + "&action=approve";
+        String denyLink = frontendUrl + "/parental-consent?token=" + consentToken + "&action=deny";
+
+        String subject = consentType == ParentalConsent.ConsentType.REGISTRATION
+                ? "Parental Consent Required - Account Registration"
+                : "Parental Consent Required - Course Enrollment";
+
+        String body = "Dear Parent/Guardian,\n\n"
+                + user.getDisplayName() + " has "
+                + (consentType == ParentalConsent.ConsentType.REGISTRATION
+                    ? "registered for an account" : "requested to enroll in a course")
+                + " on LearningHaven.\n\n"
+                + "As they are under 13, we require your consent in compliance with COPPA.\n\n"
+                + "To APPROVE, click: " + approveLink + "\n\n"
+                + "To DENY, click: " + denyLink + "\n\n"
+                + "This link expires in 7 days.\n\n"
+                + "If you did not expect this email, please ignore it.\n\n"
+                + "Best regards,\nLearningHaven Team";
+
+        emailService.sendEmail(user.getParentEmail(), subject, body);
+    }
+
+    @Transactional
+    public Map<String, String> handleParentalConsent(String consentToken, String action) {
+        ParentalConsent consent = parentalConsentRepository.findByToken(consentToken)
+                .orElseThrow(() -> new RuntimeException("Invalid consent token"));
+
+        if (consent.getStatus() != ParentalConsent.ConsentStatus.PENDING) {
+            throw new RuntimeException("This consent request has already been processed");
+        }
+
+        if (consent.isExpired()) {
+            throw new RuntimeException("This consent link has expired");
+        }
+
+        boolean approved = "approve".equalsIgnoreCase(action);
+        consent.setStatus(approved ? ParentalConsent.ConsentStatus.APPROVED : ParentalConsent.ConsentStatus.DENIED);
+        consent.setRespondedAt(LocalDateTime.now());
+        parentalConsentRepository.save(consent);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("consentType", consent.getConsentType().name());
+
+        if (consent.getConsentType() == ParentalConsent.ConsentType.REGISTRATION) {
+            User user = userRepository.findById(consent.getUserId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            if (approved) {
+                user.setParentalConsentGranted(true);
+                userRepository.save(user);
+                result.put("message", "Account approved. " + user.getDisplayName() + " can now use the platform.");
+            } else {
+                result.put("message", "Account access denied. " + user.getDisplayName() + "'s account will remain restricted.");
+            }
+        } else if (consent.getConsentType() == ParentalConsent.ConsentType.ENROLLMENT) {
+            result.put("enrollmentId", consent.getEnrollmentId());
+            result.put("courseId", consent.getCourseId());
+            if (approved) {
+                result.put("message", "Course enrollment approved.");
+            } else {
+                result.put("message", "Course enrollment denied.");
+            }
+        }
+
+        result.put("status", approved ? "APPROVED" : "DENIED");
+        logger.info("Parental consent {} for user {} (type: {})", action, consent.getUserId(), consent.getConsentType());
+        return result;
     }
 
     @Transactional

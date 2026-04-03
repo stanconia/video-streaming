@@ -18,6 +18,13 @@ export class AuthApi {
     const response = await axios.post<AuthResponse>(`${API_BASE}/auth/google`, { credential });
     return response.data;
   }
+
+  async handleParentalConsent(token: string, action: string): Promise<{ message: string; consentType: string; status: string }> {
+    const response = await axios.get(`${API_BASE}/auth/parental-consent`, {
+      params: { token, action },
+    });
+    return response.data;
+  }
 }
 
 export const authApi = new AuthApi();

@@ -1,6 +1,7 @@
 package com.videostreaming.user.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -42,6 +43,15 @@ public class User {
     @Column(columnDefinition = "varchar(500)")
     private String subjectInterests;
 
+    @Column
+    private LocalDate dateOfBirth;
+
+    @Column
+    private String parentEmail;
+
+    @Column
+    private boolean parentalConsentGranted = false;
+
     @Column(columnDefinition = "varchar(20)")
     private String authProvider = "LOCAL";
 
@@ -61,6 +71,7 @@ public class User {
 
     public User(String id, String email, String password, String displayName, UserRole role, LocalDateTime createdAt,
                 String phone, String location, String bio, String profileImageUrl, String subjectInterests,
+                LocalDate dateOfBirth, String parentEmail, boolean parentalConsentGranted,
                 String authProvider, String googleId, String googleAccessToken, String googleRefreshToken,
                 LocalDateTime googleTokenExpiresAt) {
         this.id = id;
@@ -74,6 +85,9 @@ public class User {
         this.bio = bio;
         this.profileImageUrl = profileImageUrl;
         this.subjectInterests = subjectInterests;
+        this.dateOfBirth = dateOfBirth;
+        this.parentEmail = parentEmail;
+        this.parentalConsentGranted = parentalConsentGranted;
         this.authProvider = authProvider;
         this.googleId = googleId;
         this.googleAccessToken = googleAccessToken;
@@ -120,6 +134,15 @@ public class User {
     public String getSubjectInterests() { return subjectInterests; }
     public void setSubjectInterests(String subjectInterests) { this.subjectInterests = subjectInterests; }
 
+    public LocalDate getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    public String getParentEmail() { return parentEmail; }
+    public void setParentEmail(String parentEmail) { this.parentEmail = parentEmail; }
+
+    public boolean isParentalConsentGranted() { return parentalConsentGranted; }
+    public void setParentalConsentGranted(boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; }
+
     public String getAuthProvider() { return authProvider; }
     public void setAuthProvider(String authProvider) { this.authProvider = authProvider; }
 
@@ -152,6 +175,9 @@ public class User {
         private String bio;
         private String profileImageUrl;
         private String subjectInterests;
+        private LocalDate dateOfBirth;
+        private String parentEmail;
+        private boolean parentalConsentGranted;
         private String authProvider = "LOCAL";
         private String googleId;
         private String googleAccessToken;
@@ -169,6 +195,9 @@ public class User {
         public UserBuilder bio(String bio) { this.bio = bio; return this; }
         public UserBuilder profileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; return this; }
         public UserBuilder subjectInterests(String subjectInterests) { this.subjectInterests = subjectInterests; return this; }
+        public UserBuilder dateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; return this; }
+        public UserBuilder parentEmail(String parentEmail) { this.parentEmail = parentEmail; return this; }
+        public UserBuilder parentalConsentGranted(boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; return this; }
         public UserBuilder authProvider(String authProvider) { this.authProvider = authProvider; return this; }
         public UserBuilder googleId(String googleId) { this.googleId = googleId; return this; }
         public UserBuilder googleAccessToken(String googleAccessToken) { this.googleAccessToken = googleAccessToken; return this; }
@@ -176,7 +205,7 @@ public class User {
         public UserBuilder googleTokenExpiresAt(LocalDateTime googleTokenExpiresAt) { this.googleTokenExpiresAt = googleTokenExpiresAt; return this; }
 
         public User build() {
-            return new User(id, email, password, displayName, role, createdAt, phone, location, bio, profileImageUrl, subjectInterests, authProvider, googleId, googleAccessToken, googleRefreshToken, googleTokenExpiresAt);
+            return new User(id, email, password, displayName, role, createdAt, phone, location, bio, profileImageUrl, subjectInterests, dateOfBirth, parentEmail, parentalConsentGranted, authProvider, googleId, googleAccessToken, googleRefreshToken, googleTokenExpiresAt);
         }
     }
 }
