@@ -49,8 +49,8 @@ public class User {
     @Column
     private String parentEmail;
 
-    @Column
-    private boolean parentalConsentGranted = false;
+    @Column(columnDefinition = "boolean default true")
+    private Boolean parentalConsentGranted = true;
 
     @Column(columnDefinition = "varchar(20)")
     private String authProvider = "LOCAL";
@@ -71,7 +71,7 @@ public class User {
 
     public User(String id, String email, String password, String displayName, UserRole role, LocalDateTime createdAt,
                 String phone, String location, String bio, String profileImageUrl, String subjectInterests,
-                LocalDate dateOfBirth, String parentEmail, boolean parentalConsentGranted,
+                LocalDate dateOfBirth, String parentEmail, Boolean parentalConsentGranted,
                 String authProvider, String googleId, String googleAccessToken, String googleRefreshToken,
                 LocalDateTime googleTokenExpiresAt) {
         this.id = id;
@@ -140,8 +140,8 @@ public class User {
     public String getParentEmail() { return parentEmail; }
     public void setParentEmail(String parentEmail) { this.parentEmail = parentEmail; }
 
-    public boolean isParentalConsentGranted() { return parentalConsentGranted; }
-    public void setParentalConsentGranted(boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; }
+    public boolean isParentalConsentGranted() { return parentalConsentGranted != null ? parentalConsentGranted : true; }
+    public void setParentalConsentGranted(Boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; }
 
     public String getAuthProvider() { return authProvider; }
     public void setAuthProvider(String authProvider) { this.authProvider = authProvider; }
@@ -177,7 +177,7 @@ public class User {
         private String subjectInterests;
         private LocalDate dateOfBirth;
         private String parentEmail;
-        private boolean parentalConsentGranted;
+        private Boolean parentalConsentGranted = true;
         private String authProvider = "LOCAL";
         private String googleId;
         private String googleAccessToken;
@@ -197,7 +197,7 @@ public class User {
         public UserBuilder subjectInterests(String subjectInterests) { this.subjectInterests = subjectInterests; return this; }
         public UserBuilder dateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; return this; }
         public UserBuilder parentEmail(String parentEmail) { this.parentEmail = parentEmail; return this; }
-        public UserBuilder parentalConsentGranted(boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; return this; }
+        public UserBuilder parentalConsentGranted(Boolean parentalConsentGranted) { this.parentalConsentGranted = parentalConsentGranted; return this; }
         public UserBuilder authProvider(String authProvider) { this.authProvider = authProvider; return this; }
         public UserBuilder googleId(String googleId) { this.googleId = googleId; return this; }
         public UserBuilder googleAccessToken(String googleAccessToken) { this.googleAccessToken = googleAccessToken; return this; }
