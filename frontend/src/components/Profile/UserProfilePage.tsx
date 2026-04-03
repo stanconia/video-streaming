@@ -42,12 +42,15 @@ export const UserProfilePage: React.FC = () => {
   const initials = profile.displayName?.charAt(0)?.toUpperCase() || '?';
 
   return (
-    <div style={styles.container}>
+    <div className="page-container" style={styles.container}>
       <button onClick={() => navigate(-1)} style={styles.backButton}>Back</button>
 
       <div style={styles.card}>
+        {/* Cover Banner */}
+        <div className="cover-banner" style={styles.coverBanner} />
+
         {/* Avatar */}
-        <div style={styles.avatarSection}>
+        <div className="profile-header" style={styles.avatarSection}>
           {profile.profileImageUrl ? (
             <img src={profile.profileImageUrl} alt={profile.displayName} style={styles.avatar} />
           ) : (
@@ -123,122 +126,139 @@ const styles: { [key: string]: React.CSSProperties } = {
   loading: {
     textAlign: 'center',
     padding: '40px',
-    color: '#666',
+    color: 'var(--text-secondary)',
   },
   error: {
-    color: '#721c24',
+    color: 'var(--danger)',
     padding: '12px',
-    backgroundColor: '#f8d7da',
-    borderRadius: '4px',
+    backgroundColor: 'var(--danger-light, rgba(220, 53, 69, 0.1))',
+    borderRadius: '12px',
   },
   backButton: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
-    color: 'white',
+    backgroundColor: 'var(--accent)',
+    color: 'var(--bg-card)',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     marginBottom: '20px',
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: 'var(--bg-card)',
     borderRadius: '12px',
-    padding: '32px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    padding: '0',
+    boxShadow: 'var(--shadow)',
+    overflow: 'hidden',
+  },
+  coverBanner: {
+    height: '120px',
+    background: 'linear-gradient(135deg, var(--accent), var(--accent-dark, #0056b3))',
   },
   avatarSection: {
     display: 'flex',
     alignItems: 'center',
     gap: '20px',
-    marginBottom: '24px',
+    marginTop: '-40px',
+    padding: '0 32px 24px 32px',
   },
   avatar: {
     width: '120px',
     height: '120px',
     borderRadius: '50%',
     objectFit: 'cover' as const,
-    border: '3px solid #e9ecef',
+    border: '4px solid var(--bg-card)',
+    flexShrink: 0,
   },
   avatarPlaceholder: {
     width: '120px',
     height: '120px',
     borderRadius: '50%',
-    backgroundColor: '#007bff',
+    backgroundColor: 'var(--accent)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '44px',
     fontWeight: 'bold',
-    color: 'white',
+    color: 'var(--bg-card)',
+    border: '4px solid var(--bg-card)',
+    flexShrink: 0,
   },
   nameSection: {
     flex: 1,
+    paddingTop: '44px',
   },
   displayName: {
     margin: '0 0 6px 0',
     fontSize: '24px',
+    color: 'var(--text-primary)',
   },
   roleBadge: {
     display: 'inline-block',
     padding: '4px 10px',
-    backgroundColor: '#e9ecef',
-    color: '#495057',
-    borderRadius: '12px',
+    backgroundColor: 'var(--bg-secondary)',
+    color: 'var(--text-secondary)',
+    borderRadius: '16px',
     fontSize: '12px',
     fontWeight: 'bold',
     textTransform: 'uppercase' as const,
   },
   memberSince: {
-    color: '#999',
+    color: 'var(--text-muted)',
     fontSize: '13px',
     margin: '8px 0 0 0',
   },
   section: {
-    borderTop: '1px solid #eee',
+    borderTop: '1px solid var(--border-color)',
     paddingTop: '16px',
     marginBottom: '16px',
+    marginLeft: '32px',
+    marginRight: '32px',
   },
   sectionTitle: {
     margin: '0 0 8px 0',
     fontSize: '16px',
-    color: '#333',
+    color: 'var(--text-primary)',
+    borderLeft: '3px solid var(--accent)',
+    paddingLeft: '12px',
   },
   bio: {
-    color: '#333',
+    color: 'var(--text-primary)',
     fontSize: '14px',
     lineHeight: '1.6',
     margin: 0,
   },
   text: {
-    color: '#333',
+    color: 'var(--text-primary)',
     fontSize: '14px',
     margin: 0,
   },
   statsRow: {
     display: 'flex',
     gap: '16px',
-    borderTop: '1px solid #eee',
+    borderTop: '1px solid var(--border-color)',
     paddingTop: '20px',
     marginBottom: '16px',
+    marginLeft: '32px',
+    marginRight: '32px',
   },
   statCard: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column' as const,
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '8px',
+    backgroundColor: 'var(--bg-secondary)',
+    borderRadius: '12px',
     padding: '16px',
   },
   statNumber: {
     fontSize: '28px',
     fontWeight: 'bold',
-    color: '#007bff',
+    color: 'var(--accent)',
   },
   statLabel: {
     fontSize: '13px',
-    color: '#666',
+    color: 'var(--text-secondary)',
     marginTop: '4px',
   },
   interestsTags: {
@@ -248,19 +268,19 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   interestTag: {
     padding: '4px 12px',
-    backgroundColor: '#e8f4fd',
-    color: '#0277bd',
+    backgroundColor: 'var(--accent-light)',
+    color: 'var(--accent)',
     borderRadius: '16px',
     fontSize: '13px',
     fontWeight: '500',
   },
   editButton: {
-    marginTop: '20px',
+    margin: '20px 32px 32px 32px',
     padding: '10px 24px',
-    backgroundColor: '#007bff',
-    color: 'white',
+    backgroundColor: 'var(--accent)',
+    color: 'var(--bg-card)',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '14px',
     fontWeight: 'bold',

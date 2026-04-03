@@ -786,6 +786,87 @@ input[type="button"] {
 }
 
 /* ============================================================
+   Modern UI utility classes
+   ============================================================ */
+
+/* Card hover effects */
+.course-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Hero banner */
+.hero-banner {
+  background: var(--gradient-primary);
+  border-radius: 16px;
+  padding: 48px 32px;
+  margin-bottom: 24px;
+  color: #fff;
+}
+@media (max-width: 639px) {
+  .hero-banner {
+    padding: 32px 20px;
+    border-radius: 12px;
+  }
+}
+
+/* Profile header - stacks vertically on mobile */
+.profile-header {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+@media (max-width: 639px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* Stat cards grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+/* Actions row - stacks on mobile */
+.actions-row {
+  display: flex;
+  gap: 12px;
+}
+@media (max-width: 639px) {
+  .actions-row {
+    flex-direction: column;
+  }
+  .actions-row button {
+    width: 100%;
+  }
+}
+
+/* Module lessons - mobile-friendly indent */
+.module-lessons {
+  padding-left: 16px !important;
+}
+@media (min-width: 768px) {
+  .module-lessons {
+    padding-left: 152px !important;
+  }
+}
+
+/* Cover banner for profiles */
+.cover-banner {
+  background: var(--gradient-primary);
+  height: 140px;
+  border-radius: 12px 12px 0 0;
+  position: relative;
+}
+
+/* ============================================================
    Print styles (bonus: hide nav and unnecessary UI)
    ============================================================ */
 @media print {

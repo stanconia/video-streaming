@@ -37,7 +37,7 @@ export const TeacherList: React.FC = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span key={i} style={{ color: i <= Math.round(rating) ? '#ffc107' : '#ddd', fontSize: '14px' }}>
+        <span key={i} style={{ color: i <= Math.round(rating) ? 'var(--warning)' : 'var(--border-color)', fontSize: '14px' }}>
           &#9733;
         </span>
       );
@@ -46,20 +46,11 @@ export const TeacherList: React.FC = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <div style={styles.headerTop}>
-          <div>
-            <h1 style={styles.headerTitle}>Browse Teachers</h1>
-            <p style={styles.headerSub}>Find the perfect teacher for you</p>
-          </div>
-          <div style={styles.headerActions}>
-            {user && <span style={styles.userName}>{user.displayName}</span>}
-            <button onClick={() => navigate('/')} style={styles.navButton}>Home</button>
-            <button onClick={logout} style={styles.logoutButton}>Logout</button>
-          </div>
-        </div>
-      </header>
+    <div className="page-container" style={styles.container}>
+      <div className="hero-banner" style={styles.heroBanner}>
+        <h1 style={styles.heroTitle}>Find Your Teacher</h1>
+        <p style={styles.heroSubtitle}>Browse expert educators and find the perfect match for your learning goals</p>
+      </div>
 
       <div style={styles.searchBar}>
         <input
@@ -80,11 +71,11 @@ export const TeacherList: React.FC = () => {
       ) : teachers.length === 0 ? (
         <div style={styles.empty}>No teachers found.</div>
       ) : (
-        <div style={styles.grid}>
+        <div className="course-grid" style={styles.grid}>
           {teachers.map((teacher) => {
             const initials = teacher.displayName?.charAt(0)?.toUpperCase() || '?';
             return (
-              <div key={teacher.id} style={styles.card} onClick={() => navigate(`/teachers/${teacher.userId}`)}>
+              <div key={teacher.id} className="course-card" style={styles.card} onClick={() => navigate(`/teachers/${teacher.userId}`)}>
                 <div style={styles.cardBody}>
                   <div style={styles.cardTop}>
                     {teacher.profileImageUrl ? (
@@ -136,83 +127,69 @@ export const TeacherList: React.FC = () => {
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
-  container: { padding: '20px', maxWidth: '1200px', margin: '0 auto' },
-  header: {
-    marginBottom: '24px', padding: '24px', backgroundColor: 'white',
-    borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-  },
-  headerTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  headerTitle: { margin: '0 0 4px 0', fontSize: '24px' },
-  headerSub: { margin: 0, color: '#666', fontSize: '14px' },
-  headerActions: { display: 'flex', alignItems: 'center', gap: '12px' },
-  userName: { fontSize: '14px', color: '#555' },
-  navButton: {
-    padding: '8px 16px', backgroundColor: '#007bff', color: 'white',
-    border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px',
-  },
-  logoutButton: {
-    padding: '8px 16px', backgroundColor: '#dc3545', color: 'white',
-    border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px',
-  },
+  container: { maxWidth: '1200px', margin: '0 auto' },
+  heroBanner: { textAlign: 'center' },
+  heroTitle: { margin: '0 0 8px 0', fontSize: '32px', fontWeight: 'bold', color: '#fff' },
+  heroSubtitle: { margin: 0, fontSize: '16px', color: 'rgba(255,255,255,0.85)' },
   searchBar: { display: 'flex', gap: '12px', marginBottom: '20px' },
   searchInput: {
-    flex: 1, padding: '12px 16px', border: '1px solid #ddd',
-    borderRadius: '8px', fontSize: '14px',
+    flex: 1, padding: '12px 16px', border: '1px solid var(--border-color)',
+    borderRadius: '8px', fontSize: '14px', backgroundColor: 'var(--bg-card)',
+    color: 'var(--text-primary)',
   },
   searchButton: {
-    padding: '12px 24px', backgroundColor: '#007bff', color: 'white',
+    padding: '12px 24px', backgroundColor: 'var(--accent)', color: '#fff',
     border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold',
   },
   error: {
-    color: '#721c24', padding: '12px', marginBottom: '20px',
-    backgroundColor: '#f8d7da', borderRadius: '4px',
+    color: 'var(--danger)', padding: '12px', marginBottom: '20px',
+    backgroundColor: 'var(--danger-light)', borderRadius: '8px',
   },
-  loading: { textAlign: 'center', padding: '40px', color: '#666', fontSize: '16px' },
+  loading: { textAlign: 'center', padding: '40px', color: 'var(--text-secondary)', fontSize: '16px' },
   empty: {
-    textAlign: 'center', padding: '60px 20px', color: '#666',
-    backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)',
+    backgroundColor: 'var(--bg-card)', borderRadius: '12px', boxShadow: 'var(--shadow)',
   },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' },
+  grid: {},
   card: {
-    backgroundColor: 'white', borderRadius: '12px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.08)', cursor: 'pointer',
-    transition: 'transform 0.2s, box-shadow 0.2s',
-    border: '1px solid #f0f0f0',
+    backgroundColor: 'var(--bg-card)', borderRadius: '12px',
+    boxShadow: 'var(--shadow)', cursor: 'pointer',
+    border: '1px solid var(--border-color)',
   },
   cardBody: { padding: '20px' },
   cardTop: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '14px' },
   cardAvatar: {
     width: '60px', height: '60px', borderRadius: '50%',
-    objectFit: 'cover' as const, border: '2px solid #e9ecef', flexShrink: 0,
+    objectFit: 'cover' as const, border: '2px solid var(--border-color)', flexShrink: 0,
   },
   cardAvatarPlaceholder: {
     width: '60px', height: '60px', borderRadius: '50%',
-    backgroundColor: '#007bff', display: 'flex', alignItems: 'center',
+    backgroundColor: 'var(--accent)', display: 'flex', alignItems: 'center',
     justifyContent: 'center', fontSize: '22px', fontWeight: 'bold',
-    color: 'white', flexShrink: 0,
+    color: '#fff', flexShrink: 0,
   },
   cardInfo: { flex: 1, minWidth: 0 },
-  teacherName: { margin: '0 0 4px 0', fontSize: '17px', color: '#1a1a1a' },
+  teacherName: { margin: '0 0 4px 0', fontSize: '17px', color: 'var(--text-primary)' },
   headline: {
-    color: '#666', fontSize: '13px', margin: 0, lineHeight: '1.3',
+    color: 'var(--text-secondary)', fontSize: '13px', margin: 0, lineHeight: '1.3',
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
   },
   subjects: { display: 'flex', flexWrap: 'wrap' as const, gap: '6px', marginBottom: '14px' },
   subjectTag: {
-    padding: '4px 10px', backgroundColor: '#e8f4fd', color: '#0277bd',
-    borderRadius: '12px', fontSize: '11px', fontWeight: '500',
+    padding: '4px 10px', backgroundColor: 'var(--accent-light)', color: 'var(--accent)',
+    borderRadius: '16px', fontSize: '11px', fontWeight: '500',
   },
   moreTag: {
-    padding: '4px 10px', backgroundColor: '#f0f0f0', color: '#888',
-    borderRadius: '12px', fontSize: '11px',
+    padding: '4px 10px', backgroundColor: 'var(--bg-secondary)', color: 'var(--text-muted)',
+    borderRadius: '16px', fontSize: '11px',
   },
   cardFooter: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    borderTop: '1px solid #f5f5f5', paddingTop: '12px',
+    borderTop: '1px solid var(--border-color)', paddingTop: '12px',
   },
   rating: { display: 'flex', alignItems: 'center', gap: '4px' },
-  ratingText: { fontSize: '13px', color: '#666', marginLeft: '4px' },
+  ratingText: { fontSize: '13px', color: 'var(--text-secondary)', marginLeft: '4px' },
   footerRight: { display: 'flex', alignItems: 'center', gap: '12px' },
-  experience: { fontSize: '12px', color: '#888' },
-  rate: { fontWeight: 'bold', color: '#28a745', fontSize: '15px' },
+  experience: { fontSize: '12px', color: 'var(--text-muted)' },
+  rate: { fontWeight: 'bold', color: 'var(--success)', fontSize: '15px' },
 };
