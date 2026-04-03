@@ -10,7 +10,7 @@ import { COUNTRIES } from '../../data/constants';
 
 export const EditUserProfilePage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -108,6 +108,9 @@ export const EditUserProfilePage: React.FC = () => {
         const subjects = subjectsArr.length > 0 ? subjectsArr.join(', ') : '';
         await teacherApi.updateProfile({ headline, bio, subjects, hourlyRate, experienceYears });
       }
+
+      // Sync display name and email back to auth context / navbar
+      updateUser({ displayName, email });
 
       navigate('/');
     } catch (err: any) {
