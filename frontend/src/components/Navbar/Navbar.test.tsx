@@ -75,10 +75,11 @@ describe('Navbar', () => {
 
     renderWithRouter(<Navbar />);
 
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
+    expect(screen.getByText('Courses')).toBeInTheDocument();
   });
 
-  it('shows student-specific Dashboard link for STUDENT role', () => {
+  it('does not show Dashboard link for STUDENT role', () => {
     (useAuth as jest.Mock).mockReturnValue({
       user: {
         userId: 'student-1',
@@ -91,7 +92,8 @@ describe('Navbar', () => {
 
     renderWithRouter(<Navbar />);
 
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
+    expect(screen.getByText('Courses')).toBeInTheDocument();
   });
 
   it('shows Admin link for ADMIN role', () => {
