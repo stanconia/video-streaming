@@ -21,6 +21,7 @@ export const CourseList: React.FC = () => {
   const maxPrice = searchParams.get('maxPrice') || '';
   const sortBy = searchParams.get('sortBy') || 'newest';
   const minRating = parseInt(searchParams.get('minRating') || '0', 10);
+  const country = searchParams.get('country') || '';
   const page = parseInt(searchParams.get('page') || '0', 10);
 
   // Local input state for search (submit on Enter/button)
@@ -41,6 +42,7 @@ export const CourseList: React.FC = () => {
         maxPrice: maxPrice ? Number(maxPrice) : undefined,
         sortBy,
         minRating: minRating > 0 ? minRating : undefined,
+        country: country || undefined,
         page,
         size: 12,
       });
@@ -51,7 +53,7 @@ export const CourseList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [q, subject, difficulty, minPrice, maxPrice, sortBy, minRating, page]);
+  }, [q, subject, difficulty, minPrice, maxPrice, sortBy, minRating, country, page]);
 
   useEffect(() => {
     loadCourses();
@@ -96,7 +98,8 @@ export const CourseList: React.FC = () => {
     maxPrice: maxPrice ? String(Number(maxPrice) / 100) : '',
     sortBy,
     minRating,
-  }), [subject, difficulty, minPrice, maxPrice, sortBy, minRating]);
+    country,
+  }), [subject, difficulty, minPrice, maxPrice, sortBy, minRating, country]);
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -105,8 +108,9 @@ export const CourseList: React.FC = () => {
     if (minPrice || maxPrice) count++;
     if (sortBy && sortBy !== 'newest') count++;
     if (minRating > 0) count++;
+    if (country) count++;
     return count;
-  }, [subject, difficulty, minPrice, maxPrice, sortBy, minRating]);
+  }, [subject, difficulty, minPrice, maxPrice, sortBy, minRating, country]);
 
   const handleFilterChange = (updates: Partial<SearchFilterValues>) => {
     const paramUpdates: Record<string, string> = {};
@@ -120,6 +124,7 @@ export const CourseList: React.FC = () => {
     if ('maxPrice' in updates) {
       paramUpdates.maxPrice = updates.maxPrice ? String(Math.round(Number(updates.maxPrice) * 100)) : '';
     }
+    if ('country' in updates) paramUpdates.country = updates.country || '';
     updateParams(paramUpdates);
   };
 
@@ -133,7 +138,7 @@ export const CourseList: React.FC = () => {
   const totalPages = result?.totalPages || 0;
   const startItem = totalElements > 0 ? page * 12 + 1 : 0;
   const endItem = Math.min((page + 1) * 12, totalElements);
-  const hasFilters = q || subject || difficulty || minPrice || maxPrice || sortBy !== 'newest' || minRating > 0;
+  const hasFilters = q || subject || difficulty || minPrice || maxPrice || sortBy !== 'newest' || minRating > 0 || country;
 
   const getDifficultyBadge = (level: string) => {
     const colorMap: Record<string, { bg: string; text: string }> = {

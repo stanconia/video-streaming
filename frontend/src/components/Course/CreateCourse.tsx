@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { CreateCourseRequest } from '../../types/course/course.types';
 import { courseApi } from '../../services/api/course/CourseApi';
 import { useAuth } from '../../context/AuthContext';
+import { SubjectSelector } from '../shared/SubjectSelector';
 
 export const CreateCourse: React.FC = () => {
   const navigate = useNavigate();
@@ -114,13 +115,10 @@ export const CreateCourse: React.FC = () => {
 
           <div style={styles.field}>
             <label style={styles.label}>Subject *</label>
-            <input
-              type="text"
-              required
-              placeholder="e.g., Web Development"
+            <SubjectSelector
               value={form.subject}
-              onChange={(e) => setForm({ ...form, subject: e.target.value })}
-              style={styles.input}
+              onChange={(value) => setForm({ ...form, subject: value })}
+              placeholder="Select a subject..."
             />
           </div>
 

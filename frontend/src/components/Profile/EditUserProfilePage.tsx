@@ -4,6 +4,9 @@ import { profileApi } from '../../services/api/auth/ProfileApi';
 import { teacherApi } from '../../services/api/social/TeacherApi';
 import { ImageUpload } from '../common/ImageUpload';
 import { useAuth } from '../../context/AuthContext';
+import { LocationSelector } from '../shared/LocationSelector';
+import { MultiSubjectSelector } from '../shared/MultiSubjectSelector';
+import { COUNTRIES } from '../../data/constants';
 
 export const EditUserProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,13 +21,14 @@ export const EditUserProfilePage: React.FC = () => {
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [phone, setPhone] = useState('');
-  const [location, setLocation] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
   const [profileImageUrl, setProfileImageUrl] = useState('');
-  const [subjectInterests, setSubjectInterests] = useState('');
+  const [subjectInterestsArr, setSubjectInterestsArr] = useState<string[]>([]);
 
   // Teacher-specific fields
   const [headline, setHeadline] = useState('');
-  const [subjects, setSubjects] = useState('');
+  const [subjectsArr, setSubjectsArr] = useState<string[]>([]);
   const [hourlyRate, setHourlyRate] = useState(0);
   const [experienceYears, setExperienceYears] = useState(0);
 
@@ -39,16 +43,36 @@ export const EditUserProfilePage: React.FC = () => {
       setDisplayName(data.displayName || '');
       setBio(data.bio || '');
       setPhone(data.phone || '');
-      setLocation(data.location || '');
+      // Parse "City, Country" into separate fields
+      const loc = data.location || '';
+      if (loc.includes(', ')) {
+        const lastComma = loc.lastIndexOf(', ');
+        const parsedCity = loc.substring(0, lastComma);
+        const parsedCountry = loc.substring(lastComma + 2);
+        if (COUNTRIES.includes(parsedCountry)) {
+          setCountry(parsedCountry);
+          setCity(parsedCity);
+        } else {
+          // Country not in list, put everything in city
+          setCountry('');
+          setCity(loc);
+        }
+      } else {
+        setCountry('');
+        setCity('');
+      }
       setProfileImageUrl(data.profileImageUrl || '');
-      setSubjectInterests(data.subjectInterests || '');
+      // Parse comma-separated subject interests into array
+      const interests = data.subjectInterests || '';
+      setSubjectInterestsArr(interests ? interests.split(',').map((s: string) => s.trim()).filter(Boolean) : []);
 
       // Load teacher-specific fields
       if (user?.role === 'TEACHER') {
         try {
           const teacherProfile = await teacherApi.getMyProfile();
           setHeadline(teacherProfile.headline || '');
-          setSubjects(teacherProfile.subjects || '');
+          const subjectsStr = teacherProfile.subjects || '';
+          setSubjectsArr(subjectsStr ? subjectsStr.split(',').map((s: string) => s.trim()).filter(Boolean) : []);
           setHourlyRate(teacherProfile.hourlyRate || 0);
           setExperienceYears(teacherProfile.experienceYears || 0);
         } catch {
@@ -75,10 +99,13 @@ export const EditUserProfilePage: React.FC = () => {
     setError('');
     setSuccess('');
     try {
-      await profileApi.updateMyProfile({ email, displayName, bio, phone, location, profileImageUrl, subjectInterests: subjectInterests || undefined });
+      const location = city && country ? `${city}, ${country}` : country || '';
+      const subjectInterests = subjectInterestsArr.length > 0 ? subjectInterestsArr.join(', ') : undefined;
+      await profileApi.updateMyProfile({ email, displayName, bio, phone, location, profileImageUrl, subjectInterests });
 
       // Save teacher-specific fields
       if (user?.role === 'TEACHER') {
+        const subjects = subjectsArr.length > 0 ? subjectsArr.join(', ') : '';
         await teacherApi.updateProfile({ headline, bio, subjects, hourlyRate, experienceYears });
       }
 
@@ -157,12 +184,11 @@ export const EditUserProfilePage: React.FC = () => {
 
           <div style={styles.field}>
             <label style={styles.label}>Location</label>
-            <input
-              type="text"
-              value={location}
-              onChange={e => setLocation(e.target.value)}
-              style={styles.input}
-              placeholder="City, Country"
+            <LocationSelector
+              country={country}
+              city={city}
+              onCountryChange={setCountry}
+              onCityChange={setCity}
             />
           </div>
 
@@ -185,12 +211,9 @@ export const EditUserProfilePage: React.FC = () => {
           {user?.role === 'STUDENT' && (
             <div style={styles.field}>
               <label style={styles.label}>Subject Interests</label>
-              <input
-                type="text"
-                value={subjectInterests}
-                onChange={e => setSubjectInterests(e.target.value)}
-                style={styles.input}
-                placeholder="e.g. Math, Science, History"
+              <MultiSubjectSelector
+                selected={subjectInterestsArr}
+                onChange={setSubjectInterestsArr}
               />
             </div>
           )}
@@ -213,13 +236,10 @@ export const EditUserProfilePage: React.FC = () => {
               </div>
 
               <div style={styles.field}>
-                <label style={styles.label}>Subjects (comma-separated)</label>
-                <input
-                  type="text"
-                  value={subjects}
-                  onChange={e => setSubjects(e.target.value)}
-                  style={styles.input}
-                  placeholder="e.g. Math, Physics, Chemistry"
+                <label style={styles.label}>Subjects</label>
+                <MultiSubjectSelector
+                  selected={subjectsArr}
+                  onChange={setSubjectsArr}
                 />
               </div>
 

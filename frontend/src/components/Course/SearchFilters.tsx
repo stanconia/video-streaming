@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { SearchFilterValues } from '../../types/course/course.types';
+import { COUNTRIES } from '../../data/constants';
 
 interface SearchFiltersProps {
   subjects: string[];
@@ -19,6 +20,14 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   const [isExpanded, setIsExpanded] = useState(true);
   const [localMinPrice, setLocalMinPrice] = useState(values.minPrice);
   const [localMaxPrice, setLocalMaxPrice] = useState(values.maxPrice);
+  const [countrySearch, setCountrySearch] = useState('');
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+
+  const filteredCountries = useMemo(() => {
+    if (!countrySearch.trim()) return COUNTRIES;
+    const lower = countrySearch.toLowerCase();
+    return COUNTRIES.filter((c) => c.toLowerCase().includes(lower));
+  }, [countrySearch]);
 
   // Sync local price inputs when external values change
   React.useEffect(() => { setLocalMinPrice(values.minPrice); }, [values.minPrice]);
@@ -93,6 +102,61 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
+            </div>
+
+            <div style={{ ...styles.filterGroup, position: 'relative' as const }}>
+              <label style={styles.label}>Country</label>
+              <div style={styles.countryContainer}>
+                <input
+                  type="text"
+                  placeholder={values.country || 'All Countries'}
+                  value={countrySearch}
+                  onChange={(e) => { setCountrySearch(e.target.value); setIsCountryDropdownOpen(true); }}
+                  onFocus={() => setIsCountryDropdownOpen(true)}
+                  onBlur={() => setTimeout(() => setIsCountryDropdownOpen(false), 200)}
+                  style={{
+                    ...styles.select,
+                    width: '100%',
+                    color: values.country && !countrySearch ? '#f3f4f6' : '#f3f4f6',
+                  }}
+                />
+                {values.country && (
+                  <button
+                    onClick={() => { onChange({ country: '' }); setCountrySearch(''); }}
+                    style={styles.countryClearBtn}
+                    title="Clear country filter"
+                  >
+                    x
+                  </button>
+                )}
+                {isCountryDropdownOpen && (
+                  <div style={styles.countryDropdown}>
+                    <div
+                      style={styles.countryOption}
+                      onMouseDown={() => { onChange({ country: '' }); setCountrySearch(''); setIsCountryDropdownOpen(false); }}
+                    >
+                      All Countries
+                    </div>
+                    {filteredCountries.map((c) => (
+                      <div
+                        key={c}
+                        style={{
+                          ...styles.countryOption,
+                          backgroundColor: values.country === c ? '#4b5563' : 'transparent',
+                        }}
+                        onMouseDown={() => { onChange({ country: c }); setCountrySearch(''); setIsCountryDropdownOpen(false); }}
+                      >
+                        {c}
+                      </div>
+                    ))}
+                    {filteredCountries.length === 0 && (
+                      <div style={{ ...styles.countryOption, color: '#6b7280', fontStyle: 'italic' }}>
+                        No countries found
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div style={styles.filterGroup}>
@@ -346,5 +410,40 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '12px',
     color: '#9ca3af',
     marginLeft: '6px',
+  },
+  countryContainer: {
+    position: 'relative' as const,
+    width: '180px',
+  },
+  countryClearBtn: {
+    position: 'absolute' as const,
+    right: '8px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    color: '#9ca3af',
+    fontSize: '14px',
+    cursor: 'pointer',
+    padding: '0 4px',
+    lineHeight: 1,
+  },
+  countryDropdown: {
+    position: 'absolute' as const,
+    top: '100%',
+    left: 0,
+    right: 0,
+    maxHeight: '200px',
+    overflowY: 'auto' as const,
+    backgroundColor: '#374151',
+    border: '1px solid #4b5563',
+    borderRadius: '0 0 6px 6px',
+    zIndex: 10,
+  },
+  countryOption: {
+    padding: '8px 12px',
+    fontSize: '13px',
+    color: '#f3f4f6',
+    cursor: 'pointer',
   },
 };

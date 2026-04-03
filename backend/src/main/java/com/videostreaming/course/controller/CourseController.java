@@ -100,10 +100,17 @@ public class CourseController {
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false, defaultValue = "newest") String sortBy,
             @RequestParam(required = false) Integer minRating,
+            @RequestParam(required = false) String country,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "12") int size) {
+            @RequestParam(required = false, defaultValue = "12") int size,
+            Authentication authentication) {
+        String userId = null;
+        if (authentication != null && authentication.getPrincipal() instanceof String) {
+            userId = (String) authentication.getPrincipal();
+        }
         CourseSearchResponse response = courseService.searchCourses(
-                q, subject, difficulty, minPrice, maxPrice, sortBy, minRating, page, size);
+                q, subject, difficulty, minPrice, maxPrice, sortBy, minRating,
+                country, userId, page, size);
         return ResponseEntity.ok(response);
     }
 

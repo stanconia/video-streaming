@@ -169,6 +169,7 @@ export class CourseApi {
     if (params.maxPrice != null) searchParams.set('maxPrice', String(params.maxPrice));
     if (params.sortBy) searchParams.set('sortBy', params.sortBy);
     if (params.minRating != null) searchParams.set('minRating', String(params.minRating));
+    if (params.country) searchParams.set('country', params.country);
     if (params.page != null) searchParams.set('page', String(params.page));
     if (params.size != null) searchParams.set('size', String(params.size));
     const response = await this.client.get<CourseSearchResponse>(`/courses/search?${searchParams.toString()}`);

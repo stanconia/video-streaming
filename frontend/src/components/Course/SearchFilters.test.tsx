@@ -10,6 +10,7 @@ const defaultValues = {
   maxPrice: '',
   sortBy: 'newest',
   minRating: 0,
+  country: '',
 };
 
 const mockSubjects = ['Web Development', 'Programming', 'Mathematics', 'Science'];
