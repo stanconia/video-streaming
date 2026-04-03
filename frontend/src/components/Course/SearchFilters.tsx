@@ -52,7 +52,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             onClick={() => onChange({ minRating: values.minRating === star ? 0 : star })}
             style={{
               ...styles.starBtn,
-              color: star <= minRating ? 'var(--warning)' : 'var(--text-muted)',
+              color: star <= minRating ? '#f59e0b' : '#4b5563',
             }}
             title={`${star} star${star > 1 ? 's' : ''} & up`}
           >
@@ -136,7 +136,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                         key={c}
                         style={{
                           ...styles.countryOption,
-                          backgroundColor: values.country === c ? 'var(--accent-light)' : 'transparent',
+                          backgroundColor: values.country === c ? '#4b5563' : 'transparent',
                         }}
                         onMouseDown={() => { onChange({ country: c }); setCountrySearch(''); setIsCountryDropdownOpen(false); }}
                       >
@@ -144,7 +144,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                       </div>
                     ))}
                     {filteredCountries.length === 0 && (
-                      <div style={{ ...styles.countryOption, color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                      <div style={{ ...styles.countryOption, color: '#6b7280', fontStyle: 'italic' }}>
                         No countries found
                       </div>
                     )}
@@ -167,9 +167,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
                     onClick={() => onChange({ difficulty: opt.value })}
                     style={{
                       ...styles.btnGroupItem,
-                      backgroundColor: values.difficulty === opt.value ? 'var(--accent)' : 'var(--bg-secondary)',
-                      color: values.difficulty === opt.value ? '#fff' : 'var(--text-secondary)',
-                      borderColor: values.difficulty === opt.value ? 'var(--accent)' : 'var(--border-color)',
+                      backgroundColor: values.difficulty === opt.value ? '#8b5cf6' : '#374151',
+                      color: values.difficulty === opt.value ? '#fff' : '#d1d5db',
                     }}
                   >
                     {opt.label}
@@ -236,10 +235,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    backgroundColor: 'var(--bg-card)',
+    backgroundColor: '#1f2937',
     borderRadius: '12px',
     marginBottom: '20px',
-    border: '1px solid var(--border-color)',
+    border: '1px solid #374151',
     overflow: 'hidden',
   },
   header: {
@@ -247,8 +246,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '14px 16px',
-    backgroundColor: 'var(--bg-secondary)',
-    borderBottom: '1px solid var(--border-color)',
+    backgroundColor: '#111827',
+    borderBottom: '1px solid #374151',
   },
   toggleBtn: {
     display: 'flex',
@@ -256,7 +255,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: '8px',
     background: 'none',
     border: 'none',
-    color: 'var(--text-primary)',
+    color: '#f3f4f6',
     fontSize: '14px',
     fontWeight: 'bold',
     cursor: 'pointer',
@@ -264,13 +263,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   toggleIcon: {
     fontSize: '10px',
-    color: 'var(--text-muted)',
+    color: '#9ca3af',
   },
   badge: {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'var(--accent)',
+    backgroundColor: '#8b5cf6',
     color: '#fff',
     borderRadius: '10px',
     fontSize: '11px',
@@ -281,7 +280,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   clearAllBtn: {
     padding: '6px 14px',
-    backgroundColor: 'var(--danger)',
+    backgroundColor: '#dc2626',
     color: '#fff',
     border: 'none',
     borderRadius: '8px',
@@ -304,15 +303,15 @@ const styles: { [key: string]: React.CSSProperties } = {
   label: {
     fontSize: '11px',
     fontWeight: '600',
-    color: 'var(--text-muted)',
+    color: '#9ca3af',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
   },
   select: {
     padding: '10px 12px',
-    backgroundColor: 'var(--bg-secondary)',
-    color: 'var(--text-primary)',
-    border: '1px solid var(--border-color)',
+    backgroundColor: '#374151',
+    color: '#f3f4f6',
+    border: '1px solid #4b5563',
     borderRadius: '8px',
     fontSize: '13px',
     cursor: 'pointer',
@@ -327,7 +326,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   btnGroupItem: {
     padding: '7px 12px',
-    border: '1px solid var(--border-color)',
+    border: 'none',
     borderRadius: '8px',
     fontSize: '12px',
     cursor: 'pointer',
@@ -342,28 +341,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexWrap: 'wrap' as const,
   },
   currencySign: {
-    color: 'var(--text-muted)',
+    color: '#9ca3af',
     fontSize: '14px',
     fontWeight: '600',
   },
   priceInput: {
     width: '70px',
     padding: '10px 8px',
-    backgroundColor: 'var(--bg-secondary)',
-    color: 'var(--text-primary)',
-    border: '1px solid var(--border-color)',
+    backgroundColor: '#374151',
+    color: '#f3f4f6',
+    border: '1px solid #4b5563',
     borderRadius: '8px',
     fontSize: '13px',
     outline: 'none',
     boxSizing: 'border-box' as const,
   },
   priceDash: {
-    color: 'var(--text-muted)',
+    color: '#6b7280',
     fontSize: '16px',
   },
   applyPriceBtn: {
     padding: '10px 14px',
-    backgroundColor: 'var(--accent)',
+    backgroundColor: '#8b5cf6',
     color: '#fff',
     border: 'none',
     borderRadius: '8px',
@@ -381,7 +380,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   starLabel: {
     fontSize: '11px',
     fontWeight: '600',
-    color: 'var(--text-muted)',
+    color: '#9ca3af',
     textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
     marginRight: '4px',
@@ -396,7 +395,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   starText: {
     fontSize: '12px',
-    color: 'var(--text-muted)',
+    color: '#9ca3af',
     marginLeft: '6px',
   },
   countryContainer: {
@@ -410,7 +409,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     transform: 'translateY(-50%)',
     background: 'none',
     border: 'none',
-    color: 'var(--text-muted)',
+    color: '#9ca3af',
     fontSize: '14px',
     cursor: 'pointer',
     padding: '0 4px',
@@ -423,15 +422,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     right: 0,
     maxHeight: '200px',
     overflowY: 'auto' as const,
-    backgroundColor: 'var(--bg-card)',
-    border: '1px solid var(--border-color)',
+    backgroundColor: '#374151',
+    border: '1px solid #4b5563',
     borderRadius: '0 0 8px 8px',
     zIndex: 10,
   },
   countryOption: {
     padding: '10px 12px',
     fontSize: '13px',
-    color: 'var(--text-primary)',
+    color: '#f3f4f6',
     cursor: 'pointer',
   },
 };
