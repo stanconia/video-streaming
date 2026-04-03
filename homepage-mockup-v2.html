@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearningHaven - Landing Page Mockup v2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #1a1a2e; background: #fff; -webkit-font-smoothing: antialiased; }
+
+  /* ── Navbar ── */
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.06); }
+  .nav-inner { max-width: 1240px; margin: 0 auto; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-brand { font-size: 22px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.5px; }
+  .nav-brand span { color: #7c3aed; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { text-decoration: none; color: #64748b; font-size: 15px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: #1a1a2e; }
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-ghost { padding: 10px 20px; background: none; border: none; color: #1a1a2e; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 10px; transition: background 0.2s; }
+  .btn-ghost:hover { background: #f1f5f9; }
+  .btn-primary { padding: 10px 24px; background: #7c3aed; color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 10px; transition: all 0.2s; }
+  .btn-primary:hover { background: #6d28d9; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(124,58,237,0.3); }
+
+  /* ── Hero ── */
+  .hero { padding: 160px 32px 100px; text-align: center; position: relative; overflow: hidden; background: linear-gradient(180deg, #f8f7ff 0%, #fff 100%); }
+  .hero::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%); pointer-events: none; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(124,58,237,0.08); color: #7c3aed; border-radius: 100px; font-size: 13px; font-weight: 600; margin-bottom: 32px; }
+  .hero-badge-dot { width: 6px; height: 6px; background: #7c3aed; border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .hero h1 { font-size: 72px; font-weight: 800; line-height: 1.05; letter-spacing: -2px; color: #1a1a2e; max-width: 900px; margin: 0 auto 24px; }
+  .hero h1 .highlight { background: linear-gradient(135deg, #7c3aed, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { font-size: 20px; color: #64748b; line-height: 1.6; max-width: 600px; margin: 0 auto 40px; font-weight: 400; }
+  .hero-ctas { display: flex; gap: 16px; justify-content: center; margin-bottom: 64px; }
+  .btn-hero { padding: 16px 32px; font-size: 16px; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+  .btn-hero-primary { background: #7c3aed; color: #fff; border: none; box-shadow: 0 4px 14px rgba(124,58,237,0.35); }
+  .btn-hero-primary:hover { background: #6d28d9; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124,58,237,0.4); }
+  .btn-hero-secondary { background: #fff; color: #1a1a2e; border: 1.5px solid #e2e8f0; }
+  .btn-hero-secondary:hover { border-color: #7c3aed; color: #7c3aed; transform: translateY(-2px); }
+
+  /* ── Logo Marquee ── */
+  .logos { padding: 0 32px 80px; text-align: center; }
+  .logos-label { font-size: 14px; color: #94a3b8; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 32px; }
+  .logos-row { display: flex; justify-content: center; align-items: center; gap: 56px; flex-wrap: wrap; opacity: 0.4; }
+  .logo-item { font-size: 22px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.5px; }
+
+  /* ── Section Container ── */
+  .section { padding: 100px 32px; }
+  .section-inner { max-width: 1240px; margin: 0 auto; }
+  .section-label { font-size: 13px; color: #7c3aed; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+  .section-title { font-size: 48px; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; color: #1a1a2e; margin-bottom: 20px; }
+  .section-desc { font-size: 18px; color: #64748b; line-height: 1.6; max-width: 600px; }
+  .section-dark { background: #0f0f1a; color: #fff; }
+  .section-dark .section-title { color: #fff; }
+  .section-dark .section-desc { color: #94a3b8; }
+  .section-gray { background: #f8fafc; }
+
+  /* ── How It Works (Frontify-style alternating layout) ── */
+  .step-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-bottom: 100px; }
+  .step-row:last-child { margin-bottom: 0; }
+  .step-row.reverse .step-visual { order: -1; }
+  .step-number { font-size: 14px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
+  .step-title { font-size: 36px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; color: #1a1a2e; }
+  .step-desc { font-size: 17px; color: #64748b; line-height: 1.7; margin-bottom: 24px; }
+  .step-link { display: inline-flex; align-items: center; gap: 8px; color: #7c3aed; font-weight: 600; font-size: 15px; text-decoration: none; transition: gap 0.2s; }
+  .step-link:hover { gap: 12px; }
+  .step-visual { background: linear-gradient(135deg, #f1f0ff, #ede9fe); border-radius: 20px; height: 360px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .step-visual-icon { font-size: 80px; opacity: 0.6; }
+  .step-visual::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(124,58,237,0.1); border-radius: 20px; pointer-events: none; }
+
+  /* ── Features Grid ── */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px; }
+  .feature-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; transition: all 0.3s; }
+  .feature-card:hover { border-color: #7c3aed; transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+  .feature-icon-wrap { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
+  .fi-purple { background: rgba(124,58,237,0.08); }
+  .fi-blue { background: rgba(59,130,246,0.08); }
+  .fi-green { background: rgba(16,185,129,0.08); }
+  .fi-orange { background: rgba(245,158,11,0.08); }
+  .fi-pink { background: rgba(236,72,153,0.08); }
+  .fi-cyan { background: rgba(6,182,212,0.08); }
+  .feature-title { font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
+  .feature-desc { font-size: 15px; color: #64748b; line-height: 1.6; }
+
+  /* ── Stats Banner ── */
+  .stats-banner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .stat-item { padding: 48px 32px; text-align: center; border-right: 1px solid rgba(255,255,255,0.1); }
+  .stat-item:last-child { border-right: none; }
+  .stat-number { font-size: 56px; font-weight: 800; letter-spacing: -2px; background: linear-gradient(135deg, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px; }
+  .stat-label { font-size: 15px; color: #94a3b8; font-weight: 500; }
+
+  /* ── Testimonials ── */
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px; }
+  .testimonial-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; }
+  .testimonial-stars { color: #f59e0b; font-size: 18px; margin-bottom: 16px; letter-spacing: 2px; }
+  .testimonial-text { font-size: 16px; color: #334155; line-height: 1.7; margin-bottom: 24px; font-style: italic; }
+  .testimonial-author { display: flex; align-items: center; gap: 12px; }
+  .testimonial-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; }
+  .testimonial-name { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+  .testimonial-role { font-size: 13px; color: #94a3b8; }
+
+  /* ── CTA Section ── */
+  .cta-section { padding: 120px 32px; text-align: center; background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #6d28d9 100%); position: relative; overflow: hidden; }
+  .cta-section::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: rgba(255,255,255,0.06); border-radius: 50%; }
+  .cta-section::after { content: ''; position: absolute; bottom: -30%; left: -10%; width: 400px; height: 400px; background: rgba(255,255,255,0.04); border-radius: 50%; }
+  .cta-section h2 { font-size: 52px; font-weight: 800; color: #fff; letter-spacing: -1.5px; margin-bottom: 20px; position: relative; z-index: 1; }
+  .cta-section p { font-size: 20px; color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto 40px; line-height: 1.6; position: relative; z-index: 1; }
+  .btn-cta { padding: 18px 40px; background: #fff; color: #7c3aed; border: none; font-size: 17px; font-weight: 700; border-radius: 12px; cursor: pointer; transition: all 0.2s; position: relative; z-index: 1; }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+
+  /* ── Footer ── */
+  .footer { background: #0f0f1a; color: #94a3b8; padding: 64px 32px 32px; }
+  .footer-inner { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-size: 20px; font-weight: 800; color: #fff; }
+  .footer-brand span { color: #a78bfa; }
+  .footer-links { display: flex; gap: 32px; }
+  .footer-links a { color: #94a3b8; text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .footer-links a:hover { color: #fff; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 40px; letter-spacing: -1px; }
+    .hero p { font-size: 17px; }
+    .hero-ctas { flex-direction: column; align-items: center; }
+    .step-row { grid-template-columns: 1fr; gap: 40px; }
+    .step-row.reverse .step-visual { order: 0; }
+    .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    .stats-banner { grid-template-columns: repeat(2, 1fr); }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .section-title { font-size: 32px; }
+    .nav-links { display: none; }
+    .cta-section h2 { font-size: 32px; }
+    .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
+    .logos-row { gap: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Learning<span>Haven</span></div>
+    <div class="nav-links">
+      <a href="#">Courses</a>
+      <a href="#">Mind Pros</a>
+      <a href="#">How It Works</a>
+      <a href="#">Pricing</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-ghost">Log In</button>
+      <button class="btn-primary">Get Started Free</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    Live classes happening now
+  </div>
+  <h1>Where curious minds<br>find <span class="highlight">expert guidance</span></h1>
+  <p>Interactive live classes, structured courses, and a community of expert Mind Pros to help you master any skill.</p>
+  <div class="hero-ctas">
+    <button class="btn-hero btn-hero-primary">Start Learning Free</button>
+    <button class="btn-hero btn-hero-secondary">Become a Mind Pro</button>
+  </div>
+</section>
+
+<!-- ── Logo Marquee ── -->
+<div class="logos">
+  <div class="logos-label">Trusted by learners from</div>
+  <div class="logos-row">
+    <span class="logo-item">Google</span>
+    <span class="logo-item">Microsoft</span>
+    <span class="logo-item">Stanford</span>
+    <span class="logo-item">MIT</span>
+    <span class="logo-item">Amazon</span>
+    <span class="logo-item">Meta</span>
+  </div>
+</div>
+
+<!-- ── How It Works (Frontify-style alternating) ── -->
+<section class="section section-gray">
+  <div class="section-inner">
+    <div class="step-row">
+      <div class="step-content">
+        <div class="step-number">Step 01</div>
+        <h3 class="step-title">Discover courses built by experts</h3>
+        <p class="step-desc">Browse hundreds of courses across every subject. Filter by difficulty, price, rating, and more to find exactly what you need.</p>
+        <a href="#" class="step-link">Explore courses <span>&rarr;</span></a>
+      </div>
+      <div class="step-visual">
+        <span class="step-visual-icon">&#128218;</span>
+      </div>
+    </div>
+
+    <div class="step-row reverse">
+      <div class="step-content">
+        <div class="step-number">Step 02</div>
+        <h3 class="step-title">Learn with structure and progress tracking</h3>
+        <p class="step-desc">Enroll in courses with organized modules, lessons, quizzes, and assignments. Watch your progress grow with every completed lesson.</p>
+        <a href="#" class="step-link">See how it works <span>&rarr;</span></a>
+      </div>
+      <div class="step-visual" style="background: linear-gradient(135deg, #ecfdf5, #d1fae5);">
+        <span class="step-visual-icon">&#128200;</span>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-content">
+        <div class="step-number">Step 03</div>
+        <h3 class="step-title">Join live classes with real-time interaction</h3>
+        <p class="step-desc">Attend live sessions with video, screenshare, chat, polls, and interactive whiteboards. Learn directly from your Mind Pro in real time.</p>
+        <a href="#" class="step-link">View upcoming sessions <span>&rarr;</span></a>
+      </div>
+      <div class="step-visual" style="background: linear-gradient(135deg, #fff7ed, #fed7aa);">
+        <span class="step-visual-icon">&#127909;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section class="section">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom: 16px;">
+      <span class="section-label">Everything you need</span>
+    </div>
+    <h2 class="section-title" style="text-align:center; max-width:700px; margin:0 auto 16px;">One platform for every way you learn</h2>
+    <p class="section-desc" style="text-align:center; max-width:600px; margin:0 auto;">From self-paced courses to live interactive classes, LearningHaven gives you the tools to learn effectively.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-purple">&#127909;</div>
+        <div class="feature-title">Live Classes</div>
+        <div class="feature-desc">Real-time video sessions with chat, polls, hand raise, and screen sharing.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-blue">&#128218;</div>
+        <div class="feature-title">Structured Courses</div>
+        <div class="feature-desc">Organized modules and lessons with progress tracking at every step.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-green">&#128221;</div>
+        <div class="feature-title">Quizzes & Assignments</div>
+        <div class="feature-desc">Test your knowledge and get personalized feedback from your Mind Pro.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-orange">&#127942;</div>
+        <div class="feature-title">Certificates</div>
+        <div class="feature-desc">Earn verifiable certificates when you complete courses.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-pink">&#128172;</div>
+        <div class="feature-title">Discussion Forums</div>
+        <div class="feature-desc">Connect with peers, ask questions, and collaborate on every course.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap fi-cyan">&#128197;</div>
+        <div class="feature-title">Smart Scheduling</div>
+        <div class="feature-desc">Calendar integration with automatic reminders for upcoming sessions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats ── -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <div class="stats-banner">
+      <div class="stat-item">
+        <div class="stat-number">2,500+</div>
+        <div class="stat-label">Active Mind Learners</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">180+</div>
+        <div class="stat-label">Expert-Led Courses</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Verified Mind Pros</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4.8</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Testimonials ── -->
+<section class="section section-gray">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom: 16px;">
+      <span class="section-label">What our learners say</span>
+    </div>
+    <h2 class="section-title" style="text-align:center; margin-bottom: 0;">Loved by curious minds worldwide</h2>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"The live sessions are incredible. Being able to ask questions in real-time and get immediate feedback changed how I learn."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#7c3aed;">SK</div>
+          <div>
+            <div class="testimonial-name">Sarah Kim</div>
+            <div class="testimonial-role">Data Science Mind Learner</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"As a Mind Pro, this platform gives me everything I need to teach effectively. The course builder and analytics are top-notch."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#059669;">JR</div>
+          <div>
+            <div class="testimonial-name">James Rodriguez</div>
+            <div class="testimonial-role">Web Development Mind Pro</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-text">"The progress tracking keeps me motivated. I can see exactly where I am in each course and what's coming next."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" style="background:#d97706;">AL</div>
+          <div>
+            <div class="testimonial-name">Aisha Lawan</div>
+            <div class="testimonial-role">UX Design Mind Learner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <h2>Ready to unlock your potential?</h2>
+  <p>Join thousands of learners mastering new skills with expert Mind Pros. Start your journey today.</p>
+  <button class="btn-cta">Get Started Free</button>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Learning<span>Haven</span></div>
+    <div class="footer-links">
+      <a href="#">Courses</a>
+      <a href="#">Mind Pros</a>
+      <a href="#">About</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

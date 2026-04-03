@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearningHaven - Landing Page Mockup v3 (Arthur-inspired)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; color: #fff; background: #0a0a14; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+  /* ── Navbar ── */
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 68px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-brand { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+  .nav-brand span { color: #a78bfa; }
+  .nav-links { display: flex; gap: 36px; }
+  .nav-links a { text-decoration: none; color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500; transition: color 0.2s; letter-spacing: 0.2px; }
+  .nav-links a:hover { color: #fff; }
+  .nav-actions { display: flex; align-items: center; gap: 16px; }
+  .btn-sign-in { padding: 9px 20px; background: none; border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 14px; font-weight: 500; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+  .btn-sign-in:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+  .btn-get-started { padding: 9px 22px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+  .btn-get-started:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(124,58,237,0.4); }
+
+  /* ── Hero ── */
+  .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 140px 32px 80px; position: relative; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; z-index: 0; }
+  .hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 900px; height: 900px; background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, rgba(168,85,247,0.05) 40%, transparent 70%); pointer-events: none; }
+  .hero-glow-2 { position: absolute; top: 30%; right: 10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%); pointer-events: none; }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; }
+  .hero-content { position: relative; z-index: 1; max-width: 850px; }
+  .hero-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: #a78bfa; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 28px; display: inline-flex; align-items: center; gap: 10px; }
+  .hero-eyebrow-line { width: 32px; height: 1px; background: #a78bfa; }
+  .hero h1 { font-size: 68px; font-weight: 800; line-height: 1.05; letter-spacing: -2.5px; color: #fff; margin-bottom: 28px; }
+  .hero h1 .gradient-text { background: linear-gradient(135deg, #a78bfa, #c084fc, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { font-size: 19px; color: rgba(255,255,255,0.5); line-height: 1.7; max-width: 580px; margin: 0 auto 44px; font-weight: 400; }
+  .hero-ctas { display: flex; gap: 16px; justify-content: center; }
+  .btn-hero-primary { padding: 16px 36px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; border: none; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; gap: 10px; }
+  .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,58,237,0.4); }
+  .btn-hero-primary .arrow { transition: transform 0.2s; }
+  .btn-hero-primary:hover .arrow { transform: translateX(4px); }
+  .btn-hero-secondary { padding: 16px 36px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.12); font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.25s; }
+  .btn-hero-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+  /* ── Logos ── */
+  .logos { padding: 60px 32px 80px; text-align: center; position: relative; z-index: 1; }
+  .logos-label { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.3); font-weight: 500; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 28px; }
+  .logos-row { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; }
+  .logo-item { font-size: 20px; font-weight: 700; color: rgba(255,255,255,0.2); letter-spacing: -0.3px; transition: color 0.3s; }
+  .logo-item:hover { color: rgba(255,255,255,0.5); }
+
+  /* ── Sections ── */
+  .section { padding: 100px 32px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #a78bfa; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
+  .section-title { font-size: 44px; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; color: #fff; margin-bottom: 16px; }
+  .section-desc { font-size: 17px; color: rgba(255,255,255,0.45); line-height: 1.7; max-width: 560px; }
+
+  /* ── Capabilities (Arthur-style alternating) ── */
+  .capability { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-bottom: 120px; }
+  .capability:last-child { margin-bottom: 0; }
+  .capability.reverse .cap-visual { order: -1; }
+  .cap-label { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #a78bfa; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px; font-weight: 600; }
+  .cap-title { font-size: 34px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 20px; color: #fff; }
+  .cap-desc { font-size: 16px; color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 28px; }
+  .cap-link { display: inline-flex; align-items: center; gap: 8px; color: #a78bfa; font-weight: 600; font-size: 15px; text-decoration: none; transition: all 0.2s; }
+  .cap-link:hover { gap: 14px; color: #c4b5fd; }
+  .cap-visual { border-radius: 20px; height: 380px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+  .cap-visual-1 { background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(168,85,247,0.05)); }
+  .cap-visual-2 { background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(6,182,212,0.05)); }
+  .cap-visual-3 { background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(236,72,153,0.05)); }
+  .cap-icon { font-size: 80px; opacity: 0.5; filter: grayscale(0.3); }
+  .cap-visual::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(10,10,20,0.3)); pointer-events: none; }
+
+  /* ── Features Grid ── */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 64px; }
+  .feature-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 32px; transition: all 0.3s; }
+  .feature-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(167,139,250,0.3); transform: translateY(-4px); }
+  .feature-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; background: rgba(167,139,250,0.1); }
+  .feature-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .feature-desc { font-size: 14px; color: rgba(255,255,255,0.4); line-height: 1.7; }
+
+  /* ── Stats ── */
+  .stats-section { border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stat { padding: 56px 32px; text-align: center; border-right: 1px solid rgba(255,255,255,0.06); }
+  .stat:last-child { border-right: none; }
+  .stat-number { font-family: 'IBM Plex Mono', monospace; font-size: 52px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; background: linear-gradient(135deg, #a78bfa, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .stat-label { font-size: 14px; color: rgba(255,255,255,0.35); font-weight: 500; letter-spacing: 0.5px; }
+
+  /* ── Testimonials ── */
+  .testimonials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 64px; }
+  .testimonial { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 32px; transition: border-color 0.3s; }
+  .testimonial:hover { border-color: rgba(167,139,250,0.2); }
+  .test-stars { color: #f59e0b; font-size: 16px; margin-bottom: 20px; letter-spacing: 3px; }
+  .test-quote { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 28px; font-style: italic; }
+  .test-author { display: flex; align-items: center; gap: 14px; }
+  .test-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
+  .test-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .test-role { font-size: 13px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+
+  /* ── CTA ── */
+  .cta { padding: 140px 32px; text-align: center; position: relative; overflow: hidden; }
+  .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 700px; height: 700px; background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%); pointer-events: none; }
+  .cta h2 { font-size: 52px; font-weight: 800; color: #fff; letter-spacing: -1.5px; margin-bottom: 20px; position: relative; z-index: 1; }
+  .cta h2 .gradient-text { background: linear-gradient(135deg, #a78bfa, #e879f9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .cta p { font-size: 18px; color: rgba(255,255,255,0.4); max-width: 550px; margin: 0 auto 40px; line-height: 1.7; position: relative; z-index: 1; }
+  .cta .btn-hero-primary { position: relative; z-index: 1; }
+
+  /* ── Footer ── */
+  .footer { border-top: 1px solid rgba(255,255,255,0.06); padding: 48px 32px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+  .footer-brand { font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 700; color: #fff; }
+  .footer-brand span { color: #a78bfa; }
+  .footer-copy { font-size: 13px; color: rgba(255,255,255,0.25); }
+  .footer-links { display: flex; gap: 28px; }
+  .footer-links a { color: rgba(255,255,255,0.35); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .footer-links a:hover { color: #a78bfa; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 38px; letter-spacing: -1px; }
+    .hero-sub { font-size: 16px; }
+    .hero-ctas { flex-direction: column; align-items: center; }
+    .capability { grid-template-columns: 1fr; gap: 40px; }
+    .capability.reverse .cap-visual { order: 0; }
+    .features-grid, .testimonials { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .section-title { font-size: 30px; }
+    .nav-links { display: none; }
+    .cta h2 { font-size: 32px; }
+    .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Learning<span>Haven</span></div>
+    <div class="nav-links">
+      <a href="#">Courses</a>
+      <a href="#">Mind Pros</a>
+      <a href="#">How It Works</a>
+      <a href="#">Pricing</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-sign-in">Log In</button>
+      <button class="btn-get-started">Get Started</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-glow"></div>
+    <div class="hero-glow-2"></div>
+    <div class="hero-grid"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-line"></span>
+      The future of learning is live
+      <span class="hero-eyebrow-line"></span>
+    </div>
+    <h1>Master any skill with<br><span class="gradient-text">expert Mind Pros.</span></h1>
+    <p class="hero-sub">Interactive live classes, structured courses, and a global community of verified experts. Learn at your pace or join live — the choice is yours.</p>
+    <div class="hero-ctas">
+      <button class="btn-hero-primary">Start Learning Free <span class="arrow">&rarr;</span></button>
+      <button class="btn-hero-secondary">Become a Mind Pro</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── Logos ── -->
+<div class="logos">
+  <div class="logos-label">Trusted by learners from</div>
+  <div class="logos-row">
+    <span class="logo-item">Google</span>
+    <span class="logo-item">Microsoft</span>
+    <span class="logo-item">Stanford</span>
+    <span class="logo-item">MIT</span>
+    <span class="logo-item">Amazon</span>
+    <span class="logo-item">Meta</span>
+  </div>
+</div>
+
+<!-- ── Capabilities ── -->
+<section class="section">
+  <div class="section-inner">
+    <div class="capability">
+      <div>
+        <div class="cap-label">Discover</div>
+        <h3 class="cap-title">Courses built by experts, structured for results</h3>
+        <p class="cap-desc">Browse hundreds of courses across every subject. Each one is organized into modules and lessons with quizzes, assignments, and progress tracking built in.</p>
+        <a href="#" class="cap-link">Explore courses <span>&rarr;</span></a>
+      </div>
+      <div class="cap-visual cap-visual-1">
+        <span class="cap-icon">&#128218;</span>
+      </div>
+    </div>
+
+    <div class="capability reverse">
+      <div>
+        <div class="cap-label">Learn Live</div>
+        <h3 class="cap-title">Join live sessions with real-time interaction</h3>
+        <p class="cap-desc">Attend live classes with HD video, screen sharing, interactive chat, polls, hand raise, and collaborative whiteboards. Learn directly from your Mind Pro.</p>
+        <a href="#" class="cap-link">See upcoming sessions <span>&rarr;</span></a>
+      </div>
+      <div class="cap-visual cap-visual-2">
+        <span class="cap-icon">&#127909;</span>
+      </div>
+    </div>
+
+    <div class="capability">
+      <div>
+        <div class="cap-label">Track Progress</div>
+        <h3 class="cap-title">Visualize your growth with every lesson completed</h3>
+        <p class="cap-desc">Track completion rates, quiz scores, and assignment grades across all your courses. Earn certificates to showcase your achievements.</p>
+        <a href="#" class="cap-link">Start your journey <span>&rarr;</span></a>
+      </div>
+      <div class="cap-visual cap-visual-3">
+        <span class="cap-icon">&#128200;</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ── -->
+<section class="section" style="padding-top: 40px;">
+  <div class="section-inner">
+    <div style="text-align:center;">
+      <div class="section-eyebrow">Platform</div>
+      <h2 class="section-title" style="max-width:650px; margin:0 auto 16px;">Everything you need,<br>nothing you don't</h2>
+      <p class="section-desc" style="margin: 0 auto;">A complete learning platform designed for both Mind Learners and Mind Pros.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#127909;</div>
+        <div class="feature-title">Live Classes</div>
+        <div class="feature-desc">Real-time video with chat, polls, hand raise, emoji reactions, and screen sharing.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(59,130,246,0.1);">&#128218;</div>
+        <div class="feature-title">Structured Courses</div>
+        <div class="feature-desc">Modules, lessons, and progress tracking organized for optimal learning outcomes.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.1);">&#128221;</div>
+        <div class="feature-title">Quizzes & Assignments</div>
+        <div class="feature-desc">Test knowledge with auto-graded quizzes and get personalized Mind Pro feedback.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.1);">&#127942;</div>
+        <div class="feature-title">Certificates</div>
+        <div class="feature-desc">Earn verifiable certificates on course completion to showcase your skills.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(236,72,153,0.1);">&#128172;</div>
+        <div class="feature-title">Discussion Forums</div>
+        <div class="feature-desc">Collaborate with peers, ask questions, and deepen understanding together.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(6,182,212,0.1);">&#128197;</div>
+        <div class="feature-title">Smart Scheduling</div>
+        <div class="feature-desc">Calendar integration with Google Calendar links and session reminders.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats ── -->
+<section class="section stats-section">
+  <div class="section-inner">
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-number">2,500+</div>
+        <div class="stat-label">Active Mind Learners</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">180+</div>
+        <div class="stat-label">Expert-Led Courses</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">50+</div>
+        <div class="stat-label">Verified Mind Pros</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">4.8</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Testimonials ── -->
+<section class="section">
+  <div class="section-inner">
+    <div style="text-align:center;">
+      <div class="section-eyebrow">Testimonials</div>
+      <h2 class="section-title" style="margin-bottom: 0;">Loved by curious minds worldwide</h2>
+    </div>
+    <div class="testimonials">
+      <div class="testimonial">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="test-quote">"The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable."</p>
+        <div class="test-author">
+          <div class="test-avatar" style="background: linear-gradient(135deg,#7c3aed,#a855f7); color:#fff;">SK</div>
+          <div>
+            <div class="test-name">Sarah Kim</div>
+            <div class="test-role">Data Science Mind Learner</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="test-quote">"As a Mind Pro, this platform gives me everything I need. The course builder, analytics, and payment system are all seamlessly integrated."</p>
+        <div class="test-author">
+          <div class="test-avatar" style="background: linear-gradient(135deg,#059669,#10b981); color:#fff;">JR</div>
+          <div>
+            <div class="test-name">James Rodriguez</div>
+            <div class="test-role">Web Development Mind Pro</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="test-quote">"The progress tracking keeps me motivated every day. I can see exactly how far I've come and what's ahead in each course."</p>
+        <div class="test-author">
+          <div class="test-avatar" style="background: linear-gradient(135deg,#d97706,#f59e0b); color:#fff;">AL</div>
+          <div>
+            <div class="test-name">Aisha Lawan</div>
+            <div class="test-role">UX Design Mind Learner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta">
+  <div class="cta-glow"></div>
+  <h2>Ready to unlock your<br><span class="gradient-text">full potential?</span></h2>
+  <p>Join thousands of learners mastering new skills with expert Mind Pros. Your journey starts with a single click.</p>
+  <button class="btn-hero-primary" style="font-size:17px; padding: 18px 40px;">Get Started Free <span class="arrow">&rarr;</span></button>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Learning<span>Haven</span></div>
+    <div class="footer-links">
+      <a href="#">Courses</a>
+      <a href="#">Mind Pros</a>
+      <a href="#">About</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+    <div class="footer-copy">&copy; 2026 LearningHaven</div>
+  </div>
+</footer>
+
+</body>
+</html>

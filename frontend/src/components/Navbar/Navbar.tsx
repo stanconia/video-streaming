@@ -28,7 +28,7 @@ export const Navbar: React.FC = () => {
   return (
     <nav style={styles.nav} className="navbar">
       <div style={styles.left} className="navbar-left">
-        <span style={styles.brand} onClick={() => handleNav('/')}>LearningHaven</span>
+        <span style={styles.brand} onClick={() => handleNav('/')}>MindMint</span>
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? '✕' : '☰'}
         </button>

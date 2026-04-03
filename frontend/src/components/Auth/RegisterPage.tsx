@@ -93,7 +93,7 @@ export function RegisterPage() {
     return (
       <div style={styles.container} className="page-container">
         <div style={styles.card} className="auth-card">
-          <h1 style={styles.title}>LearningHaven</h1>
+          <h1 style={styles.title}>MindMint</h1>
           <h2 style={styles.subtitle}>Parental Consent Required</h2>
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <p style={{ marginBottom: '16px', color: '#333' }}>
@@ -117,7 +117,7 @@ export function RegisterPage() {
   return (
     <div style={styles.container} className="page-container">
       <div style={styles.card} className="auth-card">
-        <h1 style={styles.title}>LearningHaven</h1>
+        <h1 style={styles.title}>MindMint</h1>
         <h2 style={styles.subtitle}>Create Account</h2>
 
         {error && <div style={styles.error}>{error}</div>}

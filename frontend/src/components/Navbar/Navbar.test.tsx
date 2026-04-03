@@ -51,7 +51,7 @@ describe('Navbar', () => {
 
     renderWithRouter(<Navbar />);
 
-    expect(screen.getByText('LearningHaven')).toBeInTheDocument();
+    expect(screen.getByText('MindMint')).toBeInTheDocument();
     expect(screen.getByText('Courses')).toBeInTheDocument();
     expect(screen.getByText('Mind Pros')).toBeInTheDocument();
     expect(screen.getByText('Messages')).toBeInTheDocument();

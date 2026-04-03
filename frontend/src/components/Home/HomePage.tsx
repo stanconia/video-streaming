@@ -31,7 +31,7 @@ function LandingPage() {
       {/* Landing Navbar */}
       <div style={styles.landingNav}>
         <div style={styles.landingNavInner}>
-          <span style={styles.landingBrand}>LearningHaven</span>
+          <span style={styles.landingBrand}>MindMint</span>
           <div style={styles.landingNavLinks}>
             <button onClick={() => navigate('/login')} style={styles.landingNavLink}>Log In</button>
             <button onClick={() => navigate('/register')} style={styles.landingSignup}>Sign Up</button>
@@ -125,7 +125,7 @@ function LandingPage() {
       {/* CTA */}
       <div style={styles.ctaBanner}>
         <h2 style={styles.ctaTitle}>Ready to Start Learning?</h2>
-        <p style={styles.ctaSub}>Join LearningHaven today and get access to courses from expert Mind Pros.</p>
+        <p style={styles.ctaSub}>Join MindMint today and get access to courses from expert Mind Pros.</p>
         <button onClick={() => navigate('/register')} style={styles.btnPrimary}>Create Free Account</button>
       </div>
       </div>
