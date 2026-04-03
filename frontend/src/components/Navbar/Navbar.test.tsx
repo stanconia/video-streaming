@@ -53,7 +53,7 @@ describe('Navbar', () => {
 
     expect(screen.getByText('LearningHaven')).toBeInTheDocument();
     expect(screen.getByText('Courses')).toBeInTheDocument();
-    expect(screen.getByText('Teachers')).toBeInTheDocument();
+    expect(screen.getByText('Mind Pros')).toBeInTheDocument();
     expect(screen.getByText('Messages')).toBeInTheDocument();
     expect(screen.getByText('Calendar')).toBeInTheDocument();
     expect(screen.getByText('Recordings')).toBeInTheDocument();

@@ -83,7 +83,7 @@ describe('StudentDashboard', () => {
     render(<StudentDashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Student Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Mind Learner Dashboard')).toBeInTheDocument();
     });
 
     // Check stat cards
