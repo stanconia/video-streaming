@@ -122,7 +122,7 @@ public class CourseEnrollmentService {
             }
 
             // COPPA: under-13 needs parental consent to be granted first
-            if (studentAge < 13 && !student.isParentalConsentGranted()) {
+            if (studentAge < 13 && !student.getParentalConsentGranted()) {
                 throw new RuntimeException("Parental consent is required before enrolling. Please ask your parent/guardian to approve your account first.");
             }
         }
