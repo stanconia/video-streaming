@@ -18,115 +18,178 @@ import { EarningsChart } from '../Dashboard/EarningsChart';
 // ──────────────────────────────────────────────
 function LandingPage() {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<Course[]>([]);
 
-  useEffect(() => {
-    courseApi.searchCourses({ sortBy: 'popular', size: 4 })
-      .then((r) => setCourses(r.content))
-      .catch(() => {});
-  }, []);
+  const L = landingStyles;
 
   return (
-    <div>
-      {/* Landing Navbar */}
-      <div style={styles.landingNav}>
-        <div style={styles.landingNavInner}>
-          <span style={styles.landingBrand}>LearningHaven</span>
-          <div style={styles.landingNavLinks}>
-            <button onClick={() => navigate('/login')} style={styles.landingNavLink}>Log In</button>
-            <button onClick={() => navigate('/register')} style={styles.landingSignup}>Sign Up</button>
+    <div style={L.page}>
+      {/* Navbar */}
+      <nav style={L.nav}>
+        <div style={L.navInner}>
+          <span style={L.brand}>Learning<span style={{ color: '#a78bfa' }}>Haven</span></span>
+          <div style={L.navActions}>
+            <button onClick={() => navigate('/login')} style={L.btnSignIn}>Log In</button>
+            <button onClick={() => navigate('/register')} style={L.btnGetStarted}>Get Started</button>
           </div>
         </div>
-      </div>
+      </nav>
 
       {/* Hero */}
-      <div style={styles.landingHero}>
-        <h1 style={styles.landingTitle}>Learn from Expert Mind Pros, Live</h1>
-        <p style={styles.landingSub}>
-          Join thousands of students learning through interactive live classes,
-          structured courses, and a supportive community.
-        </p>
-        <div style={styles.heroActions}>
-          <button onClick={() => navigate('/register')} style={styles.btnPrimary}>Get Started Free</button>
-          <button onClick={() => navigate('/register')} style={styles.btnSecondary}>Become a Mind Pro</button>
+      <section style={L.hero}>
+        <div style={L.heroGlow} />
+        <div style={L.heroGlow2} />
+        <div style={L.heroContent}>
+          <div style={L.eyebrow}>
+            <span style={L.eyebrowLine} />
+            <span>The future of learning is live</span>
+            <span style={L.eyebrowLine} />
+          </div>
+          <h1 style={L.heroTitle}>
+            Master any skill with<br /><span style={L.gradientText}>expert Mind Pros.</span>
+          </h1>
+          <p style={L.heroSub}>
+            Interactive live classes, structured courses, and a global community of verified experts.
+            Learn at your pace or join live — the choice is yours.
+          </p>
+          <div style={L.heroCtas}>
+            <button onClick={() => navigate('/register')} style={L.btnHeroPrimary}>
+              Start Learning Free <span style={{ marginLeft: '8px' }}>&rarr;</span>
+            </button>
+            <button onClick={() => navigate('/register')} style={L.btnHeroSecondary}>Become a Mind Pro</button>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* How it works */}
-      <div style={styles.sectionCenter}>
-        <h2 style={styles.sectionTitleCenter}>How It Works</h2>
-        <div style={styles.howGrid}>
-          {[
-            { num: '1', title: 'Browse & Discover', desc: 'Explore courses across dozens of subjects. Filter by difficulty, price, rating, and more.' },
-            { num: '2', title: 'Enroll & Learn', desc: 'Enroll in courses with structured lessons, quizzes, and assignments. Track your progress as you go.' },
-            { num: '3', title: 'Join Live Classes', desc: 'Attend live sessions with real-time video, chat, polls, and interactive whiteboards.' },
-          ].map((s) => (
-            <div key={s.num} style={styles.howStep}>
-              <div style={styles.howNumber}>{s.num}</div>
-              <div style={styles.howTitle}>{s.title}</div>
-              <div style={styles.howDesc}>{s.desc}</div>
-            </div>
+      {/* Logos */}
+      <div style={L.logos}>
+        <div style={L.logosLabel}>Trusted by learners from</div>
+        <div style={L.logosRow}>
+          {['Google', 'Microsoft', 'Stanford', 'MIT', 'Amazon', 'Meta'].map((name) => (
+            <span key={name} style={L.logoItem}>{name}</span>
           ))}
         </div>
       </div>
+
+      {/* Capabilities */}
+      <section style={L.sectionWrap}>
+        <div style={L.inner}>
+          {[
+            { label: 'Discover', title: 'Courses built by experts, structured for results', desc: 'Browse hundreds of courses across every subject. Each one is organized into modules and lessons with quizzes, assignments, and progress tracking built in.', link: 'Explore courses', icon: '\ud83d\udcda', bg: 'rgba(124,58,237,0.15), rgba(168,85,247,0.05)' },
+            { label: 'Learn Live', title: 'Join live sessions with real-time interaction', desc: 'Attend live classes with HD video, screen sharing, interactive chat, polls, hand raise, and collaborative whiteboards. Learn directly from your Mind Pro.', link: 'See upcoming sessions', icon: '\ud83c\udfa5', bg: 'rgba(16,185,129,0.12), rgba(6,182,212,0.05)', reverse: true },
+            { label: 'Track Progress', title: 'Visualize your growth with every lesson completed', desc: 'Track completion rates, quiz scores, and assignment grades across all your courses. Earn certificates to showcase your achievements.', link: 'Start your journey', icon: '\ud83d\udcc8', bg: 'rgba(245,158,11,0.12), rgba(236,72,153,0.05)' },
+          ].map((cap, i) => (
+            <div key={cap.label} style={{ ...L.capRow, direction: cap.reverse ? 'rtl' as const : 'ltr' as const }}>
+              <div style={{ direction: 'ltr' as const }}>
+                <div style={L.capLabel}>{cap.label}</div>
+                <h3 style={L.capTitle}>{cap.title}</h3>
+                <p style={L.capDesc}>{cap.desc}</p>
+                <span style={L.capLink}>{cap.link} &rarr;</span>
+              </div>
+              <div style={{ ...L.capVisual, background: `linear-gradient(135deg, ${cap.bg})`, direction: 'ltr' as const }}>
+                <span style={L.capIcon}>{cap.icon}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Features */}
-      <div style={styles.sectionCenter}>
-        <h2 style={styles.sectionTitleCenter}>Everything You Need to Learn</h2>
-        <div style={styles.featuresGrid}>
-          {[
-            { icon: '\ud83c\udfa5', title: 'Live Classes', desc: 'Join interactive live sessions with video, screenshare, chat, and real-time collaboration.' },
-            { icon: '\ud83d\udcda', title: 'Structured Courses', desc: 'Learn at your pace with organized modules, lessons, and progress tracking.' },
-            { icon: '\ud83d\udcdd', title: 'Quizzes & Assignments', desc: 'Test your knowledge with quizzes and submit assignments for teacher feedback.' },
-            { icon: '\ud83c\udfc6', title: 'Certificates', desc: 'Earn certificates when you complete courses to showcase your achievements.' },
-          ].map((f) => (
-            <div key={f.title} style={styles.featureCard}>
-              <div style={styles.featureIcon}>{f.icon}</div>
-              <div style={styles.featureTitle}>{f.title}</div>
-              <div style={styles.featureDesc}>{f.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Popular Courses */}
-      {courses.length > 0 && (
-        <div style={styles.section}>
-          <div style={styles.sectionHeader}>
-            <h2 style={styles.sectionTitleText}>Popular Courses</h2>
-            <Link to="/courses" style={styles.sectionLink}>View All &rarr;</Link>
+      <section style={L.sectionWrap}>
+        <div style={L.inner}>
+          <div style={{ textAlign: 'center' as const, marginBottom: '64px' }}>
+            <div style={L.eyebrowSmall}>Platform</div>
+            <h2 style={L.sectionTitle}>Everything you need, nothing you don't</h2>
+            <p style={L.sectionDesc}>A complete learning platform designed for both Mind Learners and Mind Pros.</p>
           </div>
-          <div style={styles.courseGrid} className="course-grid">
-            {courses.map((c) => (
-              <div key={c.id} style={styles.courseCard} className="course-card"
-                   onClick={() => navigate(`/courses/${c.id}`)}>
-                <div style={styles.courseThumb}>
-                  {c.thumbnailUrl
-                    ? <img src={c.thumbnailUrl} alt={c.title} style={styles.courseThumbImg} />
-                    : <span style={styles.courseThumbIcon}>{'\ud83d\udcda'}</span>}
-                  <span style={c.price === 0 ? styles.badgeFree : styles.badgePrice}>
-                    {c.price === 0 ? 'Free' : `$${(c.price / 100).toFixed(2)}`}
-                  </span>
-                </div>
-                <div style={styles.courseBody}>
-                  <div style={styles.courseName}>{c.title}</div>
-                  <div style={styles.courseMeta}>
-                    {c.averageRating && <span style={styles.courseRating}>{'\u2733'} {c.averageRating.toFixed(1)}</span>}
-                    <span>{c.enrolledCount} enrolled</span>
+          <div style={L.featGrid} className="landing-feat-grid">
+            {[
+              { icon: '\ud83c\udfa5', title: 'Live Classes', desc: 'Real-time video with chat, polls, hand raise, emoji reactions, and screen sharing.' },
+              { icon: '\ud83d\udcda', title: 'Structured Courses', desc: 'Modules, lessons, and progress tracking organized for optimal learning outcomes.' },
+              { icon: '\ud83d\udcdd', title: 'Quizzes & Assignments', desc: 'Test knowledge with auto-graded quizzes and get personalized Mind Pro feedback.' },
+              { icon: '\ud83c\udfc6', title: 'Certificates', desc: 'Earn verifiable certificates on course completion to showcase your skills.' },
+              { icon: '\ud83d\udcac', title: 'Discussion Forums', desc: 'Collaborate with peers, ask questions, and deepen understanding together.' },
+              { icon: '\ud83d\udcc5', title: 'Smart Scheduling', desc: 'Calendar integration with Google Calendar links and session reminders.' },
+            ].map((f) => (
+              <div key={f.title} style={L.featCard} className="course-card">
+                <div style={L.featIcon}>{f.icon}</div>
+                <div style={L.featTitle}>{f.title}</div>
+                <div style={L.featDesc}>{f.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section style={L.statsSection}>
+        <div style={L.inner}>
+          <div style={L.statsGrid} className="landing-stats-grid">
+            {[
+              { num: '2,500+', label: 'Active Mind Learners' },
+              { num: '180+', label: 'Expert-Led Courses' },
+              { num: '50+', label: 'Verified Mind Pros' },
+              { num: '4.8', label: 'Average Rating' },
+            ].map((s) => (
+              <div key={s.label} style={L.statItem}>
+                <div style={L.statNumber}>{s.num}</div>
+                <div style={L.statLabel}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section style={L.sectionWrap}>
+        <div style={L.inner}>
+          <div style={{ textAlign: 'center' as const, marginBottom: '64px' }}>
+            <div style={L.eyebrowSmall}>Testimonials</div>
+            <h2 style={L.sectionTitle}>Loved by curious minds worldwide</h2>
+          </div>
+          <div style={L.testGrid} className="landing-test-grid">
+            {[
+              { quote: 'The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable.', name: 'Sarah Kim', role: 'Data Science Mind Learner', color: '#7c3aed' },
+              { quote: 'As a Mind Pro, this platform gives me everything I need. The course builder, analytics, and payment system are all seamlessly integrated.', name: 'James Rodriguez', role: 'Web Dev Mind Pro', color: '#059669' },
+              { quote: 'The progress tracking keeps me motivated every day. I can see exactly how far I\'ve come and what\'s ahead in each course.', name: 'Aisha Lawan', role: 'UX Design Mind Learner', color: '#d97706' },
+            ].map((t) => (
+              <div key={t.name} style={L.testCard}>
+                <div style={L.testStars}>{'\u2605\u2605\u2605\u2605\u2605'}</div>
+                <p style={L.testQuote}>"{t.quote}"</p>
+                <div style={L.testAuthor}>
+                  <div style={{ ...L.testAvatar, background: t.color }}>{t.name.split(' ').map(n => n[0]).join('')}</div>
+                  <div>
+                    <div style={L.testName}>{t.name}</div>
+                    <div style={L.testRole}>{t.role}</div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      )}
+      </section>
 
       {/* CTA */}
-      <div style={styles.ctaBanner}>
-        <h2 style={styles.ctaTitle}>Ready to Start Learning?</h2>
-        <p style={styles.ctaSub}>Join LearningHaven today and get access to courses from expert Mind Pros.</p>
-        <button onClick={() => navigate('/register')} style={styles.btnPrimary}>Create Free Account</button>
-      </div>
+      <section style={L.cta}>
+        <div style={L.ctaGlow} />
+        <h2 style={L.ctaTitle}>Ready to unlock your <span style={L.gradientText}>full potential?</span></h2>
+        <p style={L.ctaSub}>Join thousands of learners mastering new skills with expert Mind Pros. Your journey starts with a single click.</p>
+        <button onClick={() => navigate('/register')} style={{ ...L.btnHeroPrimary, fontSize: '17px', padding: '18px 40px', position: 'relative' as const, zIndex: 1 }}>
+          Get Started Free <span style={{ marginLeft: '8px' }}>&rarr;</span>
+        </button>
+      </section>
+
+      {/* Footer */}
+      <footer style={L.footer}>
+        <div style={L.footerInner}>
+          <span style={L.brand}>Learning<span style={{ color: '#a78bfa' }}>Haven</span></span>
+          <div style={L.footerLinks}>
+            {['Courses', 'Mind Pros', 'About', 'Privacy', 'Terms'].map((t) => (
+              <span key={t} style={L.footerLink}>{t}</span>
+            ))}
+          </div>
+          <span style={L.footerCopy}>&copy; 2026 LearningHaven</span>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -397,7 +460,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
         {[
           { icon: '\u2795', label: 'Create Course', sub: 'Add new content', path: '/courses/create' },
           { icon: '\ud83d\udcda', label: 'My Courses', sub: `${data?.totalClasses ?? 0} published`, path: '/my-courses' },
-          { icon: '\ud83c\udfe6', label: 'Account Setup', sub: 'Stripe Connect', path: '/stripe-connect' },
+          { icon: '\ud83c\udfe6', label: 'Account Setup', sub: 'Payment account', path: '/stripe-connect' },
           { icon: '\ud83d\udcb0', label: 'Earnings', sub: `$${data?.totalEarnings.toFixed(0) ?? '0'}`, path: '/earnings' },
         ].map((a) => (
           <div key={a.label} style={styles.quickAction} className="course-card" onClick={() => navigate(a.path)}>
@@ -458,7 +521,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
 export function HomePage() {
   const { user } = useAuth();
 
-  if (!user) return <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}><LandingPage /></div>;
+  if (!user) return <LandingPage />;
 
   return (
     <div className="page-container" style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
@@ -472,6 +535,94 @@ export function HomePage() {
 // ──────────────────────────────────────────────
 // Styles
 // ──────────────────────────────────────────────
+// ──────────────────────────────────────────────
+// Landing page styles (Arthur.ai-inspired dark)
+// ──────────────────────────────────────────────
+const landingStyles: { [key: string]: React.CSSProperties } = {
+  page: { background: '#0a0a14', color: '#fff', fontFamily: "'Inter', sans-serif", minHeight: '100vh' },
+
+  // Nav
+  nav: { position: 'fixed' as const, top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(10,10,20,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.06)' },
+  navInner: { maxWidth: '1200px', margin: '0 auto', padding: '0 32px', height: '68px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
+  brand: { fontSize: '20px', fontWeight: 700, color: '#fff', letterSpacing: '-0.5px' },
+  navActions: { display: 'flex', alignItems: 'center', gap: '16px' },
+  btnSignIn: { padding: '9px 20px', background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', fontSize: '14px', fontWeight: 500, cursor: 'pointer', borderRadius: '8px' },
+  btnGetStarted: { padding: '9px 22px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', border: 'none', fontSize: '14px', fontWeight: 600, cursor: 'pointer', borderRadius: '8px' },
+
+  // Hero
+  hero: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const, padding: '140px 32px 80px', position: 'relative' as const, overflow: 'hidden' },
+  heroGlow: { position: 'absolute' as const, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '900px', height: '900px', background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, rgba(168,85,247,0.05) 40%, transparent 70%)', pointerEvents: 'none' as const },
+  heroGlow2: { position: 'absolute' as const, top: '30%', right: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%)', pointerEvents: 'none' as const },
+  heroContent: { position: 'relative' as const, zIndex: 1, maxWidth: '850px' },
+  eyebrow: { fontSize: '13px', fontWeight: 500, color: '#a78bfa', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px', display: 'inline-flex', alignItems: 'center', gap: '10px' },
+  eyebrowLine: { display: 'inline-block', width: '32px', height: '1px', background: '#a78bfa' },
+  heroTitle: { fontSize: '64px', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-2.5px', color: '#fff', marginBottom: '28px' },
+  gradientText: { background: 'linear-gradient(135deg, #a78bfa, #c084fc, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  heroSub: { fontSize: '19px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '580px', margin: '0 auto 44px', fontWeight: 400 },
+  heroCtas: { display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' as const },
+  btnHeroPrimary: { padding: '16px 36px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', border: 'none', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
+  btnHeroSecondary: { padding: '16px 36px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.12)', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
+
+  // Logos
+  logos: { padding: '60px 32px 80px', textAlign: 'center' as const },
+  logosLabel: { fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontWeight: 500, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px' },
+  logosRow: { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '56px', flexWrap: 'wrap' as const },
+  logoItem: { fontSize: '20px', fontWeight: 700, color: 'rgba(255,255,255,0.2)', letterSpacing: '-0.3px' },
+
+  // Sections
+  sectionWrap: { padding: '100px 32px' },
+  inner: { maxWidth: '1200px', margin: '0 auto' },
+  eyebrowSmall: { fontSize: '12px', color: '#a78bfa', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '20px' },
+  sectionTitle: { fontSize: '44px', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', color: '#fff', marginBottom: '16px' },
+  sectionDesc: { fontSize: '17px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto' },
+
+  // Capabilities
+  capRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center', marginBottom: '120px' },
+  capLabel: { fontSize: '12px', color: '#a78bfa', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '16px', fontWeight: 600 },
+  capTitle: { fontSize: '34px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: '20px', color: '#fff' },
+  capDesc: { fontSize: '16px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: '28px' },
+  capLink: { color: '#a78bfa', fontWeight: 600, fontSize: '15px', cursor: 'pointer' },
+  capVisual: { borderRadius: '20px', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.06)' },
+  capIcon: { fontSize: '80px', opacity: 0.5 },
+
+  // Features
+  featGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' },
+  featCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '32px', transition: 'all 0.3s' },
+  featIcon: { width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '20px', background: 'rgba(167,139,250,0.1)' },
+  featTitle: { fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '10px' },
+  featDesc: { fontSize: '14px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7 },
+
+  // Stats
+  statsSection: { borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 32px' },
+  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', maxWidth: '1200px', margin: '0 auto' },
+  statItem: { padding: '56px 32px', textAlign: 'center' as const, borderRight: '1px solid rgba(255,255,255,0.06)' },
+  statNumber: { fontSize: '52px', fontWeight: 700, letterSpacing: '-2px', marginBottom: '8px', background: 'linear-gradient(135deg, #a78bfa, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  statLabel: { fontSize: '14px', color: 'rgba(255,255,255,0.35)', fontWeight: 500 },
+
+  // Testimonials
+  testGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' },
+  testCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '32px' },
+  testStars: { color: '#f59e0b', fontSize: '16px', marginBottom: '20px', letterSpacing: '3px' },
+  testQuote: { fontSize: '15px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, marginBottom: '28px', fontStyle: 'italic' as const },
+  testAuthor: { display: 'flex', alignItems: 'center', gap: '14px' },
+  testAvatar: { width: '42px', height: '42px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700, color: '#fff' },
+  testName: { fontSize: '14px', fontWeight: 600, color: '#fff' },
+  testRole: { fontSize: '13px', color: 'rgba(255,255,255,0.3)', marginTop: '2px' },
+
+  // CTA
+  cta: { padding: '140px 32px', textAlign: 'center' as const, position: 'relative' as const, overflow: 'hidden' },
+  ctaGlow: { position: 'absolute' as const, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)', pointerEvents: 'none' as const },
+  ctaTitle: { fontSize: '52px', fontWeight: 800, color: '#fff', letterSpacing: '-1.5px', marginBottom: '20px', position: 'relative' as const, zIndex: 1 },
+  ctaSub: { fontSize: '18px', color: 'rgba(255,255,255,0.4)', maxWidth: '550px', margin: '0 auto 40px', lineHeight: 1.7, position: 'relative' as const, zIndex: 1 },
+
+  // Footer
+  footer: { borderTop: '1px solid rgba(255,255,255,0.06)', padding: '48px 32px' },
+  footerInner: { maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '20px' },
+  footerLinks: { display: 'flex', gap: '28px' },
+  footerLink: { color: 'rgba(255,255,255,0.35)', fontSize: '14px', cursor: 'pointer' },
+  footerCopy: { fontSize: '13px', color: 'rgba(255,255,255,0.25)' },
+};
+
 const styles: { [key: string]: React.CSSProperties } = {
   // Hero
   hero: {
@@ -495,20 +646,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     cursor: 'pointer', background: 'rgba(255,255,255,0.2)', color: '#fff',
     border: '1px solid rgba(255,255,255,0.3)',
   },
-
-  // Landing hero
-  landingHero: {
-    background: 'var(--gradient-primary)',
-    borderRadius: '16px',
-    padding: '80px 40px',
-    color: '#fff',
-    textAlign: 'center' as const,
-    marginBottom: '48px',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  landingTitle: { fontSize: '44px', fontWeight: 700, marginBottom: '16px' },
-  landingSub: { fontSize: '18px', opacity: 0.9, maxWidth: '600px', margin: '0 auto 32px', lineHeight: 1.6 },
 
   // Quick Actions
   quickActions: {
@@ -552,8 +689,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   sectionTitleText: { fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)' },
   sectionLink: { fontSize: '14px', color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 },
-  sectionCenter: { marginBottom: '48px', textAlign: 'center' as const },
-  sectionTitleCenter: { fontSize: '28px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '32px' },
 
   // Continue Learning
   learningGrid: {
@@ -653,59 +788,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   teacherSubject: { fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '8px' },
   teacherStars: { color: 'var(--warning)', fontSize: '14px' },
 
-  // How it works
-  howGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '32px',
-  },
-  howStep: { padding: '24px' },
-  howNumber: {
-    width: '48px', height: '48px', borderRadius: '50%',
-    background: 'var(--gradient-primary)', color: '#fff', fontSize: '20px', fontWeight: 700,
-    display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
-  },
-  howTitle: { fontSize: '18px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' },
-  howDesc: { fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6 },
-
-  // Features
-  featuresGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px',
-  },
-  featureCard: {
-    background: 'var(--bg-card)', borderRadius: '12px', padding: '24px',
-    boxShadow: 'var(--shadow)', border: '1px solid var(--border-color)', textAlign: 'center' as const,
-  },
-  featureIcon: { fontSize: '36px', marginBottom: '12px' },
-  featureTitle: { fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' },
-  featureDesc: { fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 },
-
-  // CTA
-  ctaBanner: {
-    background: 'var(--gradient-primary)', borderRadius: '16px', padding: '48px',
-    textAlign: 'center' as const, color: '#fff', marginBottom: '32px',
-  },
-  ctaTitle: { fontSize: '28px', fontWeight: 700, marginBottom: '12px' },
-  ctaSub: { fontSize: '16px', opacity: 0.9, marginBottom: '24px' },
-
-  // Landing navbar
-  landingNav: {
-    background: 'var(--bg-card)', borderBottom: '1px solid var(--border-color)',
-    padding: '12px 24px', position: 'sticky' as const, top: 0, zIndex: 50,
-  },
-  landingNavInner: {
-    maxWidth: '1200px', margin: '0 auto', display: 'flex',
-    alignItems: 'center', justifyContent: 'space-between',
-  },
-  landingBrand: { fontSize: '20px', fontWeight: 700, color: 'var(--accent)' },
-  landingNavLinks: { display: 'flex', alignItems: 'center', gap: '12px' },
-  landingNavLink: {
-    background: 'none', border: 'none', color: 'var(--accent)',
-    fontSize: '14px', fontWeight: 500, cursor: 'pointer', padding: '8px 16px',
-  },
-  landingSignup: {
-    padding: '8px 20px', background: 'var(--accent)', color: '#fff',
-    border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
-  },
-  landingContent: {
-    maxWidth: '1200px', margin: '0 auto', padding: '0 24px',
-  },
 };
