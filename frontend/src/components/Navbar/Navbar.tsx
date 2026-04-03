@@ -34,12 +34,6 @@ export const Navbar: React.FC = () => {
         </button>
       </div>
       <div className={'navbar-links' + (menuOpen ? ' open' : '')}>
-        {user.role === 'TEACHER' && (
-          <button onClick={() => handleNav('/dashboard/teacher')} style={navLinkStyle('/dashboard/teacher')}>Dashboard</button>
-        )}
-        {user.role === 'STUDENT' && (
-          <button onClick={() => handleNav('/dashboard/student')} style={navLinkStyle('/dashboard/student')}>Dashboard</button>
-        )}
         {user.role === 'ADMIN' && (
           <button onClick={() => handleNav('/admin')} style={navLinkStyle('/admin')}>Admin</button>
         )}

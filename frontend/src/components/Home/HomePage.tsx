@@ -399,7 +399,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
         {[
           { icon: '\u2795', label: 'Create Course', sub: 'Add new content', path: '/courses/create' },
           { icon: '\ud83d\udcda', label: 'My Courses', sub: `${data?.totalClasses ?? 0} published`, path: '/my-courses' },
-          { icon: '\ud83d\udcc8', label: 'Analytics', sub: 'View performance', path: '/dashboard/teacher' },
+          { icon: '\ud83c\udfe6', label: 'Account Setup', sub: 'Stripe Connect', path: '/stripe-connect' },
           { icon: '\ud83d\udcb0', label: 'Earnings', sub: `$${data?.totalEarnings.toFixed(0) ?? '0'}`, path: '/earnings' },
         ].map((a) => (
           <div key={a.label} style={styles.quickAction} className="course-card" onClick={() => navigate(a.path)}>
