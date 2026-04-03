@@ -52,7 +52,6 @@ function LandingPage() {
         </div>
       </div>
 
-      <div style={styles.landingContent}>
       {/* How it works */}
       <div style={styles.sectionCenter}>
         <h2 style={styles.sectionTitleCenter}>How It Works</h2>
@@ -127,7 +126,6 @@ function LandingPage() {
         <h2 style={styles.ctaTitle}>Ready to Start Learning?</h2>
         <p style={styles.ctaSub}>Join LearningHaven today and get access to courses from expert Mind Pros.</p>
         <button onClick={() => navigate('/register')} style={styles.btnPrimary}>Create Free Account</button>
-      </div>
       </div>
     </div>
   );
@@ -460,7 +458,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
 export function HomePage() {
   const { user } = useAuth();
 
-  if (!user) return <div><LandingPage /></div>;
+  if (!user) return <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}><LandingPage /></div>;
 
   return (
     <div className="page-container" style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
