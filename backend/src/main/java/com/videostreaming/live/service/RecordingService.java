@@ -54,6 +54,9 @@ public class RecordingService {
             throw new IllegalStateException("Room is not active");
         }
 
+        // Clean up stale recordings (stuck in RECORDING/STARTING/STOPPING/UPLOADING for > 30 min)
+        cleanupStaleRecordings();
+
         recordingRepository.findByRoomIdAndStatus(roomId, RecordingStatus.RECORDING)
                 .ifPresent(r -> {
                     throw new IllegalStateException("Recording already in progress for this room");
@@ -185,6 +188,23 @@ public class RecordingService {
         return recordingRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(r -> toResponse(r, null))
                 .collect(Collectors.toList());
+    }
+
+    private void cleanupStaleRecordings() {
+        LocalDateTime cutoff = LocalDateTime.now().minusMinutes(30);
+        List<RecordingStatus> staleStatuses = List.of(
+                RecordingStatus.RECORDING, RecordingStatus.STARTING,
+                RecordingStatus.STOPPING, RecordingStatus.UPLOADING);
+
+        for (RecordingStatus status : staleStatuses) {
+            List<Recording> stale = recordingRepository.findByStatusAndCreatedAtBefore(status, cutoff);
+            for (Recording r : stale) {
+                logger.warn("Marking stale recording {} as FAILED (was {} since {})", r.getId(), r.getStatus(), r.getCreatedAt());
+                r.setStatus(RecordingStatus.FAILED);
+                r.setErrorMessage("Recording timed out (stale for >30 minutes)");
+                recordingRepository.save(r);
+            }
+        }
     }
 
     private RecordingResponse toResponse(Recording r, String playbackUrl) {
