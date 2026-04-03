@@ -1,3 +1,15 @@
+/* Companion to theme.css (imported together in App.tsx) */
+
+/* ============================================================
+   Video Streaming Education Platform - Responsive Styles
+   Breakpoints:
+     480px  - small phone
+     640px  - large phone
+     768px  - tablet
+     1024px - small desktop
+     1280px - desktop
+   ============================================================ */
+
 /* Video conference animations */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
@@ -5,6 +17,37 @@
 }
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   Base / Mobile-first defaults (applies below 480px and up)
+   ============================================================ */
+
+/* (k) Typography - mobile defaults */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* (i) Forms - larger touch targets on all screens */
+input,
+select,
+textarea {
+  font-size: 16px; /* prevents iOS zoom on focus */
+}
+
+/* (j) Buttons - minimum touch target */
+button,
+[role="button"],
+.btn,
+input[type="submit"],
+input[type="button"] {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Hamburger button - hidden on desktop */
@@ -15,11 +58,569 @@
   font-size: 22px;
   cursor: pointer;
   padding: 4px 8px;
-  color: #333;
+  color: var(--text-primary);
 }
 
-/* Mobile styles */
-@media (max-width: 768px) {
+/* (a) Course cards grid - mobile-first: 1 column */
+.course-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* (c) Progress dashboard stats - mobile-first: 2 columns wrapping */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* (g) Recording list - mobile-first: single column */
+.recording-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* (b) Search filters - mobile-first: stack vertically */
+.search-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.search-filters select,
+.search-filters input {
+  width: 100%;
+  min-height: 44px;
+}
+
+/* (e) Teacher profile - mobile-first: stacked */
+.teacher-profile-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.teacher-profile-sidebar {
+  width: 100%;
+}
+
+.teacher-profile-content {
+  width: 100%;
+}
+
+/* (f) Calendar view - mobile-first: horizontal scroll */
+.calendar-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.calendar-grid {
+  min-width: 600px;
+}
+
+.calendar-day-view {
+  min-width: 0;
+  width: 100%;
+}
+
+/* (d) Payment / checkout - mobile-first: full width */
+.checkout-form,
+.payment-form {
+  width: 100%;
+  max-width: 100%;
+}
+
+.checkout-form input,
+.checkout-form select,
+.payment-form input,
+.payment-form select {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+/* (h) Chat window - full screen overlay on mobile */
+.chat-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1000;
+  background: white;
+}
+
+.chat-sidebar.hidden {
+  display: none;
+}
+
+.chat-sidebar .chat-close-btn {
+  display: block;
+}
+
+/* (l) Tables - horizontal scroll wrapper */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.table-responsive table {
+  min-width: 600px;
+}
+
+.earnings-table {
+  min-width: 600px;
+}
+
+/* (m) Modal / dialog - full screen on mobile */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.modal-content {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 0;
+  overflow-y: auto;
+  background: white;
+}
+
+/* (i) Forms - all inputs full width, larger touch targets */
+.form-row {
+  flex-direction: column;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+/* (j) Buttons - full width on very small screens handled in 480px breakpoint */
+
+/* General containers */
+.page-container {
+  padding: 12px;
+}
+
+
+/* ============================================================
+   Small phone (max-width: 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  /* (k) Typography - smaller on very small screens */
+  body {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  h1 { font-size: 22px; }
+  h2 { font-size: 18px; }
+  h3 { font-size: 16px; }
+
+  /* (a) Course grid stays 1 column */
+  .course-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* (c) Stats grid - single column */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  /* (j) Buttons - full width */
+  .btn-full-mobile,
+  .pagination button,
+  .search-filters button {
+    width: 100%;
+  }
+
+  /* Navbar links */
+  .navbar-links.open button {
+    min-width: 70px;
+    font-size: 12px !important;
+    padding: 6px 8px !important;
+  }
+
+  /* Auth card */
+  .auth-card {
+    margin: 8px !important;
+    padding: 16px !important;
+  }
+
+  /* Page container tighter padding */
+  .page-container {
+    padding: 8px !important;
+  }
+
+  /* Chat sidebar adjust */
+  .chat-sidebar .chat-header {
+    padding: 12px;
+  }
+
+  /* Modals still full screen at this size */
+  .modal-content {
+    border-radius: 0;
+  }
+
+  /* Pagination stacks */
+  .pagination {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pagination button {
+    width: 100%;
+  }
+}
+
+
+/* ============================================================
+   Large phone (min-width: 640px)
+   ============================================================ */
+@media (min-width: 640px) {
+  /* (a) Course grid - 2 columns */
+  .course-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* (c) Stats grid - 2 columns */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* (g) Recording grid - 2 columns */
+  .recording-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  /* (b) Search filters start going horizontal */
+  .search-filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .search-filters select,
+  .search-filters input {
+    width: auto;
+    flex: 1 1 180px;
+  }
+
+  /* (d) Checkout form constrainted */
+  .checkout-form,
+  .payment-form {
+    max-width: 500px;
+  }
+
+  /* (k) Typography */
+  body {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* General containers */
+  .page-container {
+    padding: 16px;
+  }
+}
+
+
+/* ============================================================
+   Tablet (min-width: 768px)
+   ============================================================ */
+@media (min-width: 768px) {
+  /* Navbar */
+  .hamburger {
+    display: none !important;
+  }
+
+  .navbar {
+    flex-wrap: nowrap !important;
+    height: auto;
+    padding: 8px 16px;
+  }
+
+  .navbar-left {
+    width: auto;
+  }
+
+  .navbar-links {
+    display: flex !important;
+  }
+
+  .navbar-right .user-name {
+    display: inline;
+  }
+
+  .navbar-right .role-badge {
+    display: inline;
+  }
+
+  /* (a) Course grid - still 2 columns on tablet */
+  .course-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  /* (c) Stats grid - 4 columns on tablet */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* (e) Teacher profile - side by side on tablet */
+  .teacher-profile-layout {
+    flex-direction: row;
+  }
+
+  .teacher-profile-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+  }
+
+  .teacher-profile-content {
+    flex: 1;
+  }
+
+  /* (h) Chat sidebar - panel instead of full screen */
+  .chat-sidebar {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: 320px !important;
+    height: auto !important;
+    z-index: auto;
+    border-left: 1px solid #dee2e6;
+  }
+
+  .chat-sidebar .chat-close-btn {
+    display: none;
+  }
+
+  /* (m) Modal - centered overlay instead of full screen */
+  .modal-overlay {
+    align-items: center;
+  }
+
+  .modal-content {
+    width: 90%;
+    max-width: 600px;
+    height: auto;
+    max-height: 85vh;
+    border-radius: 8px;
+  }
+
+  /* Messages layout - side by side */
+  .messages-layout {
+    flex-direction: row !important;
+    height: calc(100vh - 120px) !important;
+  }
+
+  .messages-sidebar {
+    width: 300px !important;
+    min-width: 280px !important;
+    max-height: none;
+    border-right: 1px solid #dee2e6 !important;
+    border-bottom: none !important;
+  }
+
+  .messages-sidebar.hidden {
+    display: block !important;
+  }
+
+  .messages-main.hidden {
+    display: block !important;
+  }
+
+  /* Course learn layout - side by side */
+  .learn-layout {
+    flex-direction: row !important;
+  }
+
+  .learn-sidebar {
+    width: 300px !important;
+    max-height: none;
+    border-right: 1px solid #e0e0e0 !important;
+    border-bottom: none !important;
+  }
+
+  .learn-main {
+    padding: 24px !important;
+  }
+
+  .lesson-nav {
+    flex-direction: row !important;
+  }
+
+  .lesson-nav button {
+    max-width: none !important;
+    width: auto;
+  }
+
+  /* (l) Tables can fit on tablet */
+  .table-responsive table {
+    min-width: auto;
+  }
+
+  /* (f) Calendar - no forced scroll on tablet */
+  .calendar-grid {
+    min-width: 0;
+  }
+
+  /* (i) Forms - rows can be horizontal */
+  .form-row {
+    flex-direction: row !important;
+  }
+
+  /* (d) Payment form */
+  .checkout-form,
+  .payment-form {
+    max-width: 560px;
+  }
+
+  /* General containers */
+  .page-container {
+    padding: 20px !important;
+  }
+
+  /* Auth pages */
+  .auth-card {
+    margin: 24px auto !important;
+    padding: 32px !important;
+    max-width: 440px;
+  }
+
+  /* Quick links */
+  .quick-links {
+    flex-wrap: nowrap !important;
+  }
+
+  /* (k) Typography */
+  body {
+    font-size: 15px;
+  }
+
+  h1 { font-size: 28px; }
+  h2 { font-size: 22px; }
+  h3 { font-size: 18px; }
+}
+
+
+/* ============================================================
+   Small desktop (min-width: 1024px)
+   ============================================================ */
+@media (min-width: 1024px) {
+  /* (a) Course grid - 3 columns */
+  .course-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* (g) Recording grid - 3 columns */
+  .recording-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* (e) Teacher profile sidebar wider */
+  .teacher-profile-sidebar {
+    width: 320px;
+  }
+
+  /* (h) Chat sidebar wider */
+  .chat-sidebar {
+    width: 360px !important;
+  }
+
+  /* (m) Modal wider */
+  .modal-content {
+    max-width: 720px;
+  }
+
+  /* (d) Payment form */
+  .checkout-form,
+  .payment-form {
+    max-width: 600px;
+  }
+
+  /* (k) Typography */
+  body {
+    font-size: 16px;
+  }
+}
+
+
+/* ============================================================
+   Desktop (min-width: 1280px)
+   ============================================================ */
+@media (min-width: 1280px) {
+  /* (a) Course grid can go up to 4 columns on very wide screens */
+  .course-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* (g) Recording grid - 4 columns */
+  .recording-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Wider containers */
+  .page-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px !important;
+  }
+
+  /* (e) Teacher profile sidebar wider still */
+  .teacher-profile-sidebar {
+    width: 360px;
+  }
+
+  /* (m) Modal wider */
+  .modal-content {
+    max-width: 800px;
+  }
+}
+
+
+/* ============================================================
+   Below tablet (max-width: 767px) - mobile overrides
+   These target mobile devices specifically where mobile-first
+   defaults are not sufficient due to inline styles in components.
+   ============================================================ */
+@media (max-width: 767px) {
   /* Navbar */
   .navbar {
     flex-wrap: wrap !important;
@@ -63,7 +664,7 @@
     display: block !important;
   }
 
-  /* Messages layout */
+  /* Messages layout - stacked */
   .messages-layout {
     flex-direction: column !important;
     height: auto !important;
@@ -83,7 +684,7 @@
     display: none !important;
   }
 
-  /* Course learn layout */
+  /* Course learn layout - stacked */
   .learn-layout {
     flex-direction: column !important;
   }
@@ -104,55 +705,111 @@
     width: 100%;
   }
 
-  /* Tables: horizontal scroll */
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  /* (b) Search filters - force vertical on mobile */
+  .search-filters {
+    flex-direction: column;
   }
-  .earnings-table {
+
+  .search-filters select,
+  .search-filters input {
+    width: 100%;
+    flex: none;
+  }
+
+  /* (d) Payment form full width */
+  .checkout-form,
+  .payment-form {
+    max-width: 100%;
+  }
+
+  /* (f) Calendar force scroll */
+  .calendar-grid {
     min-width: 600px;
   }
 
-  /* General containers */
-  .page-container {
-    padding: 12px !important;
+  /* Search row stacking */
+  .search-row {
+    flex-direction: column;
   }
 
-  /* Grids */
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
+  .search-row input {
+    width: 100%;
   }
 
-  /* Forms */
-  .form-row {
-    flex-direction: column !important;
-  }
-
-  /* Quick links */
-  .quick-links {
-    flex-wrap: wrap !important;
-  }
-  .quick-links button {
-    flex: 1 1 auto;
-    min-width: 120px;
-  }
-
-  /* Auth pages */
-  .auth-card {
-    margin: 12px !important;
-    padding: 20px !important;
+  .search-row button {
+    width: 100%;
   }
 }
 
-/* Small phone adjustments */
-@media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr !important;
+
+/* ============================================================
+   Utility: visually hidden but accessible
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   Touch interaction improvements
+   ============================================================ */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets for touch devices */
+  button,
+  [role="button"],
+  a,
+  .btn {
+    min-height: 44px;
   }
-  .navbar-links.open button {
-    min-width: 70px;
-    font-size: 12px !important;
-    padding: 6px 8px !important;
+
+  /* Remove hover effects that don't apply on touch */
+  .card:hover,
+  .course-card:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Increase spacing between tappable items */
+  .navbar-links button {
+    padding: 10px 12px;
+  }
+
+  .quick-links button {
+    padding: 10px 16px;
+  }
+}
+
+/* ============================================================
+   Print styles (bonus: hide nav and unnecessary UI)
+   ============================================================ */
+@media print {
+  .navbar,
+  .hamburger,
+  .chat-sidebar,
+  .quick-links,
+  .pagination {
+    display: none !important;
+  }
+
+  .page-container {
+    padding: 0 !important;
+  }
+
+  .modal-overlay {
+    position: static;
+    background: none;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;
+    border-radius: 0;
   }
 }

@@ -57,7 +57,7 @@ export const ProgressDashboard: React.FC = () => {
       {error && <div style={styles.error}>{error}</div>}
 
       {/* Summary stats */}
-      <div style={styles.statsRow}>
+      <div style={styles.statsRow} className="stats-grid">
         <div style={styles.statCard}>
           <span style={styles.statNumber}>{progressList.length}</span>
           <span style={styles.statLabel}>Total Courses</span>

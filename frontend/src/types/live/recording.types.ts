@@ -7,6 +7,7 @@ export interface Recording {
   durationMs?: number;
   fileSizeBytes?: number;
   playbackUrl?: string;
+  captionUrl?: string;
   createdAt: string;
   completedAt?: string;
   errorMessage?: string;

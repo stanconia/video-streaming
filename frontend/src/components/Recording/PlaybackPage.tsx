@@ -8,8 +8,11 @@ export const PlaybackPage: React.FC = () => {
   const navigate = useNavigate();
   const [recording, setRecording] = useState<Recording | null>(null);
   const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
+  const [captionUrl, setCaptionUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [transcribing, setTranscribing] = useState(false);
+  const [transcribeError, setTranscribeError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -25,11 +28,50 @@ export const PlaybackPage: React.FC = () => {
       ]);
       setRecording(rec);
       setPlaybackUrl(url);
+
+      // Load caption URL: use the one from the recording response, or fetch separately
+      if (rec.captionUrl) {
+        setCaptionUrl(rec.captionUrl);
+      } else {
+        const capUrl = await recordingApi.getCaptionUrl(recordingId);
+        setCaptionUrl(capUrl);
+      }
+
       setError(null);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Failed to load recording');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGenerateCaptions = async () => {
+    if (!id) return;
+    try {
+      setTranscribing(true);
+      setTranscribeError(null);
+      await recordingApi.transcribeRecording(id);
+      // Poll for caption availability (transcription is async)
+      let attempts = 0;
+      const maxAttempts = 30;
+      const pollInterval = 2000;
+      const poll = async () => {
+        attempts++;
+        const capUrl = await recordingApi.getCaptionUrl(id);
+        if (capUrl) {
+          setCaptionUrl(capUrl);
+          setTranscribing(false);
+        } else if (attempts < maxAttempts) {
+          setTimeout(poll, pollInterval);
+        } else {
+          setTranscribing(false);
+          setTranscribeError('Transcription is taking longer than expected. Please refresh later.');
+        }
+      };
+      setTimeout(poll, pollInterval);
+    } catch (err: any) {
+      setTranscribing(false);
+      setTranscribeError(err.response?.data?.error || 'Failed to start transcription');
     }
   };
 
@@ -87,8 +129,18 @@ export const PlaybackPage: React.FC = () => {
             autoPlay={false}
             style={styles.videoPlayer}
             src={playbackUrl}
+            crossOrigin="anonymous"
             onError={() => setError('Failed to load video. The recording may still be processing.')}
           >
+            {captionUrl && (
+              <track
+                kind="captions"
+                src={captionUrl}
+                srcLang="en"
+                label="English"
+                default
+              />
+            )}
             Your browser does not support the video element.
           </video>
         ) : recording.status === 'COMPLETED' ? (
@@ -132,7 +184,35 @@ export const PlaybackPage: React.FC = () => {
           <span style={styles.label}>Status:</span>
           <span>{recording.status}</span>
         </div>
+        <div style={styles.infoRow}>
+          <span style={styles.label}>Captions:</span>
+          <span>{captionUrl ? 'Available' : 'Not generated'}</span>
+        </div>
       </div>
+
+      {recording.status === 'COMPLETED' && (
+        <div style={styles.captionSection}>
+          {captionUrl ? (
+            <div style={styles.captionStatus}>
+              Captions are available and will display automatically during playback.
+            </div>
+          ) : transcribing ? (
+            <div style={styles.captionStatus}>
+              <div style={styles.captionSpinner} />
+              Captions generating... This may take a few minutes.
+            </div>
+          ) : (
+            <div>
+              <button onClick={handleGenerateCaptions} style={styles.generateButton}>
+                Generate Captions
+              </button>
+              {transcribeError && (
+                <div style={styles.transcribeError}>{transcribeError}</div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -229,5 +309,42 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: '20px',
     backgroundColor: '#f8d7da',
     borderRadius: '4px',
+  },
+  captionSection: {
+    marginTop: '16px',
+    padding: '20px',
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+  },
+  captionStatus: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    color: '#555',
+    fontSize: '14px',
+  },
+  captionSpinner: {
+    width: '20px',
+    height: '20px',
+    borderRadius: '50%',
+    border: '2px solid #ddd',
+    borderTopColor: '#007bff',
+    animation: 'spin 1s linear infinite',
+  },
+  generateButton: {
+    padding: '10px 24px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: 'bold' as const,
+  },
+  transcribeError: {
+    color: '#721c24',
+    marginTop: '8px',
+    fontSize: '13px',
   },
 };

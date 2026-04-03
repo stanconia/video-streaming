@@ -11,6 +11,7 @@ public class RecordingResponse {
     private Long durationMs;
     private Long fileSizeBytes;
     private String playbackUrl;
+    private String captionUrl;
     private LocalDateTime createdAt;
     private LocalDateTime completedAt;
 
@@ -18,7 +19,7 @@ public class RecordingResponse {
 
     public RecordingResponse(String id, String roomId, String roomName, String startedByUserId,
                              String status, Long durationMs, Long fileSizeBytes, String playbackUrl,
-                             LocalDateTime createdAt, LocalDateTime completedAt) {
+                             String captionUrl, LocalDateTime createdAt, LocalDateTime completedAt) {
         this.id = id;
         this.roomId = roomId;
         this.roomName = roomName;
@@ -27,6 +28,7 @@ public class RecordingResponse {
         this.durationMs = durationMs;
         this.fileSizeBytes = fileSizeBytes;
         this.playbackUrl = playbackUrl;
+        this.captionUrl = captionUrl;
         this.createdAt = createdAt;
         this.completedAt = completedAt;
     }
@@ -54,6 +56,9 @@ public class RecordingResponse {
 
     public String getPlaybackUrl() { return playbackUrl; }
     public void setPlaybackUrl(String playbackUrl) { this.playbackUrl = playbackUrl; }
+
+    public String getCaptionUrl() { return captionUrl; }
+    public void setCaptionUrl(String captionUrl) { this.captionUrl = captionUrl; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
