@@ -89,6 +89,10 @@ public class AuthService {
             if (isMinor && (request.getParentEmail() == null || request.getParentEmail().isBlank())) {
                 throw new RuntimeException("Parent/guardian email is required for users under 13");
             }
+            if (isMinor && request.getParentEmail() != null
+                    && request.getParentEmail().equalsIgnoreCase(request.getEmail())) {
+                throw new RuntimeException("Parent/guardian email must be different from your email");
+            }
         }
 
         User user = User.builder()
