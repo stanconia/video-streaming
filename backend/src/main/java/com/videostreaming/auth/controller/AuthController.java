@@ -114,4 +114,5 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "Password reset failed"));
         }
     }
+
 }
