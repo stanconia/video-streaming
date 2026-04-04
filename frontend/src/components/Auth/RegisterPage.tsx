@@ -82,6 +82,11 @@ export function RegisterPage() {
         setIsSubmitting(false);
         return;
       }
+      if (isUnder13 && parentEmail.toLowerCase() === email.toLowerCase()) {
+        setError('Parent/guardian email must be different from your email');
+        setIsSubmitting(false);
+        return;
+      }
       const location = city && country ? `${city}, ${country}` : country || undefined;
       const subjectInterests = subjectInterestsArr.length > 0 ? subjectInterestsArr.join(', ') : undefined;
       const subjects = subjectsArr.length > 0 ? subjectsArr.join(', ') : undefined;

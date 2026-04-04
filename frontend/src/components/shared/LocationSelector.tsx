@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { COUNTRIES, getCitiesForCountry } from '../../data/constants';
+import { COUNTRIES, getStatesForCountry } from '../../data/constants';
 
 interface LocationSelectorProps {
   country: string;
@@ -26,7 +26,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
     return COUNTRIES.filter((c) => c.toLowerCase().includes(lower));
   }, [countrySearch]);
 
-  const cities = useMemo(() => getCitiesForCountry(country), [country]);
+  const cities = useMemo(() => getStatesForCountry(country), [country]);
 
   const filteredCities = useMemo(() => {
     if (!citySearch) return cities;
@@ -105,13 +105,13 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
       </div>
 
       <div style={styles.fieldGroup}>
-        <label style={styles.label}>City</label>
+        <label style={styles.label}>State / Province</label>
         {isOtherCity ? (
           <div style={styles.otherRow}>
             <input
               type="text"
               style={styles.input}
-              placeholder="Type your city..."
+              placeholder="Type your state/province..."
               value={city}
               onChange={(e) => onCityChange(e.target.value)}
             />
@@ -131,7 +131,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
             <input
               type="text"
               style={styles.input}
-              placeholder={country ? 'Select a city...' : 'Select a country first'}
+              placeholder={country ? 'Select a state/province...' : 'Select a country first'}
               value={showCityDropdown ? citySearch : city}
               disabled={!country}
               onChange={(e) => {
@@ -173,7 +173,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
                   Other (type manually)
                 </div>
                 {filteredCities.length === 0 && (
-                  <div style={styles.noResults}>No cities match your search</div>
+                  <div style={styles.noResults}>No states match your search</div>
                 )}
               </div>
             )}
