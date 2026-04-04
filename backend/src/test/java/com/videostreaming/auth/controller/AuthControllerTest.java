@@ -51,7 +51,7 @@ class AuthControllerTest {
     void register_validRequest_returns201() throws Exception {
         // given
         RegisterRequest request = new RegisterRequest("test@example.com", "password123", "Test User", "STUDENT");
-        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
+        request.setDateOfBirth("1990-01-15");
         AuthResponse response = new AuthResponse("jwt-token-123", "user-1", "test@example.com", "Test User", "STUDENT");
 
         when(authService.register(any(RegisterRequest.class))).thenReturn(response);
@@ -72,7 +72,7 @@ class AuthControllerTest {
     void register_duplicateEmail_returns400() throws Exception {
         // given
         RegisterRequest request = new RegisterRequest("existing@example.com", "password123", "Test User", "STUDENT");
-        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
+        request.setDateOfBirth("1990-01-15");
 
         when(authService.register(any(RegisterRequest.class)))
                 .thenThrow(new RuntimeException("Email already registered"));
