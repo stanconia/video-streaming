@@ -21,8 +21,11 @@ public class GlobalExceptionHandler {
                 fieldErrors.put(error.getField(), error.getDefaultMessage())
         );
 
+        String errorMessage = fieldErrors.values().stream()
+                .collect(java.util.stream.Collectors.joining(". "));
+
         Map<String, Object> body = new HashMap<>();
-        body.put("error", "Validation failed");
+        body.put("error", errorMessage.isEmpty() ? "Validation failed" : errorMessage);
         body.put("details", fieldErrors);
         body.put("timestamp", Instant.now().toString());
 
