@@ -12,8 +12,27 @@ export function RegisterPage() {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<'TEACHER' | 'STUDENT'>('STUDENT');
-  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [dobMonth, setDobMonth] = useState('');
+  const [dobDay, setDobDay] = useState('');
+  const [dobYear, setDobYear] = useState('');
   const [parentEmail, setParentEmail] = useState('');
+
+  const dateOfBirth = dobYear && dobMonth && dobDay
+    ? `${dobYear}-${dobMonth.padStart(2, '0')}-${dobDay.padStart(2, '0')}` : '';
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
+  const months = [
+    { value: '1', label: 'January' }, { value: '2', label: 'February' },
+    { value: '3', label: 'March' }, { value: '4', label: 'April' },
+    { value: '5', label: 'May' }, { value: '6', label: 'June' },
+    { value: '7', label: 'July' }, { value: '8', label: 'August' },
+    { value: '9', label: 'September' }, { value: '10', label: 'October' },
+    { value: '11', label: 'November' }, { value: '12', label: 'December' },
+  ];
+  const daysInMonth = dobMonth && dobYear
+    ? new Date(parseInt(dobYear), parseInt(dobMonth), 0).getDate() : 31;
+  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
@@ -183,7 +202,7 @@ export function RegisterPage() {
                   checked={role === 'TEACHER'}
                   onChange={() => setRole('TEACHER')}
                 />
-                Guide
+                Kyro Guide
               </label>
               <label style={styles.radioLabel}>
                 <input
@@ -193,22 +212,30 @@ export function RegisterPage() {
                   checked={role === 'STUDENT'}
                   onChange={() => setRole('STUDENT')}
                 />
-                Kyro
+                Kyro Learner
               </label>
             </div>
           </div>
 
           <div style={styles.field}>
             <label style={styles.label}>Date of Birth</label>
-            <input
-              type="date"
-              data-testid="dob-input"
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-              required
-              style={styles.input}
-              max={new Date().toISOString().split('T')[0]}
-            />
+            <div style={{ display: 'flex', gap: '8px' }} data-testid="dob-input">
+              <select value={dobMonth} onChange={(e) => setDobMonth(e.target.value)}
+                      required style={{ ...styles.input, flex: 2 }}>
+                <option value="">Month</option>
+                {months.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+              </select>
+              <select value={dobDay} onChange={(e) => setDobDay(e.target.value)}
+                      required style={{ ...styles.input, flex: 1 }}>
+                <option value="">Day</option>
+                {days.map((d) => <option key={d} value={String(d)}>{d}</option>)}
+              </select>
+              <select value={dobYear} onChange={(e) => setDobYear(e.target.value)}
+                      required style={{ ...styles.input, flex: 1.2 }}>
+                <option value="">Year</option>
+                {years.map((y) => <option key={y} value={String(y)}>{y}</option>)}
+              </select>
+            </div>
           </div>
 
           {isUnder13 && (
@@ -260,7 +287,7 @@ export function RegisterPage() {
 
           {role === 'TEACHER' && (
             <>
-              <div style={styles.divider}>Guide Details</div>
+              <div style={styles.divider}>Kyro Guide Details</div>
               <div style={styles.field}>
                 <label style={styles.label}>Headline</label>
                 <input

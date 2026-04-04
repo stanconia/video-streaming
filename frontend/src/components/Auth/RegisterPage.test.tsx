@@ -67,8 +67,8 @@ describe('RegisterPage', () => {
     expect(screen.getByPlaceholderText('Your name')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('At least 6 characters')).toBeInTheDocument();
-    expect(screen.getByLabelText('Guide')).toBeInTheDocument();
-    expect(screen.getByLabelText('Kyro')).toBeInTheDocument();
+    expect(screen.getByLabelText('Kyro Guide')).toBeInTheDocument();
+    expect(screen.getByLabelText('Kyro Learner')).toBeInTheDocument();
   });
 
   it('submits registration with form data', async () => {
@@ -81,8 +81,11 @@ describe('RegisterPage', () => {
     await user.type(screen.getByPlaceholderText('you@example.com'), 'john@test.com');
     await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
 
-    const dobInput = screen.getByTestId('dob-input');
-    await user.type(dobInput, '2000-01-15');
+    const dobContainer = screen.getByTestId('dob-input');
+    const selects = dobContainer.querySelectorAll('select');
+    await user.selectOptions(selects[0], '1');   // January
+    await user.selectOptions(selects[1], '15');  // 15th
+    await user.selectOptions(selects[2], '2000'); // 2000
 
     await user.click(screen.getByRole('button', { name: 'Create Account' }));
 
@@ -109,14 +112,14 @@ describe('RegisterPage', () => {
     render(<RegisterPage />);
 
     // Initially, teacher fields should not be visible (STUDENT is default)
-    expect(screen.queryByText('Guide Details')).not.toBeInTheDocument();
+    expect(screen.queryByText('Kyro Guide Details')).not.toBeInTheDocument();
     expect(screen.queryByPlaceholderText('e.g. Math tutor with 10 years experience')).not.toBeInTheDocument();
 
     // Select Teacher role
-    await user.click(screen.getByLabelText('Guide'));
+    await user.click(screen.getByLabelText('Kyro Guide'));
 
     // Now teacher-specific fields should appear
-    expect(screen.getByText('Guide Details')).toBeInTheDocument();
+    expect(screen.getByText('Kyro Guide Details')).toBeInTheDocument();
     expect(screen.getByText('Headline')).toBeInTheDocument();
     expect(screen.getByText('Subjects')).toBeInTheDocument();
     expect(screen.getByText('Years of Experience')).toBeInTheDocument();
@@ -134,11 +137,14 @@ describe('RegisterPage', () => {
     await user.type(screen.getByPlaceholderText('you@example.com'), 'jane@test.com');
     await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
 
-    const dobInput = screen.getByTestId('dob-input');
-    await user.type(dobInput, '1985-06-20');
+    const dobContainer2 = screen.getByTestId('dob-input');
+    const selects2 = dobContainer2.querySelectorAll('select');
+    await user.selectOptions(selects2[0], '6');    // June
+    await user.selectOptions(selects2[1], '20');   // 20th
+    await user.selectOptions(selects2[2], '1985'); // 1985
 
     // Select Teacher role
-    await user.click(screen.getByLabelText('Guide'));
+    await user.click(screen.getByLabelText('Kyro Guide'));
 
     // Fill teacher-specific fields
     await user.type(
@@ -197,7 +203,11 @@ describe('RegisterPage', () => {
     await user.type(screen.getByPlaceholderText('Your name'), 'John');
     await user.type(screen.getByPlaceholderText('you@example.com'), 'taken@test.com');
     await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
-    await user.type(screen.getByTestId('dob-input'), '2000-01-01');
+    const dobContainer3 = screen.getByTestId('dob-input');
+    const selects3 = dobContainer3.querySelectorAll('select');
+    await user.selectOptions(selects3[0], '1');
+    await user.selectOptions(selects3[1], '1');
+    await user.selectOptions(selects3[2], '2000');
     await user.click(screen.getByRole('button', { name: 'Create Account' }));
 
     await waitFor(() => {
@@ -229,7 +239,7 @@ describe('RegisterPage', () => {
     expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
 
     // Switch to TEACHER
-    await user.click(screen.getByLabelText('Guide'));
+    await user.click(screen.getByLabelText('Kyro Guide'));
 
     // Both roles have subject selectors (interests for students, subjects for teachers)
     expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
