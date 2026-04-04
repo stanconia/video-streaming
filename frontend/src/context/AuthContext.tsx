@@ -71,10 +71,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       requiresParentalConsent: response.requiresParentalConsent,
       parentalConsentGranted: response.parentalConsentGranted,
     };
-    localStorage.setItem(TOKEN_KEY, response.token);
-    localStorage.setItem(USER_KEY, JSON.stringify(authUser));
-    setToken(response.token);
-    setUser(authUser);
+    // COPPA: don't store token if account needs parental consent
+    if (response.token) {
+      localStorage.setItem(TOKEN_KEY, response.token);
+      localStorage.setItem(USER_KEY, JSON.stringify(authUser));
+      setToken(response.token);
+      setUser(authUser);
+    }
   }, []);
 
   const loginWithGoogle = useCallback(async (credential: string) => {

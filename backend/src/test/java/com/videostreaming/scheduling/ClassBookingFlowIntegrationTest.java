@@ -42,7 +42,7 @@ class ClassBookingFlowIntegrationTest extends AbstractIntegrationTest {
                 "Prof Booking",
                 "TEACHER"
         );
-        teacherReq.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
+        teacherReq.setDateOfBirth("1990-01-15");
         teacherReq.setHeadline("Expert Math Teacher");
         teacherReq.setSubjects("Math, Algebra");
         teacherReq.setExperienceYears(5);
@@ -66,7 +66,7 @@ class ClassBookingFlowIntegrationTest extends AbstractIntegrationTest {
                 "Sam Student",
                 "STUDENT"
         );
-        studentReq.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
+        studentReq.setDateOfBirth("1990-01-15");
 
         String studentResponse = mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -50,7 +50,7 @@ class AuthServiceTest {
     @Test
     void register_success_returnsAuthResponseWithCorrectFields() {
         RegisterRequest request = new RegisterRequest("test@example.com", "password123", "Test User", "STUDENT");
-        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
+        request.setDateOfBirth("1990-01-15");
 
         when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
@@ -83,7 +83,7 @@ class AuthServiceTest {
     @Test
     void register_teacherRole_createsTeacherProfile() {
         RegisterRequest request = new RegisterRequest("teacher@example.com", "password123", "Teacher User", "TEACHER");
-        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
+        request.setDateOfBirth("1990-01-15");
         request.setHeadline("Expert Teacher");
         request.setSubjects("Math,Science");
         request.setExperienceYears(5);
@@ -117,7 +117,7 @@ class AuthServiceTest {
     @Test
     void register_duplicateEmail_throwsRuntimeException() {
         RegisterRequest request = new RegisterRequest("existing@example.com", "password123", "Test User", "STUDENT");
-        request.setDateOfBirth(java.time.LocalDate.of(1990, 1, 15));
+        request.setDateOfBirth("1990-01-15");
 
         when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
 

@@ -79,10 +79,16 @@ public class AuthService {
             throw new RuntimeException("Email already registered");
         }
 
-        // Calculate age from date of birth
+        // Parse and validate date of birth
+        LocalDate dob = null;
         boolean isMinor = false;
-        if (request.getDateOfBirth() != null) {
-            int age = Period.between(request.getDateOfBirth(), LocalDate.now()).getYears();
+        if (request.getDateOfBirth() != null && !request.getDateOfBirth().isBlank()) {
+            try {
+                dob = LocalDate.parse(request.getDateOfBirth());
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid date of birth format. Use YYYY-MM-DD.");
+            }
+            int age = Period.between(dob, LocalDate.now()).getYears();
             isMinor = age < 13;
 
             // COPPA: require parent email for under-13
@@ -100,7 +106,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .displayName(request.getDisplayName())
                 .role(UserRole.valueOf(request.getRole()))
-                .dateOfBirth(request.getDateOfBirth())
+                .dateOfBirth(dob)
                 .parentEmail(isMinor ? request.getParentEmail() : null)
                 .parentalConsentGranted(!isMinor)
                 .build();
@@ -131,6 +137,10 @@ public class AuthService {
         if (isMinor) {
             sendParentalConsentEmail(user, ParentalConsent.ConsentType.REGISTRATION, null, null);
             logger.info("Parental consent request sent for under-13 user {}", user.getId());
+
+            // Don't return a token — COPPA kids cannot sign in until parent approves
+            return new AuthResponse(null, user.getId(), user.getEmail(), user.getDisplayName(),
+                    user.getRole().name(), true, false);
         }
 
         notificationService.sendWelcomeEmail(user.getId());
@@ -138,7 +148,7 @@ public class AuthService {
         String token = jwtService.generateToken(user);
 
         return new AuthResponse(token, user.getId(), user.getEmail(), user.getDisplayName(),
-                user.getRole().name(), isMinor, !isMinor);
+                user.getRole().name(), false, true);
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -151,6 +161,11 @@ public class AuthService {
 
         boolean requiresConsent = user.getDateOfBirth() != null
                 && Period.between(user.getDateOfBirth(), LocalDate.now()).getYears() < 13;
+
+        // Block login for COPPA kids without parental consent
+        if (requiresConsent && !user.getParentalConsentGranted()) {
+            throw new RuntimeException("Your account is pending parental approval. Please ask your parent/guardian to check their email.");
+        }
 
         String token = jwtService.generateToken(user);
 
