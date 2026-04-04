@@ -10,6 +10,7 @@ export function RegisterPage() {
   const { register, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [displayName, setDisplayName] = useState('');
   const [role, setRole] = useState<'TEACHER' | 'STUDENT'>('STUDENT');
   const [dobMonth, setDobMonth] = useState('');
@@ -185,15 +186,39 @@ export function RegisterPage() {
 
           <div style={styles.field}>
             <label style={styles.label}>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              style={styles.input}
-              placeholder="At least 6 characters"
-            />
+            <div style={{ position: 'relative' as const }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                style={{ ...styles.input, paddingRight: '48px' }}
+                placeholder="Min 8 characters"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={styles.showPasswordBtn}
+                tabIndex={-1}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+            <div style={styles.passwordHints}>
+              <span style={{ color: password.length >= 8 ? 'var(--success)' : 'var(--text-muted)' }}>
+                {password.length >= 8 ? '\u2713' : '\u2022'} At least 8 characters
+              </span>
+              <span style={{ color: /[a-z]/.test(password) ? 'var(--success)' : 'var(--text-muted)' }}>
+                {/[a-z]/.test(password) ? '\u2713' : '\u2022'} Lowercase letter
+              </span>
+              <span style={{ color: /[A-Z]/.test(password) ? 'var(--success)' : 'var(--text-muted)' }}>
+                {/[A-Z]/.test(password) ? '\u2713' : '\u2022'} Uppercase letter
+              </span>
+              <span style={{ color: /\d/.test(password) ? 'var(--success)' : 'var(--text-muted)' }}>
+                {/\d/.test(password) ? '\u2713' : '\u2022'} Number
+              </span>
+            </div>
           </div>
 
           <div style={styles.field}>
@@ -436,5 +461,25 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderTop: '1px solid #eee',
     paddingTop: '12px',
     marginTop: '4px',
+  },
+  showPasswordBtn: {
+    position: 'absolute' as const,
+    right: '8px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    color: 'var(--accent)',
+    fontSize: '13px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    padding: '4px 8px',
+  },
+  passwordHints: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '2px',
+    marginTop: '6px',
+    fontSize: '12px',
   },
 };
