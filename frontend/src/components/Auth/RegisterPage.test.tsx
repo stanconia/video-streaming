@@ -66,7 +66,7 @@ describe('RegisterPage', () => {
     expect(screen.getByText('Role')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Your name')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('At least 6 characters')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Min 8 characters')).toBeInTheDocument();
     expect(screen.getByLabelText('Kyro Guide')).toBeInTheDocument();
     expect(screen.getByLabelText('Kyro Learner')).toBeInTheDocument();
   });
@@ -79,7 +79,7 @@ describe('RegisterPage', () => {
 
     await user.type(screen.getByPlaceholderText('Your name'), 'John Doe');
     await user.type(screen.getByPlaceholderText('you@example.com'), 'john@test.com');
-    await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
+    await user.type(screen.getByPlaceholderText('Min 8 characters'), 'password123');
 
     const dobContainer = screen.getByTestId('dob-input');
     const selects = dobContainer.querySelectorAll('select');
@@ -135,7 +135,7 @@ describe('RegisterPage', () => {
 
     await user.type(screen.getByPlaceholderText('Your name'), 'Jane Teacher');
     await user.type(screen.getByPlaceholderText('you@example.com'), 'jane@test.com');
-    await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
+    await user.type(screen.getByPlaceholderText('Min 8 characters'), 'password123');
 
     const dobContainer2 = screen.getByTestId('dob-input');
     const selects2 = dobContainer2.querySelectorAll('select');
@@ -202,7 +202,7 @@ describe('RegisterPage', () => {
 
     await user.type(screen.getByPlaceholderText('Your name'), 'John');
     await user.type(screen.getByPlaceholderText('you@example.com'), 'taken@test.com');
-    await user.type(screen.getByPlaceholderText('At least 6 characters'), 'password123');
+    await user.type(screen.getByPlaceholderText('Min 8 characters'), 'password123');
     const dobContainer3 = screen.getByTestId('dob-input');
     const selects3 = dobContainer3.querySelectorAll('select');
     await user.selectOptions(selects3[0], '1');
