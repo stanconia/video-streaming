@@ -28,7 +28,7 @@ export const Navbar: React.FC = () => {
   return (
     <nav style={styles.nav} className="navbar">
       <div style={styles.left} className="navbar-left">
-        <span style={styles.brand} onClick={() => handleNav('/')}>LearningHaven</span>
+        <span style={styles.brand} onClick={() => handleNav('/')}>KyroAcademy</span>
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? '✕' : '☰'}
         </button>
@@ -38,7 +38,7 @@ export const Navbar: React.FC = () => {
           <button onClick={() => handleNav('/admin')} style={navLinkStyle('/admin')}>Admin</button>
         )}
         <button onClick={() => handleNav('/courses')} style={navLinkStyle('/courses')}>Courses</button>
-        <button onClick={() => handleNav('/teachers')} style={navLinkStyle('/teachers')}>Mind Pros</button>
+        <button onClick={() => handleNav('/teachers')} style={navLinkStyle('/teachers')}>Guides</button>
         <button onClick={() => handleNav('/messages')} style={navLinkStyle('/messages')}>Messages</button>
         <button onClick={() => handleNav('/calendar')} style={navLinkStyle('/calendar')}>Calendar</button>
         <button onClick={() => handleNav('/recordings')} style={navLinkStyle('/recordings')}>Recordings</button>

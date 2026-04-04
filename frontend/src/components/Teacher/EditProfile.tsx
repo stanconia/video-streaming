@@ -70,7 +70,7 @@ export const EditProfile: React.FC = () => {
       <button onClick={() => navigate('/')} style={styles.backButton}>Back to Home</button>
 
       <div style={styles.formCard}>
-        <h1>Edit Mind Pro Profile</h1>
+        <h1>Edit Guide Profile</h1>
         <p style={styles.subtitle}>Set up your teaching profile so students can find you</p>
 
         {error && <div style={styles.error}>{error}</div>}

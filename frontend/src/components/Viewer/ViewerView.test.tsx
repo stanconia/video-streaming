@@ -106,9 +106,9 @@ describe('ViewerView', () => {
     mockUseWebRTC.mockReturnValue({ ...defaultWebRTCReturn, remoteStreams: remotes });
 
     render(<ViewerView {...defaultProps} />);
-    // Teacher should be in the large main view with star and "(Mind Pro)" label
+    // Teacher should be in the large main view with star and "(Guide)" label
     expect(screen.getByText(/Prof Smith/)).toBeInTheDocument();
-    expect(screen.getByText(/(Mind Pro)/)).toBeInTheDocument();
+    expect(screen.getByText(/(Guide)/)).toBeInTheDocument();
     // Other participant should be in the filmstrip grid
     const grid = screen.getByTestId('video-grid');
     expect(grid.getAttribute('data-can-mute')).toBe('false');

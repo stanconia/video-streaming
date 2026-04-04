@@ -93,7 +93,7 @@ export function RegisterPage() {
     return (
       <div style={styles.container} className="page-container">
         <div style={styles.card} className="auth-card">
-          <h1 style={styles.title}>LearningHaven</h1>
+          <h1 style={styles.title}>KyroAcademy</h1>
           <h2 style={styles.subtitle}>Parental Consent Required</h2>
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
             <p style={{ marginBottom: '16px', color: '#333' }}>
@@ -117,7 +117,7 @@ export function RegisterPage() {
   return (
     <div style={styles.container} className="page-container">
       <div style={styles.card} className="auth-card">
-        <h1 style={styles.title}>LearningHaven</h1>
+        <h1 style={styles.title}>KyroAcademy</h1>
         <h2 style={styles.subtitle}>Create Account</h2>
 
         {error && <div style={styles.error}>{error}</div>}
@@ -183,7 +183,7 @@ export function RegisterPage() {
                   checked={role === 'TEACHER'}
                   onChange={() => setRole('TEACHER')}
                 />
-                Mind Pro
+                Guide
               </label>
               <label style={styles.radioLabel}>
                 <input
@@ -193,7 +193,7 @@ export function RegisterPage() {
                   checked={role === 'STUDENT'}
                   onChange={() => setRole('STUDENT')}
                 />
-                Mind Learner
+                Kyro
               </label>
             </div>
           </div>
@@ -260,7 +260,7 @@ export function RegisterPage() {
 
           {role === 'TEACHER' && (
             <>
-              <div style={styles.divider}>Mind Pro Details</div>
+              <div style={styles.divider}>Guide Details</div>
               <div style={styles.field}>
                 <label style={styles.label}>Headline</label>
                 <input

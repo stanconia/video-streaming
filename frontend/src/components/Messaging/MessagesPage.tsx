@@ -157,21 +157,21 @@ export const MessagesPage: React.FC = () => {
         <div style={styles.pickerOverlay}>
           <div style={styles.pickerCard}>
             <div style={styles.pickerHeader}>
-              <h3 style={{ margin: 0 }}>{isTeacher ? 'Message a Mind Learner' : 'Message a Mind Pro'}</h3>
+              <h3 style={{ margin: 0 }}>{isTeacher ? 'Message a Kyro' : 'Message a Guide'}</h3>
               <button onClick={() => setShowContactPicker(false)} style={styles.pickerClose}>✕</button>
             </div>
             <p style={styles.pickerSubtext}>
               {isTeacher
-                ? 'Mind Learners enrolled in your courses:'
-                : 'Mind Pros from your enrolled courses:'}
+                ? 'Kyros enrolled in your courses:'
+                : 'Guides from your enrolled courses:'}
             </p>
             {loadingContacts ? (
               <div style={styles.pickerLoading}>Loading...</div>
             ) : contacts.length === 0 ? (
               <div style={styles.pickerEmpty}>
                 {isTeacher
-                  ? 'No enrolled Mind Learners found.'
-                  : 'No Mind Pros found. Enroll in a course to message its Mind Pro.'}
+                  ? 'No enrolled Kyros found.'
+                  : 'No Guides found. Enroll in a course to message its Guide.'}
               </div>
             ) : (
               <div style={styles.pickerList}>
@@ -228,8 +228,8 @@ export const MessagesPage: React.FC = () => {
             ) : (
               <div style={styles.emptyMain}>
                 {isTeacher
-                  ? 'Select a conversation or click "+ New Message" to message a Mind Learner'
-                  : 'Select a conversation or click "+ New Message" to message a Mind Pro'}
+                  ? 'Select a conversation or click "+ New Message" to message a Kyro'
+                  : 'Select a conversation or click "+ New Message" to message a Guide'}
               </div>
             )}
           </div>

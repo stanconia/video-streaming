@@ -69,7 +69,7 @@ export const TeacherProfilePage: React.FC = () => {
   return (
     <div className="page-container" style={styles.container}>
       <button onClick={() => navigate('/teachers')} style={styles.backButton}>
-        &#8592; Back to Mind Pros
+        &#8592; Back to Guides
       </button>
 
       <div style={styles.profileCard}>
