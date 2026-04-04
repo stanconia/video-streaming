@@ -311,13 +311,13 @@ public class AuthService {
                 + user.getDisplayName() + " has "
                 + (consentType == ParentalConsent.ConsentType.REGISTRATION
                     ? "registered for an account" : "requested to enroll in a course")
-                + " on MindMint.\n\n"
+                + " on KyroAcademy.\n\n"
                 + "As they are under 13, we require your consent in compliance with COPPA.\n\n"
                 + "To APPROVE, click: " + approveLink + "\n\n"
                 + "To DENY, click: " + denyLink + "\n\n"
                 + "This link expires in 7 days.\n\n"
                 + "If you did not expect this email, please ignore it.\n\n"
-                + "Best regards,\nMindMint Team";
+                + "Best regards,\nKyroAcademy Team";
 
         emailService.sendEmail(user.getParentEmail(), subject, body);
     }

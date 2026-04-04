@@ -28,7 +28,7 @@ export function ForgotPasswordPage() {
   return (
     <div style={styles.container} className="page-container">
       <div style={styles.card} className="auth-card">
-        <h1 style={styles.title}>MindMint</h1>
+        <h1 style={styles.title}>KyroAcademy</h1>
         <h2 style={styles.subtitle}>Forgot Password</h2>
 
         {submitted ? (

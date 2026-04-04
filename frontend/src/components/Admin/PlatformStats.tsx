@@ -36,8 +36,8 @@ export const PlatformStats: React.FC = () => {
         <h2 style={styles.sectionTitle}>Users</h2>
         <div style={styles.statsGrid}>
           <StatCard label="Total Users" value={stats.totalUsers} color="#007bff" />
-          <StatCard label="Mind Pros" value={stats.totalTeachers} color="#28a745" />
-          <StatCard label="Mind Learners" value={stats.totalStudents} color="#6f42c1" />
+          <StatCard label="Guides" value={stats.totalTeachers} color="#28a745" />
+          <StatCard label="Kyros" value={stats.totalStudents} color="#6f42c1" />
         </div>
       </div>
 

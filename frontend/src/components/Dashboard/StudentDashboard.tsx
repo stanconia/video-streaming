@@ -49,7 +49,7 @@ export const StudentDashboard: React.FC = () => {
 
   return (
     <div style={styles.container} className="page-container">
-      <h1 style={styles.pageTitle}>Mind Learner Dashboard</h1>
+      <h1 style={styles.pageTitle}>Kyro Dashboard</h1>
 
       <div style={styles.statsGrid} className="stats-grid">
         <StatCard label="Total Enrollments" value={data.totalEnrollments} color="#007bff" />

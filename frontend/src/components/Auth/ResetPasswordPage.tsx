@@ -70,7 +70,7 @@ export function ResetPasswordPage() {
     return (
       <div style={styles.container} className="page-container">
         <div style={styles.card} className="auth-card">
-          <h1 style={styles.title}>MindMint</h1>
+          <h1 style={styles.title}>KyroAcademy</h1>
           <h2 style={styles.subtitle}>Reset Password</h2>
           <div style={styles.error}>
             Invalid reset link. Please request a new password reset.
@@ -86,7 +86,7 @@ export function ResetPasswordPage() {
   return (
     <div style={styles.container} className="page-container">
       <div style={styles.card} className="auth-card">
-        <h1 style={styles.title}>MindMint</h1>
+        <h1 style={styles.title}>KyroAcademy</h1>
         <h2 style={styles.subtitle}>Reset Password</h2>
 
         {success ? (

@@ -83,7 +83,7 @@ describe('StudentDashboard', () => {
     render(<StudentDashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Mind Learner Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('Kyro Dashboard')).toBeInTheDocument();
     });
 
     // Check stat cards

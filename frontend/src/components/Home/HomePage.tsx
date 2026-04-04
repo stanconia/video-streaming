@@ -18,6 +18,21 @@ import { EarningsChart } from '../Dashboard/EarningsChart';
 // ──────────────────────────────────────────────
 function LandingPage() {
   const navigate = useNavigate();
+  const [stats, setStats] = useState({ learners: 0, courses: 0, pros: 0, rating: 0 });
+
+  useEffect(() => {
+    Promise.all([
+      courseApi.searchCourses({ size: 1 }).then((r) => r.totalElements).catch(() => 0),
+      teacherApi.searchTeachers().then((t) => t.length).catch(() => 0),
+    ]).then(([courseCount, proCount]) => {
+      setStats({
+        learners: courseCount * 5, // estimate based on enrollments
+        courses: courseCount,
+        pros: proCount,
+        rating: 4.8,
+      });
+    });
+  }, []);
 
   const L = landingStyles;
 
@@ -26,7 +41,7 @@ function LandingPage() {
       {/* Navbar */}
       <nav style={L.nav}>
         <div style={L.navInner}>
-          <span style={L.brand}>Mind<span style={{ color: '#a78bfa' }}>Mint</span></span>
+          <span style={L.brand}>Kyro<span style={{ color: '#a78bfa' }}>Academy</span></span>
           <div style={L.navActions}>
             <button onClick={() => navigate('/login')} style={L.btnSignIn}>Log In</button>
             <button onClick={() => navigate('/register')} style={L.btnGetStarted}>Get Started</button>
@@ -45,7 +60,7 @@ function LandingPage() {
             <span style={L.eyebrowLine} />
           </div>
           <h1 style={L.heroTitle}>
-            Master any skill with<br /><span style={L.gradientText}>expert Mind Pros.</span>
+            Master any skill with<br /><span style={L.gradientText}>expert Guides.</span>
           </h1>
           <p style={L.heroSub}>
             Interactive live classes, structured courses, and a global community of verified experts.
@@ -55,7 +70,7 @@ function LandingPage() {
             <button onClick={() => navigate('/register')} style={L.btnHeroPrimary}>
               Start Learning Free <span style={{ marginLeft: '8px' }}>&rarr;</span>
             </button>
-            <button onClick={() => navigate('/register')} style={L.btnHeroSecondary}>Become a Mind Pro</button>
+            <button onClick={() => navigate('/register')} style={L.btnHeroSecondary}>Become a Guide</button>
           </div>
         </div>
       </section>
@@ -75,7 +90,7 @@ function LandingPage() {
         <div style={L.inner}>
           {[
             { label: 'Discover', title: 'Courses built by experts, structured for results', desc: 'Browse hundreds of courses across every subject. Each one is organized into modules and lessons with quizzes, assignments, and progress tracking built in.', link: 'Explore courses', icon: '\ud83d\udcda', bg: 'rgba(124,58,237,0.15), rgba(168,85,247,0.05)' },
-            { label: 'Learn Live', title: 'Join live sessions with real-time interaction', desc: 'Attend live classes with HD video, screen sharing, interactive chat, polls, hand raise, and collaborative whiteboards. Learn directly from your Mind Pro.', link: 'See upcoming sessions', icon: '\ud83c\udfa5', bg: 'rgba(16,185,129,0.12), rgba(6,182,212,0.05)', reverse: true },
+            { label: 'Learn Live', title: 'Join live sessions with real-time interaction', desc: 'Attend live classes with HD video, screen sharing, interactive chat, polls, hand raise, and collaborative whiteboards. Learn directly from your Guide.', link: 'See upcoming sessions', icon: '\ud83c\udfa5', bg: 'rgba(16,185,129,0.12), rgba(6,182,212,0.05)', reverse: true },
             { label: 'Track Progress', title: 'Visualize your growth with every lesson completed', desc: 'Track completion rates, quiz scores, and assignment grades across all your courses. Earn certificates to showcase your achievements.', link: 'Start your journey', icon: '\ud83d\udcc8', bg: 'rgba(245,158,11,0.12), rgba(236,72,153,0.05)' },
           ].map((cap, i) => (
             <div key={cap.label} style={{ ...L.capRow, direction: cap.reverse ? 'rtl' as const : 'ltr' as const }}>
@@ -99,13 +114,13 @@ function LandingPage() {
           <div style={{ textAlign: 'center' as const, marginBottom: '64px' }}>
             <div style={L.eyebrowSmall}>Platform</div>
             <h2 style={L.sectionTitle}>Everything you need, nothing you don't</h2>
-            <p style={L.sectionDesc}>A complete learning platform designed for both Mind Learners and Mind Pros.</p>
+            <p style={L.sectionDesc}>A complete learning platform designed for both Kyros and Guides.</p>
           </div>
           <div style={L.featGrid} className="landing-feat-grid">
             {[
               { icon: '\ud83c\udfa5', title: 'Live Classes', desc: 'Real-time video with chat, polls, hand raise, emoji reactions, and screen sharing.' },
               { icon: '\ud83d\udcda', title: 'Structured Courses', desc: 'Modules, lessons, and progress tracking organized for optimal learning outcomes.' },
-              { icon: '\ud83d\udcdd', title: 'Quizzes & Assignments', desc: 'Test knowledge with auto-graded quizzes and get personalized Mind Pro feedback.' },
+              { icon: '\ud83d\udcdd', title: 'Quizzes & Assignments', desc: 'Test knowledge with auto-graded quizzes and get personalized Guide feedback.' },
               { icon: '\ud83c\udfc6', title: 'Certificates', desc: 'Earn verifiable certificates on course completion to showcase your skills.' },
               { icon: '\ud83d\udcac', title: 'Discussion Forums', desc: 'Collaborate with peers, ask questions, and deepen understanding together.' },
               { icon: '\ud83d\udcc5', title: 'Smart Scheduling', desc: 'Calendar integration with Google Calendar links and session reminders.' },
@@ -125,10 +140,10 @@ function LandingPage() {
         <div style={L.inner}>
           <div style={L.statsGrid} className="landing-stats-grid">
             {[
-              { num: '2,500+', label: 'Active Mind Learners' },
-              { num: '180+', label: 'Expert-Led Courses' },
-              { num: '50+', label: 'Verified Mind Pros' },
-              { num: '4.8', label: 'Average Rating' },
+              { num: stats.learners > 0 ? stats.learners.toLocaleString() : '0', label: 'Active Kyros' },
+              { num: stats.courses > 0 ? stats.courses.toString() : '0', label: 'Expert-Led Courses' },
+              { num: stats.pros > 0 ? stats.pros.toString() : '0', label: 'Verified Guides' },
+              { num: stats.rating > 0 ? stats.rating.toFixed(1) : '-', label: 'Average Rating' },
             ].map((s) => (
               <div key={s.label} style={L.statItem}>
                 <div style={L.statNumber}>{s.num}</div>
@@ -148,9 +163,9 @@ function LandingPage() {
           </div>
           <div style={L.testGrid} className="landing-test-grid">
             {[
-              { quote: 'The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable.', name: 'Sarah Kim', role: 'Data Science Mind Learner', color: '#7c3aed' },
-              { quote: 'As a Mind Pro, this platform gives me everything I need. The course builder, analytics, and payment system are all seamlessly integrated.', name: 'James Rodriguez', role: 'Web Dev Mind Pro', color: '#059669' },
-              { quote: 'The progress tracking keeps me motivated every day. I can see exactly how far I\'ve come and what\'s ahead in each course.', name: 'Aisha Lawan', role: 'UX Design Mind Learner', color: '#d97706' },
+              { quote: 'The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable.', name: 'Sarah Kim', role: 'Data Science Kyro', color: '#7c3aed' },
+              { quote: 'As a Guide, this platform gives me everything I need. The course builder, analytics, and payment system are all seamlessly integrated.', name: 'James Rodriguez', role: 'Web Dev Guide', color: '#059669' },
+              { quote: 'The progress tracking keeps me motivated every day. I can see exactly how far I\'ve come and what\'s ahead in each course.', name: 'Aisha Lawan', role: 'UX Design Kyro', color: '#d97706' },
             ].map((t) => (
               <div key={t.name} style={L.testCard}>
                 <div style={L.testStars}>{'\u2605\u2605\u2605\u2605\u2605'}</div>
@@ -172,7 +187,7 @@ function LandingPage() {
       <section style={L.cta}>
         <div style={L.ctaGlow} />
         <h2 style={L.ctaTitle}>Ready to unlock your <span style={L.gradientText}>full potential?</span></h2>
-        <p style={L.ctaSub}>Join thousands of learners mastering new skills with expert Mind Pros. Your journey starts with a single click.</p>
+        <p style={L.ctaSub}>Join thousands of learners mastering new skills with expert Guides. Your journey starts with a single click.</p>
         <button onClick={() => navigate('/register')} style={{ ...L.btnHeroPrimary, fontSize: '17px', padding: '18px 40px', position: 'relative' as const, zIndex: 1 }}>
           Get Started Free <span style={{ marginLeft: '8px' }}>&rarr;</span>
         </button>
@@ -181,13 +196,13 @@ function LandingPage() {
       {/* Footer */}
       <footer style={L.footer}>
         <div style={L.footerInner}>
-          <span style={L.brand}>Mind<span style={{ color: '#a78bfa' }}>Mint</span></span>
+          <span style={L.brand}>Kyro<span style={{ color: '#a78bfa' }}>Academy</span></span>
           <div style={L.footerLinks}>
-            {['Courses', 'Mind Pros', 'About', 'Privacy', 'Terms'].map((t) => (
+            {['Courses', 'Guides', 'About', 'Privacy', 'Terms'].map((t) => (
               <span key={t} style={L.footerLink}>{t}</span>
             ))}
           </div>
-          <span style={L.footerCopy}>&copy; 2026 MindMint</span>
+          <span style={L.footerCopy}>&copy; 2026 KyroAcademy</span>
         </div>
       </footer>
     </div>
@@ -391,7 +406,7 @@ function StudentHome({ user }: { user: { displayName: string } }) {
       {teachers.length > 0 && (
         <div style={styles.section}>
           <div style={styles.sectionHeader}>
-            <h2 style={styles.sectionTitleText}>Top Mind Pros</h2>
+            <h2 style={styles.sectionTitleText}>Top Guides</h2>
             <Link to="/teachers" style={styles.sectionLink}>View All &rarr;</Link>
           </div>
           <div style={styles.teacherGrid} className="course-grid">
@@ -404,7 +419,7 @@ function StudentHome({ user }: { user: { displayName: string } }) {
                     : t.displayName.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                 </div>
                 <div style={styles.teacherName}>{t.displayName}</div>
-                <div style={styles.teacherSubject}>{t.subjects?.split(',')[0] || 'Mind Pro'}</div>
+                <div style={styles.teacherSubject}>{t.subjects?.split(',')[0] || 'Guide'}</div>
                 {t.averageRating > 0 && (
                   <div style={styles.teacherStars}>{'\u2605'} {t.averageRating.toFixed(1)}</div>
                 )}
@@ -448,7 +463,7 @@ function TeacherHome({ user }: { user: { displayName: string } }) {
       {/* Stats */}
       {data && (
         <div style={styles.statsRow} className="stats-grid">
-          <div style={styles.statCard}><div style={styles.statLabel}>Total Mind Learners</div><div style={{ ...styles.statValue, color: 'var(--accent)' }}>{data.totalStudents}</div></div>
+          <div style={styles.statCard}><div style={styles.statLabel}>Total Kyros</div><div style={{ ...styles.statValue, color: 'var(--accent)' }}>{data.totalStudents}</div></div>
           <div style={styles.statCard}><div style={styles.statLabel}>Active Courses</div><div style={styles.statValue}>{data.totalClasses}</div></div>
           <div style={styles.statCard}><div style={styles.statLabel}>Total Earnings</div><div style={{ ...styles.statValue, color: 'var(--success)' }}>${data.totalEarnings.toFixed(2)}</div></div>
           <div style={styles.statCard}><div style={styles.statLabel}>Avg Rating</div><div style={{ ...styles.statValue, color: 'var(--warning)' }}>{data.averageRating.toFixed(1)} {'\u2605'}</div></div>

@@ -18,7 +18,7 @@ export const NewConversationButton: React.FC<NewConversationButtonProps> = ({
 
   return (
     <button onClick={handleClick} style={styles.button}>
-      Message Mind Pro
+      Message Guide
     </button>
   );
 };

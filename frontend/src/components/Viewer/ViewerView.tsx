@@ -318,7 +318,7 @@ export const ViewerView: React.FC<ViewerViewProps> = ({ roomId, userId, displayN
                   {teacherEntry && (
                     <div style={styles.mainVideoNameTag}>
                       <span style={{ color: '#fbbf24', fontSize: '12px', lineHeight: 1 }}>&#9733;</span>
-                      <span>{teacherEntry[1].displayName || teacherEntry[1].userId} (Mind Pro)</span>
+                      <span>{teacherEntry[1].displayName || teacherEntry[1].userId} (Guide)</span>
                       {teacherEntry[1].isMuted && <span style={{ marginLeft: '6px', color: '#ef4444' }}>Muted</span>}
                     </div>
                   )}

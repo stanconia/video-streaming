@@ -121,9 +121,9 @@ describe('ForgotPasswordPage', () => {
     expect(signInLink.closest('a')).toHaveAttribute('href', '/login');
   });
 
-  it('renders the MindMint title', () => {
+  it('renders the KyroAcademy title', () => {
     render(<ForgotPasswordPage />);
 
-    expect(screen.getByText('MindMint')).toBeInTheDocument();
+    expect(screen.getByText('KyroAcademy')).toBeInTheDocument();
   });
 });
