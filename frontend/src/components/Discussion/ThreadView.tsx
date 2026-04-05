@@ -204,7 +204,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: { padding: '20px', maxWidth: '900px', margin: '0 auto' },
   loading: { textAlign: 'center', padding: '40px', color: '#666', fontSize: '16px' },
   error: { color: '#721c24', padding: '12px', marginBottom: '16px', backgroundColor: '#f8d7da', borderRadius: '4px' },
-  backButton: { padding: '8px 16px', backgroundColor: 'transparent', color: '#007bff', border: '1px solid #007bff', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', marginBottom: '20px' },
+  backButton: { padding: '8px 16px', backgroundColor: 'transparent', color: '#0d9488', border: '1px solid #0d9488', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', marginBottom: '20px' },
   threadCard: { backgroundColor: 'white', borderRadius: '8px', padding: '24px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '24px' },
   threadHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' },
   threadTitle: { margin: 0, fontSize: '24px', flex: 1 },
@@ -228,6 +228,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   replyFormSection: { backgroundColor: 'white', borderRadius: '8px', padding: '24px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
   replyFormTitle: { margin: '0 0 12px 0', fontSize: '16px' },
   textarea: { width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box' as const, resize: 'vertical' as const, marginBottom: '12px' },
-  submitButton: { padding: '10px 28px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' },
+  submitButton: { padding: '10px 28px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '15px', fontWeight: 'bold' },
   submitButtonDisabled: { padding: '10px 28px', backgroundColor: '#dee2e6', color: '#adb5bd', border: 'none', borderRadius: '4px', cursor: 'default', fontSize: '15px', fontWeight: 'bold' },
 };

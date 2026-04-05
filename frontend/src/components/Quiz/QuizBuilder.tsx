@@ -417,7 +417,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   loading: { textAlign: 'center', padding: '20px', color: '#666' },
   error: { color: '#721c24', padding: '12px', marginBottom: '16px', backgroundColor: '#f8d7da', borderRadius: '4px' },
   empty: { textAlign: 'center', padding: '20px', color: '#666', fontSize: '14px' },
-  addButton: { padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
+  addButton: { padding: '8px 16px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
   formCard: { backgroundColor: '#f8f9fa', borderRadius: '8px', padding: '20px', marginBottom: '20px', border: '1px solid #dee2e6' },
   formTitle: { margin: '0 0 16px 0', fontSize: '16px' },
   formSubtitle: { margin: '0 0 12px 0', fontSize: '15px', color: '#333' },
@@ -450,6 +450,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   optionRow: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' },
   optionInput: { flex: 1, padding: '8px 10px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box' as const },
   removeOptionButton: { padding: '6px 10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' },
-  addOptionButton: { padding: '6px 12px', backgroundColor: 'transparent', color: '#007bff', border: '1px solid #007bff', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' },
-  addQuestionButton: { marginTop: '12px', padding: '8px 16px', backgroundColor: 'transparent', color: '#007bff', border: '1px dashed #007bff', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', width: '100%' },
+  addOptionButton: { padding: '6px 12px', backgroundColor: 'transparent', color: '#0d9488', border: '1px solid #0d9488', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' },
+  addQuestionButton: { marginTop: '12px', padding: '8px 16px', backgroundColor: 'transparent', color: '#0d9488', border: '1px dashed #0d9488', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', width: '100%' },
 };

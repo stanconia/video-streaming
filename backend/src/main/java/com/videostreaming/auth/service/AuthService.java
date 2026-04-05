@@ -75,8 +75,15 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        var existingUser = userRepository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            User existing = existingUser.get();
+            if (existing.getDateOfBirth() != null && Period.between(existing.getDateOfBirth(), LocalDate.now()).getYears() < 13 && !existing.getParentalConsentGranted()) {
+                userRepository.delete(existing);
+                logger.info("Deleted unapproved COPPA account {} for re-registration", existing.getEmail());
+            } else {
             throw new RuntimeException("Email already registered");
+            }
         }
 
         // Parse and validate date of birth

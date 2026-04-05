@@ -301,7 +301,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   sendButton: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '20px',

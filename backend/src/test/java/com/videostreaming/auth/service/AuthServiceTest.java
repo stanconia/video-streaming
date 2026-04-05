@@ -52,7 +52,7 @@ class AuthServiceTest {
         RegisterRequest request = new RegisterRequest("test@example.com", "password123", "Test User", "STUDENT");
         request.setDateOfBirth("1990-01-15");
 
-        when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
+        when(userRepository.findByEmail("test@example.com")).thenReturn(java.util.Optional.empty());
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
 
         User savedUser = User.builder()
@@ -74,7 +74,7 @@ class AuthServiceTest {
         assertEquals("Test User", response.getDisplayName());
         assertEquals("STUDENT", response.getRole());
 
-        verify(userRepository).existsByEmail("test@example.com");
+        verify(userRepository).findByEmail("test@example.com");
         verify(userRepository).save(any(User.class));
         verify(notificationService).sendWelcomeEmail("user-123");
         verify(jwtService).generateToken(savedUser);
@@ -89,7 +89,7 @@ class AuthServiceTest {
         request.setExperienceYears(5);
         request.setBio("Experienced teacher");
 
-        when(userRepository.existsByEmail("teacher@example.com")).thenReturn(false);
+        when(userRepository.findByEmail("teacher@example.com")).thenReturn(java.util.Optional.empty());
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
 
         User savedUser = User.builder()
@@ -119,7 +119,13 @@ class AuthServiceTest {
         RegisterRequest request = new RegisterRequest("existing@example.com", "password123", "Test User", "STUDENT");
         request.setDateOfBirth("1990-01-15");
 
-        when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
+        User existingUser = User.builder()
+                .id("existing-1")
+                .email("existing@example.com")
+                .role(UserRole.STUDENT)
+                .parentalConsentGranted(true)
+                .build();
+        when(userRepository.findByEmail("existing@example.com")).thenReturn(java.util.Optional.of(existingUser));
 
         RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> authService.register(request));

@@ -20,7 +20,7 @@ public class HealthController {
     @GetMapping("/")
     public ResponseEntity<Map<String, String>> root() {
         return ResponseEntity.ok(Map.of(
-            "service", "EduLive Backend API",
+            "service", "KyroAcademy Backend API",
             "version", "1.0.0"
         ));
     }

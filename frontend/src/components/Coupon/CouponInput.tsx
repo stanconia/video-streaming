@@ -88,7 +88,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: { marginBottom: '12px' },
   inputRow: { display: 'flex', gap: '8px' },
   input: { flex: 1, padding: '8px 12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box' as const, fontFamily: 'monospace' },
-  applyButton: { padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', whiteSpace: 'nowrap' },
+  applyButton: { padding: '8px 16px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', whiteSpace: 'nowrap' },
   appliedRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', backgroundColor: '#d4edda', borderRadius: '4px' },
   successInfo: { display: 'flex', alignItems: 'center', gap: '8px' },
   successText: { color: '#155724', fontSize: '14px', fontWeight: 'bold' },

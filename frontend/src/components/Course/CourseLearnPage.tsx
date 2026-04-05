@@ -384,7 +384,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: '6px 0',
     backgroundColor: 'transparent',
     border: 'none',
-    color: '#007bff',
+    color: '#0d9488',
     cursor: 'pointer',
     fontSize: '13px',
     marginBottom: '10px',
@@ -494,7 +494,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   fileLink: {
     display: 'inline-block',
     padding: '12px 24px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     borderRadius: '4px',
     textDecoration: 'none',
@@ -523,7 +523,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   navButtonNext: {
     padding: '10px 20px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

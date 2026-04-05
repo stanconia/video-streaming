@@ -182,7 +182,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   pageTitle: { marginBottom: '20px' },
   tabs: { display: 'flex', gap: '0', marginBottom: '20px', borderBottom: '2px solid #eee' },
   tab: { padding: '12px 24px', backgroundColor: 'transparent', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', fontSize: '15px', color: '#666', fontWeight: 'bold', marginBottom: '-2px' },
-  activeTab: { padding: '12px 24px', backgroundColor: 'transparent', border: 'none', borderBottom: '2px solid #007bff', cursor: 'pointer', fontSize: '15px', color: '#007bff', fontWeight: 'bold', marginBottom: '-2px' },
+  activeTab: { padding: '12px 24px', backgroundColor: 'transparent', border: 'none', borderBottom: '2px solid #0d9488', cursor: 'pointer', fontSize: '15px', color: '#0d9488', fontWeight: 'bold', marginBottom: '-2px' },
   error: { color: '#721c24', padding: '12px', marginBottom: '20px', backgroundColor: '#f8d7da', borderRadius: '4px' },
   loading: { textAlign: 'center', padding: '40px', color: '#666' },
   empty: { textAlign: 'center', padding: '40px', color: '#666' },
@@ -191,7 +191,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   listItem: { border: '1px solid #eee', borderRadius: '8px', padding: '16px' },
   listItemHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' },
   headerRight: { display: 'flex', alignItems: 'center', gap: '10px' },
-  itemTitle: { margin: 0, fontSize: '16px', cursor: 'pointer', color: '#007bff' },
+  itemTitle: { margin: 0, fontSize: '16px', cursor: 'pointer', color: '#0d9488' },
   itemDetails: { display: 'flex', gap: '20px', fontSize: '14px', color: '#666' },
   removeButton: { padding: '6px 14px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' },
 };

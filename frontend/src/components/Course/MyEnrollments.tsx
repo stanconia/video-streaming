@@ -183,7 +183,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   browseButton: {
     padding: '10px 24px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
@@ -222,7 +222,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#555',
     marginBottom: '6px',
   },
-  progressPercent: { fontWeight: 'bold', color: '#007bff' },
+  progressPercent: { fontWeight: 'bold', color: '#0d9488' },
   progressBarBg: {
     width: '100%',
     height: '8px',
@@ -232,7 +232,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     borderRadius: '4px',
     transition: 'width 0.3s ease',
   },

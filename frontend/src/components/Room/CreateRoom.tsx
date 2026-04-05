@@ -94,7 +94,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     fontSize: '16px',
     fontWeight: 'bold',

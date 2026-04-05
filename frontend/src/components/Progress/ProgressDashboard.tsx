@@ -198,7 +198,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   statNumber: {
     fontSize: '28px',
     fontWeight: 'bold',
-    color: '#007bff',
+    color: '#0d9488',
   },
   statLabel: {
     fontSize: '12px',
@@ -225,7 +225,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   browseButton: {
     padding: '10px 24px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

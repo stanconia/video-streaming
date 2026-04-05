@@ -37,7 +37,7 @@ export const TeacherDashboard: React.FC = () => {
 
       <div style={styles.statsGrid} className="stats-grid">
         <StatCard label="Total Earnings" value={`$${data.totalEarnings.toFixed(2)}`} color="#28a745" />
-        <StatCard label="Total Kyros" value={data.totalStudents} color="#007bff" />
+        <StatCard label="Total Kyros" value={data.totalStudents} color="#0d9488" />
         <StatCard label="Total Courses" value={data.totalClasses} color="#6f42c1" />
         <StatCard label="Avg Rating" value={data.averageRating.toFixed(1)} color="#ffc107" />
         <StatCard label="Total Reviews" value={data.totalReviews} color="#17a2b8" />
@@ -62,5 +62,5 @@ const styles: { [key: string]: React.CSSProperties } = {
   error: { color: '#721c24', padding: '12px', backgroundColor: '#f8d7da', borderRadius: '4px' },
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '16px', marginBottom: '24px' },
   quickLinks: { display: 'flex', gap: '12px', marginTop: '24px', flexWrap: 'wrap' as const },
-  quickLinkButton: { padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
+  quickLinkButton: { padding: '10px 20px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
 };

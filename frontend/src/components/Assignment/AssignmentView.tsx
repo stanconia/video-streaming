@@ -247,7 +247,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   submissionText: { margin: 0, fontSize: '15px', lineHeight: '1.6', whiteSpace: 'pre-wrap' as const },
   fileRow: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' },
   fileLabel: { fontSize: '14px', fontWeight: 'bold', color: '#555' },
-  fileLink: { color: '#007bff', fontSize: '14px' },
+  fileLink: { color: '#0d9488', fontSize: '14px' },
   submissionMeta: { fontSize: '13px', color: '#888', marginBottom: '16px' },
   gradeBox: { backgroundColor: '#f0f9ff', borderRadius: '6px', padding: '16px', border: '1px solid #bee5eb' },
   gradeTitle: { margin: '0 0 10px 0', fontSize: '15px', color: '#0c5460' },

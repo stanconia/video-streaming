@@ -39,7 +39,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   chart: { display: 'flex', alignItems: 'flex-end', gap: '8px', height: '200px', padding: '0 8px' },
   barWrapper: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' },
   barContainer: { flex: 1, width: '100%', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' },
-  bar: { width: '70%', backgroundColor: '#007bff', borderRadius: '4px 4px 0 0', minHeight: '4px', transition: 'height 0.3s' },
+  bar: { width: '70%', backgroundColor: '#0d9488', borderRadius: '4px 4px 0 0', minHeight: '4px', transition: 'height 0.3s' },
   barLabel: { fontSize: '11px', color: '#666', marginTop: '6px' },
   barValue: { fontSize: '10px', color: '#333', fontWeight: 'bold' },
 };
