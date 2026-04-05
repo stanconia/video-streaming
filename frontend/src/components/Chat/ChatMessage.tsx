@@ -141,7 +141,7 @@ const getSenderNameStyle = (isBroadcaster: boolean): React.CSSProperties => ({
 const getMessageBubbleStyle = (isOwnMessage: boolean): React.CSSProperties => ({
   padding: '10px 14px',
   borderRadius: '16px',
-  backgroundColor: isOwnMessage ? '#007bff' : '#f1f1f1',
+  backgroundColor: isOwnMessage ? '#0d9488' : '#f1f1f1',
   color: isOwnMessage ? 'white' : '#212529',
   wordBreak: 'break-word',
 });

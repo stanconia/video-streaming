@@ -249,7 +249,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   loading: { textAlign: 'center', padding: '20px', color: '#666' },
   error: { color: '#721c24', padding: '12px', marginBottom: '16px', backgroundColor: '#f8d7da', borderRadius: '4px' },
   empty: { textAlign: 'center', padding: '20px', color: '#666', fontSize: '14px' },
-  addButton: { padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
+  addButton: { padding: '8px 16px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
   formCard: { backgroundColor: '#f8f9fa', borderRadius: '8px', padding: '20px', marginBottom: '20px', border: '1px solid #dee2e6' },
   formTitle: { margin: '0 0 16px 0', fontSize: '16px' },
   field: { marginBottom: '14px', flex: 1 },

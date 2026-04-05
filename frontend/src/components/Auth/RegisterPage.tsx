@@ -114,362 +114,544 @@ export function RegisterPage() {
     }
   };
 
+  const PasswordIndicator = ({ met, label }: { met: boolean; label: string }) => (
+    <span style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      color: met ? '#0d9488' : '#94a3b8',
+      fontSize: '12px',
+      lineHeight: '1.6',
+    }}>
+      <span style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '14px',
+        height: '14px',
+        borderRadius: '50%',
+        backgroundColor: met ? '#0d9488' : 'transparent',
+        border: met ? 'none' : '1.5px solid #cbd5e1',
+        color: met ? '#fff' : '#cbd5e1',
+        fontSize: '9px',
+        fontWeight: 700,
+        flexShrink: 0,
+      }}>
+        {met ? '\u2713' : ''}
+      </span>
+      {label}
+    </span>
+  );
+
   if (consentPending) {
     return (
-      <div style={styles.container} className="page-container">
-        <div style={styles.card} className="auth-card">
-          <h1 style={styles.title}>KyroAcademy</h1>
-          <h2 style={styles.subtitle}>Parental Consent Required</h2>
-          <div style={{ textAlign: 'center', padding: '20px 0' }}>
-            <p style={{ marginBottom: '16px', color: '#333' }}>
-              Your account has been created, but since you are under 13, we need your parent or guardian's permission before you can use the platform.
-            </p>
-            <p style={{ marginBottom: '16px', color: '#666' }}>
-              We've sent an email to <strong>{parentEmail}</strong> with a link to approve your account.
-            </p>
-            <p style={{ color: '#999', fontSize: '14px' }}>
-              Once your parent/guardian approves, you can log in and start learning.
-            </p>
-            <Link to="/login" style={{ ...styles.button, display: 'inline-block', textDecoration: 'none', marginTop: '20px' }}>
-              Go to Login
-            </Link>
+      <>
+        <style>{`
+          @media (max-width: 768px) {
+            .register-left-panel { display: none !important; }
+            .register-split-layout { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
+        <div className="register-split-layout" style={styles.splitLayout}>
+          {/* Left brand panel */}
+          <div className="register-left-panel" style={styles.leftPanel}>
+            <div style={styles.brandContent}>
+              <h1 style={styles.brandTitle}>
+                Kyro<span style={{ color: '#0d9488' }}>Academy</span>
+              </h1>
+              <p style={styles.brandTagline}>Where curious minds find expert guidance</p>
+              <div style={styles.featureList}>
+                <div style={styles.featureItem}>
+                  <span style={styles.featureCheck}>{'\u2713'}</span>
+                  <span>Learn from verified expert guides</span>
+                </div>
+                <div style={styles.featureItem}>
+                  <span style={styles.featureCheck}>{'\u2713'}</span>
+                  <span>Interactive live video sessions</span>
+                </div>
+                <div style={styles.featureItem}>
+                  <span style={styles.featureCheck}>{'\u2713'}</span>
+                  <span>Personalized learning paths</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right content panel */}
+          <div style={styles.rightPanel}>
+            <div style={styles.formContainer}>
+              <div style={{ textAlign: 'center' as const }}>
+                <h1 style={styles.formBrand}>
+                  Kyro<span style={{ color: '#0d9488' }}>Academy</span>
+                </h1>
+                <h2 style={styles.consentTitle}>Parental Consent Required</h2>
+
+                <div style={styles.consentIcon}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0d9488" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+
+                <p style={{ marginBottom: '16px', color: '#334155', fontSize: '15px', lineHeight: '1.6' }}>
+                  Your account has been created, but since you are under 13, we need your parent or guardian's permission before you can use the platform.
+                </p>
+                <p style={{ marginBottom: '16px', color: '#64748b', fontSize: '14px', lineHeight: '1.6' }}>
+                  We've sent an email to <strong style={{ color: '#0d9488' }}>{parentEmail}</strong> with a link to approve your account.
+                </p>
+                <p style={{ color: '#94a3b8', fontSize: '13px', lineHeight: '1.5' }}>
+                  Once your parent/guardian approves, you can log in and start learning.
+                </p>
+                <Link to="/login" style={styles.submitButton}>
+                  Go to Login
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div style={styles.container} className="page-container">
-      <div style={styles.card} className="auth-card">
-        <h1 style={styles.title}>KyroAcademy</h1>
-        <h2 style={styles.subtitle}>Create Account</h2>
-
-        {error && <div style={styles.error}>{error}</div>}
-
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() => setError('Google sign-up failed')}
-            text="signup_with"
-          />
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .register-left-panel { display: none !important; }
+          .register-split-layout { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+      <div className="register-split-layout" style={styles.splitLayout}>
+        {/* Left brand panel */}
+        <div className="register-left-panel" style={styles.leftPanel}>
+          <div style={styles.brandContent}>
+            <h1 style={styles.brandTitle}>
+              Kyro<span style={{ color: '#0d9488' }}>Academy</span>
+            </h1>
+            <p style={styles.brandTagline}>Where curious minds find expert guidance</p>
+            <div style={styles.featureList}>
+              <div style={styles.featureItem}>
+                <span style={styles.featureCheck}>{'\u2713'}</span>
+                <span>Learn from verified expert guides</span>
+              </div>
+              <div style={styles.featureItem}>
+                <span style={styles.featureCheck}>{'\u2713'}</span>
+                <span>Interactive live video sessions</span>
+              </div>
+              <div style={styles.featureItem}>
+                <span style={styles.featureCheck}>{'\u2713'}</span>
+                <span>Personalized learning paths</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div style={{ textAlign: 'center', color: '#999', marginBottom: '16px', fontSize: '14px' }}>
-          or register with email
-        </div>
+        {/* Right form panel */}
+        <div style={styles.rightPanel}>
+          <div style={styles.formContainer}>
+            <h1 style={styles.formBrand}>
+              Kyro<span style={{ color: '#0d9488' }}>Academy</span>
+            </h1>
+            <h2 style={styles.formTitle}>Create Account</h2>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.field}>
-            <label style={styles.label}>Display Name</label>
-            <input
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required
-              style={styles.input}
-              placeholder="Your name"
-            />
-          </div>
+            {error && <div style={styles.error}>{error}</div>}
 
-          <div style={styles.field}>
-            <label style={styles.label}>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={styles.input}
-              placeholder="you@example.com"
-            />
-          </div>
-
-          <div style={styles.field}>
-            <label style={styles.label}>Password</label>
-            <div style={{ position: 'relative' as const }}>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={8}
-                style={{ ...styles.input, paddingRight: '48px' }}
-                placeholder="Min 8 characters"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={styles.showPasswordBtn}
-                tabIndex={-1}
-              >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
-            </div>
-            <div style={styles.passwordHints}>
-              <span style={{ color: password.length >= 8 ? 'var(--success)' : 'var(--text-muted)' }}>
-                {password.length >= 8 ? '\u2713' : '\u2022'} At least 8 characters
-              </span>
-              <span style={{ color: /[a-z]/.test(password) ? 'var(--success)' : 'var(--text-muted)' }}>
-                {/[a-z]/.test(password) ? '\u2713' : '\u2022'} Lowercase letter
-              </span>
-              <span style={{ color: /[A-Z]/.test(password) ? 'var(--success)' : 'var(--text-muted)' }}>
-                {/[A-Z]/.test(password) ? '\u2713' : '\u2022'} Uppercase letter
-              </span>
-              <span style={{ color: /\d/.test(password) ? 'var(--success)' : 'var(--text-muted)' }}>
-                {/\d/.test(password) ? '\u2713' : '\u2022'} Number
-              </span>
-            </div>
-          </div>
-
-          <div style={styles.field}>
-            <label style={styles.label}>Role</label>
-            <div style={styles.roleGroup}>
-              <label style={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="TEACHER"
-                  checked={role === 'TEACHER'}
-                  onChange={() => setRole('TEACHER')}
-                />
-                Kyro Guide
-              </label>
-              <label style={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="STUDENT"
-                  checked={role === 'STUDENT'}
-                  onChange={() => setRole('STUDENT')}
-                />
-                Kyro Learner
-              </label>
-            </div>
-          </div>
-
-          <div style={styles.field}>
-            <label style={styles.label}>Date of Birth</label>
-            <div style={{ display: 'flex', gap: '8px' }} data-testid="dob-input">
-              <select value={dobMonth} onChange={(e) => setDobMonth(e.target.value)}
-                      required style={{ ...styles.input, flex: 2 }}>
-                <option value="">Month</option>
-                {months.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-              </select>
-              <select value={dobDay} onChange={(e) => setDobDay(e.target.value)}
-                      required style={{ ...styles.input, flex: 1 }}>
-                <option value="">Day</option>
-                {days.map((d) => <option key={d} value={String(d)}>{d}</option>)}
-              </select>
-              <select value={dobYear} onChange={(e) => setDobYear(e.target.value)}
-                      required style={{ ...styles.input, flex: 1.2 }}>
-                <option value="">Year</option>
-                {years.map((y) => <option key={y} value={String(y)}>{y}</option>)}
-              </select>
-            </div>
-          </div>
-
-          {isUnder13 && (
-            <div style={styles.field}>
-              <label style={styles.label}>Parent/Guardian Email</label>
-              <input
-                type="email"
-                value={parentEmail}
-                onChange={(e) => setParentEmail(e.target.value)}
-                required
-                style={styles.input}
-                placeholder="parent@example.com"
-              />
-              <span style={{ fontSize: '12px', color: '#e67e22', marginTop: '4px', display: 'block' }}>
-                Required for users under 13 (COPPA compliance). Your parent/guardian will receive an email to approve your account.
-              </span>
-            </div>
-          )}
-
-          <div style={styles.field}>
-            <label style={styles.label}>Location <span style={styles.optional}>(optional)</span></label>
-            <LocationSelector
-              country={country}
-              city={city}
-              onCountryChange={setCountry}
-              onCityChange={setCity}
-            />
-          </div>
-
-          <div style={styles.field}>
-            <label style={styles.label}>Bio <span style={styles.optional}>(optional)</span></label>
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              style={{ ...styles.input, minHeight: '60px', resize: 'vertical' as any }}
-              placeholder="Tell us about yourself"
-            />
-          </div>
-
-          {role === 'STUDENT' && (
-            <div style={styles.field}>
-              <label style={styles.label}>Subject Interests <span style={styles.optional}>(optional)</span></label>
-              <MultiSubjectSelector
-                selected={subjectInterestsArr}
-                onChange={setSubjectInterestsArr}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google sign-up failed')}
+                text="signup_with"
               />
             </div>
-          )}
 
-          {role === 'TEACHER' && (
-            <>
-              <div style={styles.divider}>Kyro Guide Details</div>
+            <div style={styles.dividerLine}>
+              <span style={styles.dividerLineText}>or register with email</span>
+            </div>
+
+            <form onSubmit={handleSubmit} style={styles.form}>
               <div style={styles.field}>
-                <label style={styles.label}>Headline</label>
+                <label style={styles.label}>Display Name</label>
                 <input
                   type="text"
-                  value={headline}
-                  onChange={(e) => setHeadline(e.target.value)}
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  required
                   style={styles.input}
-                  placeholder="e.g. Math tutor with 10 years experience"
+                  placeholder="Your name"
                 />
               </div>
+
               <div style={styles.field}>
-                <label style={styles.label}>Subjects</label>
-                <MultiSubjectSelector
-                  selected={subjectsArr}
-                  onChange={setSubjectsArr}
-                />
-              </div>
-              <div style={styles.field}>
-                <label style={styles.label}>Years of Experience</label>
+                <label style={styles.label}>Email</label>
                 <input
-                  type="number"
-                  value={experienceYears}
-                  onChange={(e) => setExperienceYears(e.target.value ? Number(e.target.value) : '')}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                   style={styles.input}
-                  placeholder="0"
-                  min="0"
+                  placeholder="you@example.com"
                 />
               </div>
-            </>
-          )}
 
-          <button type="submit" disabled={isSubmitting} style={styles.button}>
-            {isSubmitting ? 'Creating account...' : 'Create Account'}
-          </button>
-        </form>
+              <div style={styles.field}>
+                <label style={styles.label}>Password</label>
+                <div style={{ position: 'relative' as const }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    style={{ ...styles.input, paddingRight: '60px' }}
+                    placeholder="Min 8 characters"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={styles.showPasswordBtn}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+                <div style={styles.passwordHints}>
+                  <PasswordIndicator met={password.length >= 8} label="At least 8 characters" />
+                  <PasswordIndicator met={/[a-z]/.test(password)} label="Lowercase letter" />
+                  <PasswordIndicator met={/[A-Z]/.test(password)} label="Uppercase letter" />
+                  <PasswordIndicator met={/\d/.test(password)} label="Number" />
+                </div>
+              </div>
 
-        <p style={styles.linkText}>
-          Already have an account? <Link to="/login" style={styles.link}>Sign In</Link>
-        </p>
+              <div style={styles.field}>
+                <label style={styles.label}>Role</label>
+                <div style={styles.roleGroup}>
+                  <label
+                    style={{
+                      ...styles.rolePill,
+                      ...(role === 'STUDENT' ? styles.rolePillActive : {}),
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="role"
+                      value="STUDENT"
+                      checked={role === 'STUDENT'}
+                      onChange={() => setRole('STUDENT')}
+                      style={styles.srOnly}
+                    />
+                    Kyro Learner
+                  </label>
+                  <label
+                    style={{
+                      ...styles.rolePill,
+                      ...(role === 'TEACHER' ? styles.rolePillActive : {}),
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="role"
+                      value="TEACHER"
+                      checked={role === 'TEACHER'}
+                      onChange={() => setRole('TEACHER')}
+                      style={styles.srOnly}
+                    />
+                    Kyro Guide
+                  </label>
+                </div>
+              </div>
+
+              <div style={styles.field}>
+                <label style={styles.label}>Date of Birth</label>
+                <div style={{ display: 'flex', gap: '8px' }} data-testid="dob-input">
+                  <select value={dobMonth} onChange={(e) => setDobMonth(e.target.value)}
+                          required style={{ ...styles.input, flex: 2 }}>
+                    <option value="">Month</option>
+                    {months.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+                  </select>
+                  <select value={dobDay} onChange={(e) => setDobDay(e.target.value)}
+                          required style={{ ...styles.input, flex: 1 }}>
+                    <option value="">Day</option>
+                    {days.map((d) => <option key={d} value={String(d)}>{d}</option>)}
+                  </select>
+                  <select value={dobYear} onChange={(e) => setDobYear(e.target.value)}
+                          required style={{ ...styles.input, flex: 1.2 }}>
+                    <option value="">Year</option>
+                    {years.map((y) => <option key={y} value={String(y)}>{y}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {isUnder13 && (
+                <div style={styles.field}>
+                  <label style={styles.label}>Parent/Guardian Email</label>
+                  <input
+                    type="email"
+                    value={parentEmail}
+                    onChange={(e) => setParentEmail(e.target.value)}
+                    required
+                    style={styles.input}
+                    placeholder="parent@example.com"
+                  />
+                  <div style={styles.coppaBox}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '1px' }}>
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span>Required for users under 13 (COPPA compliance). Your parent/guardian will receive an email to approve your account.</span>
+                  </div>
+                </div>
+              )}
+
+              <div style={styles.field}>
+                <label style={styles.label}>Location <span style={styles.optional}>(optional)</span></label>
+                <LocationSelector
+                  country={country}
+                  city={city}
+                  onCountryChange={setCountry}
+                  onCityChange={setCity}
+                />
+              </div>
+
+              <div style={styles.field}>
+                <label style={styles.label}>Bio <span style={styles.optional}>(optional)</span></label>
+                <textarea
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  style={{ ...styles.input, minHeight: '60px', resize: 'vertical' as any }}
+                  placeholder="Tell us about yourself"
+                />
+              </div>
+
+              {role === 'STUDENT' && (
+                <div style={styles.field}>
+                  <label style={styles.label}>Subject Interests <span style={styles.optional}>(optional)</span></label>
+                  <MultiSubjectSelector
+                    selected={subjectInterestsArr}
+                    onChange={setSubjectInterestsArr}
+                  />
+                </div>
+              )}
+
+              {role === 'TEACHER' && (
+                <>
+                  <div style={styles.sectionDivider}>Kyro Guide Details</div>
+                  <div style={styles.field}>
+                    <label style={styles.label}>Headline</label>
+                    <input
+                      type="text"
+                      value={headline}
+                      onChange={(e) => setHeadline(e.target.value)}
+                      style={styles.input}
+                      placeholder="e.g. Math tutor with 10 years experience"
+                    />
+                  </div>
+                  <div style={styles.field}>
+                    <label style={styles.label}>Subjects</label>
+                    <MultiSubjectSelector
+                      selected={subjectsArr}
+                      onChange={setSubjectsArr}
+                    />
+                  </div>
+                  <div style={styles.field}>
+                    <label style={styles.label}>Years of Experience</label>
+                    <input
+                      type="number"
+                      value={experienceYears}
+                      onChange={(e) => setExperienceYears(e.target.value ? Number(e.target.value) : '')}
+                      style={styles.input}
+                      placeholder="0"
+                      min="0"
+                    />
+                  </div>
+                </>
+              )}
+
+              <button type="submit" disabled={isSubmitting} style={styles.submitButton}>
+                {isSubmitting ? 'Creating account...' : 'Create Account'}
+              </button>
+            </form>
+
+            <p style={styles.linkText}>
+              Already have an account? <Link to="/login" style={styles.link}>Sign In</Link>
+            </p>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+  /* ── Split layout ── */
+  splitLayout: {
+    display: 'grid',
+    gridTemplateColumns: '420px 1fr',
     minHeight: '100vh',
-    backgroundColor: '#f5f5f5',
   },
-  card: {
-    backgroundColor: 'white',
-    padding: '40px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+
+  /* ── Left brand panel ── */
+  leftPanel: {
+    background: `radial-gradient(ellipse at 30% 50%, rgba(13,148,136,0.1) 0%, #0f172a 70%)`,
+    backgroundColor: '#0f172a',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '48px 40px',
+    position: 'relative' as const,
+  },
+  brandContent: {
+    color: '#fff',
+    maxWidth: '320px',
+  },
+  brandTitle: {
+    fontSize: '32px',
+    fontWeight: 800,
+    marginBottom: '12px',
+    letterSpacing: '-0.5px',
+    color: '#fff',
+  },
+  brandTagline: {
+    fontSize: '16px',
+    color: '#94a3b8',
+    lineHeight: '1.6',
+    marginBottom: '40px',
+  },
+  featureList: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '16px',
+  },
+  featureItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    fontSize: '14px',
+    color: '#cbd5e1',
+  },
+  featureCheck: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '22px',
+    height: '22px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(13,148,136,0.15)',
+    color: '#0d9488',
+    fontSize: '12px',
+    fontWeight: 700,
+    flexShrink: 0,
+  },
+
+  /* ── Right form panel ── */
+  rightPanel: {
+    backgroundColor: '#ffffff',
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    padding: '48px 24px',
+    overflowY: 'auto' as const,
+    minHeight: '100vh',
+  },
+  formContainer: {
     width: '100%',
-    maxWidth: '400px',
+    maxWidth: '440px',
+    paddingTop: '16px',
+    paddingBottom: '40px',
   },
-  title: {
-    textAlign: 'center',
+  formBrand: {
+    fontSize: '26px',
+    fontWeight: 800,
+    textAlign: 'center' as const,
     marginBottom: '4px',
-    color: '#007bff',
+    color: '#0f172a',
+    letterSpacing: '-0.3px',
   },
-  subtitle: {
-    textAlign: 'center',
+  formTitle: {
+    textAlign: 'center' as const,
+    marginBottom: '28px',
+    fontWeight: 500,
+    fontSize: '16px',
+    color: '#64748b',
+  },
+  consentTitle: {
+    fontSize: '20px',
+    fontWeight: 600,
+    color: '#0f172a',
     marginBottom: '24px',
-    fontWeight: 'normal',
-    color: '#666',
   },
+  consentIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80px',
+    height: '80px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(13,148,136,0.08)',
+    margin: '0 auto 24px',
+  },
+
+  /* ── Divider line ── */
+  dividerLine: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '24px',
+    position: 'relative' as const,
+  },
+  dividerLineText: {
+    fontSize: '13px',
+    color: '#94a3b8',
+    backgroundColor: '#fff',
+    padding: '0 12px',
+    margin: '0 auto',
+    position: 'relative' as const,
+    zIndex: 1,
+  },
+
+  /* ── Form ── */
   error: {
-    backgroundColor: '#ffe6e6',
-    color: '#cc0000',
-    padding: '10px',
-    borderRadius: '4px',
-    marginBottom: '16px',
-    textAlign: 'center',
+    backgroundColor: '#fef2f2',
+    color: '#dc2626',
+    padding: '12px 16px',
+    borderRadius: '8px',
+    marginBottom: '20px',
+    textAlign: 'center' as const,
+    fontSize: '14px',
+    border: '1px solid #fecaca',
   },
   form: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
+    flexDirection: 'column' as const,
+    gap: '20px',
   },
   field: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
+    flexDirection: 'column' as const,
+    gap: '6px',
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: 600,
     fontSize: '14px',
-    color: '#333',
+    color: '#1e293b',
   },
   input: {
-    padding: '10px 12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    fontSize: '14px',
-  },
-  roleGroup: {
-    display: 'flex',
-    gap: '20px',
-    padding: '8px 0',
-  },
-  radioLabel: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    cursor: 'pointer',
-  },
-  button: {
     padding: '12px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    marginTop: '8px',
-  },
-  linkText: {
-    textAlign: 'center',
-    marginTop: '16px',
-    color: '#666',
-  },
-  link: {
-    color: '#007bff',
-    textDecoration: 'none',
-  },
-  optional: {
-    fontWeight: 'normal',
-    color: '#999',
-    fontSize: '12px',
-  },
-  divider: {
+    border: '1px solid #e2e8f0',
+    borderRadius: '8px',
     fontSize: '14px',
-    fontWeight: 'bold',
-    color: '#007bff',
-    borderTop: '1px solid #eee',
-    paddingTop: '12px',
-    marginTop: '4px',
+    outline: 'none',
+    transition: 'border-color 0.2s',
+    color: '#1e293b',
+    backgroundColor: '#fff',
   },
   showPasswordBtn: {
     position: 'absolute' as const,
-    right: '8px',
+    right: '10px',
     top: '50%',
     transform: 'translateY(-50%)',
     background: 'none',
     border: 'none',
-    color: 'var(--accent)',
+    color: '#0d9488',
     fontSize: '13px',
     fontWeight: 600,
     cursor: 'pointer',
@@ -478,8 +660,106 @@ const styles: { [key: string]: React.CSSProperties } = {
   passwordHints: {
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: '2px',
-    marginTop: '6px',
+    gap: '4px',
+    marginTop: '8px',
+  },
+
+  /* ── Role pills ── */
+  roleGroup: {
+    display: 'flex',
+    gap: '10px',
+    padding: '4px 0',
+  },
+  rolePill: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '10px 20px',
+    borderRadius: '999px',
+    border: '1.5px solid #e2e8f0',
+    fontSize: '14px',
+    fontWeight: 500,
+    color: '#64748b',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    flex: 1,
+    textAlign: 'center' as const,
+    backgroundColor: '#fff',
+  },
+  rolePillActive: {
+    backgroundColor: '#0d9488',
+    borderColor: '#0d9488',
+    color: '#fff',
+    fontWeight: 600,
+  },
+
+  /* ── COPPA info box ── */
+  coppaBox: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '8px',
+    padding: '10px 12px',
+    backgroundColor: '#fffbeb',
+    borderRadius: '8px',
+    border: '1px solid #fef3c7',
     fontSize: '12px',
+    color: '#92400e',
+    lineHeight: '1.5',
+    marginTop: '4px',
+  },
+
+  /* ── Section divider ── */
+  sectionDivider: {
+    fontSize: '14px',
+    fontWeight: 600,
+    color: '#0d9488',
+    borderTop: '1px solid #e2e8f0',
+    paddingTop: '16px',
+    marginTop: '4px',
+  },
+
+  /* ── Submit button ── */
+  submitButton: {
+    padding: '14px',
+    background: 'linear-gradient(135deg, #0f766e, #0d9488)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '16px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    marginTop: '8px',
+    textAlign: 'center' as const,
+    textDecoration: 'none',
+    display: 'block',
+  },
+
+  /* ── Footer link ── */
+  linkText: {
+    textAlign: 'center' as const,
+    marginTop: '24px',
+    color: '#64748b',
+    fontSize: '14px',
+  },
+  link: {
+    color: '#0d9488',
+    textDecoration: 'none',
+    fontWeight: 600,
+  },
+  optional: {
+    fontWeight: 'normal' as const,
+    color: '#94a3b8',
+    fontSize: '12px',
+  },
+  srOnly: {
+    position: 'absolute' as const,
+    width: '1px',
+    height: '1px',
+    padding: 0,
+    margin: '-1px',
+    overflow: 'hidden',
+    clip: 'rect(0,0,0,0)',
+    whiteSpace: 'nowrap' as const,
+    border: 0,
   },
 };

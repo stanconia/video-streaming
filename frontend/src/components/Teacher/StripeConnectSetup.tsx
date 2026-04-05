@@ -240,12 +240,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   sectionTitle: { marginBottom: '12px', fontSize: '18px' },
   description: { color: '#666', marginBottom: '16px', lineHeight: '1.5' },
   button: {
-    padding: '12px 24px', backgroundColor: '#007bff', color: 'white',
+    padding: '12px 24px', backgroundColor: '#0d9488', color: 'white',
     border: 'none', borderRadius: '4px', cursor: 'pointer',
     fontSize: '14px', fontWeight: 'bold',
   },
   linkButton: {
-    padding: '8px 0', backgroundColor: 'transparent', color: '#007bff',
+    padding: '8px 0', backgroundColor: 'transparent', color: '#0d9488',
     border: 'none', cursor: 'pointer', fontSize: '14px',
     textDecoration: 'underline', marginTop: '12px', marginLeft: '12px',
   },

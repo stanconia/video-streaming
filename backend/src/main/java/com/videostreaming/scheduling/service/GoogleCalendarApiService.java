@@ -105,7 +105,7 @@ public class GoogleCalendarApiService {
         }
 
         return new Calendar.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance(), credential)
-                .setApplicationName("EduLive")
+                .setApplicationName("KyroAcademy")
                 .build();
     }
 }

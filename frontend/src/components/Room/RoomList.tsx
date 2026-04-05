@@ -118,7 +118,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '14px',
   },
   primaryButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
   },
   error: {
     color: 'red',

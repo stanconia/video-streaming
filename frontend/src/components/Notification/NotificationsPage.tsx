@@ -6,7 +6,7 @@ import { Pagination } from '../common/Pagination';
 
 const typeColorMap: Record<string, string> = {
   WELCOME: '#28a745',
-  COURSE_ENROLLED: '#007bff',
+  COURSE_ENROLLED: '#0d9488',
   COURSE_COMPLETED: '#6f42c1',
   MESSAGE_RECEIVED: '#17a2b8',
   REVIEW_RECEIVED: '#fd7e14',
@@ -112,7 +112,7 @@ export const NotificationsPage: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: { padding: '20px', maxWidth: '800px', margin: '0 auto' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
-  markAllButton: { padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
+  markAllButton: { padding: '8px 16px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
   loading: { textAlign: 'center', padding: '40px', color: '#666' },
   empty: { textAlign: 'center', padding: '60px', color: '#666', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
   list: { display: 'flex', flexDirection: 'column', gap: '12px' },
@@ -121,8 +121,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' },
   title: { fontWeight: 'bold', fontSize: '15px' },
   actions: { display: 'flex', gap: '8px' },
-  readButton: { background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '12px' },
-  viewButton: { padding: '4px 10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' },
+  readButton: { background: 'none', border: 'none', color: '#0d9488', cursor: 'pointer', fontSize: '12px' },
+  viewButton: { padding: '4px 10px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' },
   message: { color: '#555', fontSize: '14px', lineHeight: '1.5', margin: '0 0 8px 0' },
   time: { fontSize: '12px', color: '#999' },
 };

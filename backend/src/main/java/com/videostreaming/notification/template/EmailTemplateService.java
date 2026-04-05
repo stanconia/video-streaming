@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class EmailTemplateService {
 
     private static final String ACCENT_COLOR = "#8b5cf6";
-    private static final String ACCENT_DARK = "#7c3aed";
+    private static final String ACCENT_DARK = "#0d9488";
     private static final String BG_COLOR = "#f3f4f6";
     private static final String CARD_BG = "#ffffff";
     private static final String TEXT_COLOR = "#1f2937";
@@ -54,10 +54,10 @@ public class EmailTemplateService {
     }
 
     public String welcomeEmail(String userName) {
-        String content = "<h2 style=\"color: " + TEXT_COLOR + "; margin: 0 0 8px 0; font-size: 22px;\">Welcome to EduLive!</h2>"
+        String content = "<h2 style=\"color: " + TEXT_COLOR + "; margin: 0 0 8px 0; font-size: 22px;\">Welcome to KyroAcademy!</h2>"
                 + "<p style=\"color: " + TEXT_MUTED + "; font-size: 16px; margin: 0 0 24px 0;\">We're excited to have you on board.</p>"
                 + "<p style=\"color: " + TEXT_COLOR + "; font-size: 15px; line-height: 1.6;\">"
-                + "  Hi " + escapeHtml(userName) + ", welcome to EduLive! Your account has been created successfully."
+                + "  Hi " + escapeHtml(userName) + ", welcome to KyroAcademy! Your account has been created successfully."
                 + "</p>"
                 + "<p style=\"color: " + TEXT_COLOR + "; font-size: 15px; line-height: 1.6; margin-bottom: 24px;\">"
                 + "  Here's what you can do:"
@@ -136,7 +136,7 @@ public class EmailTemplateService {
                 + "<head>"
                 + "  <meta charset=\"UTF-8\">"
                 + "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
-                + "  <title>EduLive</title>"
+                + "  <title>KyroAcademy</title>"
                 + "</head>"
                 + "<body style=\"margin: 0; padding: 0; background-color: " + BG_COLOR + "; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\">"
                 + "  <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\" style=\"background-color: " + BG_COLOR + ";\">"
@@ -147,7 +147,7 @@ public class EmailTemplateService {
                 + "          <tr>"
                 + "            <td style=\"background: linear-gradient(135deg, " + ACCENT_COLOR + " 0%, " + ACCENT_DARK + " 100%); "
                 + "                        background-color: " + ACCENT_COLOR + "; padding: 28px 32px; border-radius: 12px 12px 0 0; text-align: center;\">"
-                + "              <h1 style=\"margin: 0; color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;\">EduLive</h1>"
+                + "              <h1 style=\"margin: 0; color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;\">KyroAcademy</h1>"
                 + "              <p style=\"margin: 6px 0 0 0; color: rgba(255,255,255,0.85); font-size: 13px; letter-spacing: 0.5px;\">Live Learning Platform</p>"
                 + "            </td>"
                 + "          </tr>"
@@ -160,7 +160,7 @@ public class EmailTemplateService {
                 // Footer
                 + "          <tr>"
                 + "            <td style=\"background-color: " + FOOTER_BG + "; padding: 24px 32px; border-radius: 0 0 12px 12px; text-align: center;\">"
-                + "              <p style=\"margin: 0 0 8px 0; color: #ffffff; font-size: 14px; font-weight: bold;\">EduLive</p>"
+                + "              <p style=\"margin: 0 0 8px 0; color: #ffffff; font-size: 14px; font-weight: bold;\">KyroAcademy</p>"
                 + "              <p style=\"margin: 0 0 12px 0; color: " + FOOTER_TEXT + "; font-size: 12px;\">Live Learning Platform</p>"
                 + "              <p style=\"margin: 0; font-size: 11px;\">"
                 + "                <a href=\"#\" style=\"color: " + FOOTER_TEXT + "; text-decoration: underline;\">Unsubscribe</a>"

@@ -167,7 +167,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   backButton: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

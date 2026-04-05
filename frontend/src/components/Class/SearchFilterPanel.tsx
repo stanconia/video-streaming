@@ -114,7 +114,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   mainRow: { display: 'flex', gap: '8px', alignItems: 'center' },
   searchInput: { flex: 2, padding: '10px 14px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px' },
   subjectInput: { flex: 1, padding: '10px 14px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px' },
-  searchButton: { padding: '10px 24px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' },
+  searchButton: { padding: '10px 24px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' },
   filterToggle: { padding: '10px 16px', backgroundColor: '#e9ecef', color: '#495057', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' },
   advancedRow: { display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #eee' },
   filterGroup: { display: 'flex', flexDirection: 'column', gap: '4px' },

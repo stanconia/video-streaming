@@ -154,7 +154,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   backButton: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
@@ -193,7 +193,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: '#f8f9fa',
     borderRadius: '6px',
   },
-  statValue: { fontSize: '28px', fontWeight: 'bold', color: '#007bff' },
+  statValue: { fontSize: '28px', fontWeight: 'bold', color: '#0d9488' },
   statLabel: { fontSize: '12px', color: '#666', marginTop: '4px' },
   progressBarBg: {
     width: '100%',
@@ -229,7 +229,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   moduleHeaderLeft: { flex: 1 },
   moduleTitle: { margin: '0 0 2px 0', fontSize: '15px' },
   moduleStat: { fontSize: '12px', color: '#888' },
-  modulePercent: { fontSize: '16px', fontWeight: 'bold', color: '#007bff', flexShrink: 0 },
+  modulePercent: { fontSize: '16px', fontWeight: 'bold', color: '#0d9488', flexShrink: 0 },
   lessonChecklist: { marginTop: '14px' },
   checklistItem: {
     display: 'flex',

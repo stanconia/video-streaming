@@ -98,7 +98,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   title: {
     textAlign: 'center',
     marginBottom: '4px',
-    color: '#007bff',
+    color: '#0d9488',
   },
   subtitle: {
     textAlign: 'center',
@@ -114,7 +114,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: 'inline-block',
   },
   link: {
-    color: '#007bff',
+    color: '#0d9488',
     textDecoration: 'none',
     fontSize: '14px',
   },

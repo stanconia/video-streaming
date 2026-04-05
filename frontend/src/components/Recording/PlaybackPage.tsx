@@ -265,7 +265,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   retryButton: {
     padding: '8px 20px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '6px',
@@ -277,7 +277,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: '36px',
     borderRadius: '50%',
     border: '3px solid #333',
-    borderTopColor: '#007bff',
+    borderTopColor: '#0d9488',
     animation: 'spin 1s linear infinite',
   },
   info: {
@@ -329,7 +329,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: '20px',
     borderRadius: '50%',
     border: '2px solid #ddd',
-    borderTopColor: '#007bff',
+    borderTopColor: '#0d9488',
     animation: 'spin 1s linear infinite',
   },
   generateButton: {

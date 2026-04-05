@@ -44,7 +44,7 @@ export const CourseAnalyticsPage: React.FC = () => {
       <h2 style={styles.courseTitle}>{analytics.courseTitle}</h2>
 
       <div style={styles.statsGrid}>
-        <StatCard label="Total Enrolled" value={analytics.totalEnrollments} color="#007bff" />
+        <StatCard label="Total Enrolled" value={analytics.totalEnrollments} color="#0d9488" />
         <StatCard label="Active" value={analytics.activeEnrollments} color="#28a745" />
         <StatCard label="Completed" value={analytics.completedEnrollments} color="#6f42c1" />
         <StatCard label="Completion Rate" value={`${analytics.completionRate.toFixed(1)}%`} color="#fd7e14" />
@@ -161,7 +161,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   studentMetrics: { display: 'flex', gap: '16px', fontSize: '13px', color: '#666', marginBottom: '8px', flexWrap: 'wrap' as const },
   metric: {},
   progressBarBg: { height: '6px', backgroundColor: '#e9ecef', borderRadius: '3px', overflow: 'hidden' },
-  progressBarFill: { height: '100%', backgroundColor: '#007bff', borderRadius: '3px', transition: 'width 0.3s ease' },
+  progressBarFill: { height: '100%', backgroundColor: '#0d9488', borderRadius: '3px', transition: 'width 0.3s ease' },
   expandedDetails: { padding: '0 16px 16px', borderTop: '1px solid #eee' },
   detailSection: { marginTop: '12px' },
   detailTitle: { margin: '0 0 8px 0', fontSize: '14px', color: '#333' },

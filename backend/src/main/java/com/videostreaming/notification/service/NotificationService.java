@@ -44,9 +44,9 @@ public class NotificationService {
     public void sendWelcomeEmail(String userId) {
         userRepository.findById(userId).ifPresent(user -> {
             String htmlBody = emailTemplateService.welcomeEmail(user.getDisplayName());
-            emailService.sendHtmlEmail(user.getEmail(), "Welcome to EduLive!", htmlBody);
+            emailService.sendHtmlEmail(user.getEmail(), "Welcome to KyroAcademy!", htmlBody);
             createNotification(userId, NotificationType.WELCOME,
-                    "Welcome to EduLive!", "Welcome " + user.getDisplayName() + "! Start exploring classes.");
+                    "Welcome to KyroAcademy!", "Welcome " + user.getDisplayName() + "! Start exploring classes.");
             logger.info("Sent welcome email to user {}", userId);
         });
     }
@@ -54,7 +54,7 @@ public class NotificationService {
     public void sendPasswordResetEmail(String userId, String resetLink) {
         userRepository.findById(userId).ifPresent(user -> {
             String htmlBody = emailTemplateService.passwordReset(user.getDisplayName(), resetLink);
-            emailService.sendHtmlEmail(user.getEmail(), "Reset Your Password - EduLive", htmlBody);
+            emailService.sendHtmlEmail(user.getEmail(), "Reset Your Password - KyroAcademy", htmlBody);
             logger.info("Sent password reset email to user {}", userId);
         });
     }
@@ -84,7 +84,7 @@ public class NotificationService {
         userRepository.findById(studentUserId).ifPresent(student -> {
             String htmlBody = emailTemplateService.enrollmentConfirmation(
                     student.getDisplayName(), courseTitle, null);
-            emailService.sendHtmlEmail(student.getEmail(), "You're enrolled! - EduLive", htmlBody);
+            emailService.sendHtmlEmail(student.getEmail(), "You're enrolled! - KyroAcademy", htmlBody);
         });
 
         logger.info("Sent course enrollment notification to user {}", studentUserId);
@@ -208,13 +208,13 @@ public class NotificationService {
 
         String calendarLink = googleCalendarLinkService.generateLink(
                 "Live: " + sessionTitle + " (" + courseTitle + ")",
-                "Live session for course: " + courseTitle + "\n\nJoin at EduLive when the session starts.",
+                "Live session for course: " + courseTitle + "\n\nJoin at KyroAcademy when the session starts.",
                 scheduledAt, durationMinutes);
 
         userRepository.findById(studentUserId).ifPresent(student -> {
             String htmlBody = emailTemplateService.sessionReminder(
                     student.getDisplayName(), sessionTitle, formattedTime, calendarLink);
-            emailService.sendHtmlEmail(student.getEmail(), "Live Session Scheduled - EduLive", htmlBody);
+            emailService.sendHtmlEmail(student.getEmail(), "Live Session Scheduled - KyroAcademy", htmlBody);
         });
 
         logger.info("Sent live session scheduled notification to user {}", studentUserId);
@@ -248,7 +248,7 @@ public class NotificationService {
             String joinUrl = "/room/" + roomId + "/view";
             String htmlBody = emailTemplateService.sessionReminder(
                     student.getDisplayName(), sessionTitle, "Starting now!", joinUrl);
-            emailService.sendHtmlEmail(student.getEmail(), "Live Session Starting Now! - EduLive", htmlBody);
+            emailService.sendHtmlEmail(student.getEmail(), "Live Session Starting Now! - KyroAcademy", htmlBody);
         });
 
         logger.info("Sent live session starting notification to user {}", studentUserId);

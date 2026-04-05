@@ -110,7 +110,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   pageTitle: { marginBottom: '20px' },
   filters: { display: 'flex', gap: '8px', marginBottom: '20px' },
   filterButton: { padding: '8px 16px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: 'white', cursor: 'pointer', fontSize: '14px' },
-  activeFilter: { backgroundColor: '#007bff', color: 'white', borderColor: '#007bff' },
+  activeFilter: { backgroundColor: '#0d9488', color: 'white', borderColor: '#0d9488' },
   loading: { textAlign: 'center', padding: '40px', color: '#666' },
   error: { color: '#721c24', padding: '12px', marginBottom: '16px', backgroundColor: '#f8d7da', borderRadius: '4px' },
   empty: { textAlign: 'center', padding: '40px', color: '#666', backgroundColor: 'white', borderRadius: '8px' },

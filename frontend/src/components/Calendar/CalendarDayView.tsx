@@ -96,7 +96,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   eventList: { display: 'flex', flexDirection: 'column', gap: '12px' },
   eventItem: { border: '1px solid #eee', borderRadius: '6px', padding: '12px', cursor: 'pointer' },
   eventHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' },
-  eventTitle: { fontSize: '14px', fontWeight: 'bold', color: '#007bff' },
+  eventTitle: { fontSize: '14px', fontWeight: 'bold', color: '#0d9488' },
   typeBadge: { padding: '2px 8px', borderRadius: '10px', fontSize: '11px', fontWeight: 'bold' },
   eventDetails: { display: 'flex', gap: '16px', fontSize: '13px', color: '#666' },
 };

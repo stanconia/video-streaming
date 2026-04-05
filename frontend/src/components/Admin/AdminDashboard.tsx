@@ -35,7 +35,7 @@ export const AdminDashboard: React.FC = () => {
       <h1 style={styles.pageTitle}>Admin Dashboard</h1>
 
       <div style={styles.statsGrid}>
-        <StatCard label="Total Users" value={stats.totalUsers} color="#007bff" />
+        <StatCard label="Total Users" value={stats.totalUsers} color="#0d9488" />
         <StatCard label="Guides" value={stats.totalTeachers} color="#28a745" />
         <StatCard label="Kyros" value={stats.totalStudents} color="#6f42c1" />
         <StatCard label="Total Courses" value={stats.totalCourses} color="#fd7e14" />
@@ -70,6 +70,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '16px', marginBottom: '32px' },
   navCards: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' },
   navCard: { backgroundColor: 'white', borderRadius: '8px', padding: '24px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', cursor: 'pointer' },
-  navCardTitle: { margin: '0 0 8px 0', color: '#007bff' },
+  navCardTitle: { margin: '0 0 8px 0', color: '#0d9488' },
   navCardDesc: { margin: 0, color: '#666', fontSize: '14px' },
 };

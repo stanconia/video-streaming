@@ -58,7 +58,7 @@ export const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages,
 const styles: { [key: string]: React.CSSProperties } = {
   container: { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '4px', marginTop: '20px' },
   button: { padding: '8px 14px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: 'white', cursor: 'pointer', fontSize: '14px' },
-  active: { backgroundColor: '#007bff', color: 'white', borderColor: '#007bff' },
+  active: { backgroundColor: '#0d9488', color: 'white', borderColor: '#0d9488' },
   disabled: { opacity: 0.5, cursor: 'not-allowed' },
   ellipsis: { padding: '0 4px', color: '#999' },
 };

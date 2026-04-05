@@ -102,7 +102,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: '42px',
     height: '42px',
     borderRadius: '50%',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     display: 'flex',
     alignItems: 'center',
@@ -148,7 +148,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     whiteSpace: 'nowrap',
   },
   badge: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     borderRadius: '10px',
     padding: '2px 8px',

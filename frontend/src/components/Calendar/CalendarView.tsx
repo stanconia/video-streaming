@@ -56,7 +56,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
               {day.events.length > 0 && (
                 <div style={styles.eventsContainer}>
                   {day.events.slice(0, 2).map((evt, i) => {
-                    const color = evt.type === 'teaching' ? '#007bff' : evt.type === 'live_session' ? '#fd7e14' : '#28a745';
+                    const color = evt.type === 'teaching' ? '#0d9488' : evt.type === 'live_session' ? '#fd7e14' : '#28a745';
                     const label = evt.type === 'live_session' && evt.moduleTitle
                       ? evt.moduleTitle
                       : evt.title;
@@ -80,7 +80,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 
       <div style={styles.legend}>
         <div style={styles.legendItem}>
-          <span style={{ ...styles.dot, backgroundColor: '#007bff' }} />
+          <span style={{ ...styles.dot, backgroundColor: '#0d9488' }} />
           <span style={styles.legendText}>Teaching</span>
         </div>
         <div style={styles.legendItem}>
@@ -99,7 +99,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
 const styles: { [key: string]: React.CSSProperties } = {
   container: { backgroundColor: 'white', borderRadius: '8px', padding: '24px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
-  navButton: { padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' },
+  navButton: { padding: '8px 16px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' },
   monthLabel: { margin: 0, fontSize: '20px', color: '#333' },
   dayHeaders: { display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1px', marginBottom: '4px' },
   dayHeader: { textAlign: 'center', padding: '8px 0', fontWeight: 'bold', fontSize: '13px', color: '#666' },
@@ -108,7 +108,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   dimmedCell: { backgroundColor: '#f9f9f9', opacity: 0.5 },
   todayCell: { backgroundColor: '#e8f4fd' },
   dayNumber: { fontSize: '13px', color: '#333' },
-  todayNumber: { fontSize: '13px', color: '#007bff', fontWeight: 'bold' },
+  todayNumber: { fontSize: '13px', color: '#0d9488', fontWeight: 'bold' },
   eventsContainer: { display: 'flex', flexDirection: 'column' as const, gap: '2px', marginTop: '2px' },
   eventChip: { borderRadius: '3px', padding: '1px 4px', overflow: 'hidden' as const },
   eventChipText: { fontSize: '10px', color: 'white', whiteSpace: 'nowrap' as const, overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, display: 'block' },
