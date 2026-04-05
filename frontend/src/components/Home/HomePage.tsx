@@ -42,11 +42,6 @@ function LandingPage() {
       <nav style={L.nav}>
         <div style={L.navInner}>
           <span style={L.brand}>Kyro<span style={{ color: '#0d9488' }}>Academy</span></span>
-          <div style={L.navLinks} className="landing-nav-links">
-            {['Courses', 'Guides', 'Pricing'].map((t) => (
-              <span key={t} style={L.navLink}>{t}</span>
-            ))}
-          </div>
           <div style={L.navActions}>
             <button onClick={() => navigate('/login')} style={L.btnSignIn}>Log In</button>
             <button onClick={() => navigate('/register')} style={L.btnGetStarted}>Get Started</button>
