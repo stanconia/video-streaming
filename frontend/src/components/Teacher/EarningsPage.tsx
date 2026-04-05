@@ -56,7 +56,7 @@ export const EarningsPage: React.FC = () => {
         <div style={styles.statsGrid} className="stats-grid">
           <StatCard label="Total Earnings" value={`$${summary.totalEarnings.toFixed(2)}`} color="#28a745" />
           <StatCard label="Pending Payouts" value={`$${summary.pendingPayouts.toFixed(2)}`} color="#ffc107" />
-          <StatCard label="Completed Payouts" value={`$${summary.completedPayouts.toFixed(2)}`} color="#007bff" />
+          <StatCard label="Completed Payouts" value={`$${summary.completedPayouts.toFixed(2)}`} color="#0d9488" />
           <StatCard label="Payout Count" value={summary.payoutCount} color="#6f42c1" />
         </div>
       )}

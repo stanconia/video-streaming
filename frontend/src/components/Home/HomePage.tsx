@@ -41,7 +41,7 @@ function LandingPage() {
       {/* Navbar */}
       <nav style={L.nav}>
         <div style={L.navInner}>
-          <span style={L.brand}>Kyro<span style={{ color: '#a78bfa' }}>Academy</span></span>
+          <span style={L.brand}>Kyro<span style={{ color: '#2dd4bf' }}>Academy</span></span>
           <div style={L.navActions}>
             <button onClick={() => navigate('/login')} style={L.btnSignIn}>Log In</button>
             <button onClick={() => navigate('/register')} style={L.btnGetStarted}>Get Started</button>
@@ -163,7 +163,7 @@ function LandingPage() {
           </div>
           <div style={L.testGrid} className="landing-test-grid">
             {[
-              { quote: 'The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable.', name: 'Sarah Kim', role: 'Data Science Kyro', color: '#7c3aed' },
+              { quote: 'The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable.', name: 'Sarah Kim', role: 'Data Science Kyro', color: '#0d9488' },
               { quote: 'As a Guide, this platform gives me everything I need. The course builder, analytics, and payment system are all seamlessly integrated.', name: 'James Rodriguez', role: 'Web Dev Guide', color: '#059669' },
               { quote: 'The progress tracking keeps me motivated every day. I can see exactly how far I\'ve come and what\'s ahead in each course.', name: 'Aisha Lawan', role: 'UX Design Kyro', color: '#d97706' },
             ].map((t) => (
@@ -196,7 +196,7 @@ function LandingPage() {
       {/* Footer */}
       <footer style={L.footer}>
         <div style={L.footerInner}>
-          <span style={L.brand}>Kyro<span style={{ color: '#a78bfa' }}>Academy</span></span>
+          <span style={L.brand}>Kyro<span style={{ color: '#2dd4bf' }}>Academy</span></span>
           <div style={L.footerLinks}>
             {['Courses', 'Guides', 'About', 'Privacy', 'Terms'].map((t) => (
               <span key={t} style={L.footerLink}>{t}</span>
@@ -562,20 +562,20 @@ const landingStyles: { [key: string]: React.CSSProperties } = {
   brand: { fontSize: '20px', fontWeight: 700, color: '#fff', letterSpacing: '-0.5px' },
   navActions: { display: 'flex', alignItems: 'center', gap: '16px' },
   btnSignIn: { padding: '9px 20px', background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', fontSize: '14px', fontWeight: 500, cursor: 'pointer', borderRadius: '8px' },
-  btnGetStarted: { padding: '9px 22px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', border: 'none', fontSize: '14px', fontWeight: 600, cursor: 'pointer', borderRadius: '8px' },
+  btnGetStarted: { padding: '9px 22px', background: 'linear-gradient(135deg, #0d9488, #14b8a6)', color: '#fff', border: 'none', fontSize: '14px', fontWeight: 600, cursor: 'pointer', borderRadius: '8px' },
 
   // Hero
   hero: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const, padding: '140px 32px 80px', position: 'relative' as const, overflow: 'hidden' },
   heroGlow: { position: 'absolute' as const, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '900px', height: '900px', background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, rgba(168,85,247,0.05) 40%, transparent 70%)', pointerEvents: 'none' as const },
   heroGlow2: { position: 'absolute' as const, top: '30%', right: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%)', pointerEvents: 'none' as const },
   heroContent: { position: 'relative' as const, zIndex: 1, maxWidth: '850px' },
-  eyebrow: { fontSize: '13px', fontWeight: 500, color: '#a78bfa', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px', display: 'inline-flex', alignItems: 'center', gap: '10px' },
-  eyebrowLine: { display: 'inline-block', width: '32px', height: '1px', background: '#a78bfa' },
+  eyebrow: { fontSize: '13px', fontWeight: 500, color: '#2dd4bf', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px', display: 'inline-flex', alignItems: 'center', gap: '10px' },
+  eyebrowLine: { display: 'inline-block', width: '32px', height: '1px', background: '#2dd4bf' },
   heroTitle: { fontSize: '64px', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-2.5px', color: '#fff', marginBottom: '28px' },
-  gradientText: { background: 'linear-gradient(135deg, #a78bfa, #c084fc, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  gradientText: { background: 'linear-gradient(135deg, #2dd4bf, #c084fc, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
   heroSub: { fontSize: '19px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '580px', margin: '0 auto 44px', fontWeight: 400 },
   heroCtas: { display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' as const },
-  btnHeroPrimary: { padding: '16px 36px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', border: 'none', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
+  btnHeroPrimary: { padding: '16px 36px', background: 'linear-gradient(135deg, #0d9488, #14b8a6)', color: '#fff', border: 'none', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
   btnHeroSecondary: { padding: '16px 36px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.12)', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
 
   // Logos
@@ -587,16 +587,16 @@ const landingStyles: { [key: string]: React.CSSProperties } = {
   // Sections
   sectionWrap: { padding: '100px 32px' },
   inner: { maxWidth: '1200px', margin: '0 auto' },
-  eyebrowSmall: { fontSize: '12px', color: '#a78bfa', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '20px' },
+  eyebrowSmall: { fontSize: '12px', color: '#2dd4bf', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '20px' },
   sectionTitle: { fontSize: '44px', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', color: '#fff', marginBottom: '16px' },
   sectionDesc: { fontSize: '17px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto' },
 
   // Capabilities
   capRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center', marginBottom: '120px' },
-  capLabel: { fontSize: '12px', color: '#a78bfa', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '16px', fontWeight: 600 },
+  capLabel: { fontSize: '12px', color: '#2dd4bf', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '16px', fontWeight: 600 },
   capTitle: { fontSize: '34px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: '20px', color: '#fff' },
   capDesc: { fontSize: '16px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: '28px' },
-  capLink: { color: '#a78bfa', fontWeight: 600, fontSize: '15px', cursor: 'pointer' },
+  capLink: { color: '#2dd4bf', fontWeight: 600, fontSize: '15px', cursor: 'pointer' },
   capVisual: { borderRadius: '20px', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.06)' },
   capIcon: { fontSize: '80px', opacity: 0.5 },
 
@@ -611,7 +611,7 @@ const landingStyles: { [key: string]: React.CSSProperties } = {
   statsSection: { borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 32px' },
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', maxWidth: '1200px', margin: '0 auto' },
   statItem: { padding: '56px 32px', textAlign: 'center' as const, borderRight: '1px solid rgba(255,255,255,0.06)' },
-  statNumber: { fontSize: '52px', fontWeight: 700, letterSpacing: '-2px', marginBottom: '8px', background: 'linear-gradient(135deg, #a78bfa, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  statNumber: { fontSize: '52px', fontWeight: 700, letterSpacing: '-2px', marginBottom: '8px', background: 'linear-gradient(135deg, #2dd4bf, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
   statLabel: { fontSize: '14px', color: 'rgba(255,255,255,0.35)', fontWeight: 500 },
 
   // Testimonials
@@ -654,7 +654,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   heroActions: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
   btnPrimary: {
     padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600,
-    border: 'none', cursor: 'pointer', background: '#fff', color: '#667eea',
+    border: 'none', cursor: 'pointer', background: '#fff', color: '#0d9488',
   },
   btnSecondary: {
     padding: '12px 24px', borderRadius: '8px', fontSize: '14px', fontWeight: 600,
@@ -722,7 +722,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   learningTitle: { fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '12px' },
   progressBarBg: { height: '6px', background: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' },
   progressBarFill: {
-    height: '100%', background: 'linear-gradient(90deg, var(--accent), #667eea)', borderRadius: '3px',
+    height: '100%', background: 'linear-gradient(90deg, var(--accent), #0d9488)', borderRadius: '3px',
   },
   progressText: { fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' },
 

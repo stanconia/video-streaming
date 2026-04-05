@@ -38,7 +38,7 @@ const getContainerStyle = (isOwn: boolean): React.CSSProperties => ({
 const getBubbleStyle = (isOwn: boolean): React.CSSProperties => ({
   padding: '10px 14px',
   borderRadius: '16px',
-  backgroundColor: isOwn ? '#007bff' : '#e9ecef',
+  backgroundColor: isOwn ? '#0d9488' : '#e9ecef',
   color: isOwn ? '#ffffff' : '#212529',
   wordBreak: 'break-word',
   fontSize: '14px',

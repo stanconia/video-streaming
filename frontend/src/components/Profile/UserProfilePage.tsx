@@ -153,7 +153,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   coverBanner: {
     height: '120px',
-    background: 'linear-gradient(135deg, var(--accent), var(--accent-dark, #0056b3))',
+    background: 'linear-gradient(135deg, var(--accent), var(--accent-dark, #0f766e))',
   },
   avatarSection: {
     display: 'flex',

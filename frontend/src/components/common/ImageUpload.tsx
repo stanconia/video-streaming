@@ -133,7 +133,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '11px',
   },
   fileInput: { fontSize: '14px', marginBottom: '4px' },
-  uploading: { fontSize: '13px', color: '#007bff', marginTop: '4px' },
+  uploading: { fontSize: '13px', color: '#0d9488', marginTop: '4px' },
   error: { color: '#dc3545', fontSize: '13px', marginTop: '4px' },
   hint: { fontSize: '11px', color: '#999', marginTop: '4px' },
 };

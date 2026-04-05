@@ -112,7 +112,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: 'center',
     gap: '4px',
     padding: '4px 10px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     borderRadius: '12px',
     fontSize: '12px',
@@ -151,9 +151,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: 'all 0.15s',
   },
   chipSelected: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
-    borderColor: '#007bff',
+    borderColor: '#0d9488',
   },
   chipDisabled: {
     opacity: 0.4,

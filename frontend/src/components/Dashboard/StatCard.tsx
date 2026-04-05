@@ -6,7 +6,7 @@ interface StatCardProps {
   color?: string;
 }
 
-export const StatCard: React.FC<StatCardProps> = ({ label, value, color = '#007bff' }) => {
+export const StatCard: React.FC<StatCardProps> = ({ label, value, color = '#0d9488' }) => {
   return (
     <div style={styles.card}>
       <div style={{ ...styles.value, color }}>{value}</div>

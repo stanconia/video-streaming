@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KyroAcademy - Landing Page Theme Options</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+
+  /* Theme selector */
+  .theme-selector { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #fff; border-bottom: 2px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; gap: 12px; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .theme-selector span { font-size: 14px; font-weight: 600; color: #334155; }
+  .theme-btn { padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+  .theme-btn.active { transform: scale(1.05); }
+
+  .view { display: none; padding-top: 56px; }
+  .view.active { display: block; }
+
+  /* ==================== SHARED STRUCTURE ==================== */
+  .nav { position: sticky; top: 56px; z-index: 100; backdrop-filter: blur(16px); }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-brand { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-sign-in { padding: 9px 20px; background: none; font-size: 14px; font-weight: 500; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+  .btn-get-started { padding: 9px 22px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+
+  .hero { min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 120px 32px 80px; position: relative; overflow: hidden; }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; }
+  .hero-eyebrow { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 24px; display: inline-flex; align-items: center; gap: 10px; }
+  .hero-eyebrow-line { display: inline-block; width: 32px; height: 1px; }
+  .hero h1 { font-size: 62px; font-weight: 800; line-height: 1.08; letter-spacing: -2px; margin-bottom: 24px; }
+  .hero p { font-size: 19px; line-height: 1.7; max-width: 560px; margin: 0 auto 40px; }
+  .hero-ctas { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-hero { padding: 16px 32px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+
+  .logos { padding: 48px 32px 72px; text-align: center; }
+  .logos-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 24px; }
+  .logos-row { display: flex; justify-content: center; align-items: center; gap: 56px; flex-wrap: wrap; }
+  .logo-item { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+
+  .section { padding: 100px 32px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+  .section-eyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px; }
+  .section-title { font-size: 42px; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 16px; }
+  .section-desc { font-size: 17px; line-height: 1.7; max-width: 560px; }
+
+  .cap-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-bottom: 100px; }
+  .cap-row:last-child { margin-bottom: 0; }
+  .cap-row.reverse .cap-visual { order: -1; }
+  .cap-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px; }
+  .cap-title { font-size: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 16px; }
+  .cap-desc { font-size: 16px; line-height: 1.7; margin-bottom: 24px; }
+  .cap-link { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; text-decoration: none; transition: gap 0.2s; }
+  .cap-link:hover { gap: 14px; }
+  .cap-visual { border-radius: 20px; height: 340px; display: flex; align-items: center; justify-content: center; }
+  .cap-icon { font-size: 72px; opacity: 0.5; }
+
+  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 56px; }
+  .feat-card { border-radius: 16px; padding: 28px; transition: all 0.3s; }
+  .feat-card:hover { transform: translateY(-4px); }
+  .feat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+  .feat-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .feat-desc { font-size: 14px; line-height: 1.7; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .stat { padding: 48px 32px; text-align: center; }
+  .stat-number { font-size: 48px; font-weight: 800; letter-spacing: -2px; margin-bottom: 8px; }
+  .stat-label { font-size: 14px; font-weight: 500; }
+
+  .test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 56px; }
+  .test-card { border-radius: 16px; padding: 28px; }
+  .test-stars { font-size: 16px; margin-bottom: 16px; letter-spacing: 3px; }
+  .test-quote { font-size: 15px; line-height: 1.8; margin-bottom: 24px; font-style: italic; }
+  .test-author { display: flex; align-items: center; gap: 12px; }
+  .test-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #fff; }
+  .test-name { font-size: 14px; font-weight: 600; }
+  .test-role { font-size: 13px; margin-top: 2px; }
+
+  .cta-section { padding: 120px 32px; text-align: center; position: relative; overflow: hidden; }
+  .cta-section h2 { font-size: 48px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 20px; }
+  .cta-section p { font-size: 18px; max-width: 540px; margin: 0 auto 36px; line-height: 1.7; }
+
+  .footer { padding: 40px 32px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .footer-brand { font-size: 18px; font-weight: 800; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .footer-copy { font-size: 13px; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .cap-row { grid-template-columns: 1fr; gap: 40px; }
+    .cap-row.reverse .cap-visual { order: 0; }
+    .feat-grid, .test-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .nav-links { display: none; }
+    .theme-selector { flex-wrap: wrap; }
+  }
+
+  /* ==================== THEME 1: Purple + White ==================== */
+  #theme1 { background: #fff; color: #1e293b; }
+  #theme1 .nav { background: rgba(255,255,255,0.92); border-bottom: 1px solid #e2e8f0; }
+  #theme1 .nav-brand { color: #1e293b; }
+  #theme1 .nav-brand span { color: #7c3aed; }
+  #theme1 .nav-links a { color: #64748b; }
+  #theme1 .nav-links a:hover { color: #1e293b; }
+  #theme1 .btn-sign-in { border: 1px solid #e2e8f0; color: #1e293b; }
+  #theme1 .btn-get-started { background: #7c3aed; color: #fff; }
+  #theme1 .hero { background: linear-gradient(180deg, #faf5ff 0%, #fff 100%); }
+  #theme1 .hero::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%); }
+  #theme1 .hero-eyebrow { color: #7c3aed; }
+  #theme1 .hero-eyebrow-line { background: #7c3aed; }
+  #theme1 .hero h1 { color: #1e293b; }
+  #theme1 .hero h1 em { font-style: normal; background: linear-gradient(135deg, #7c3aed, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #theme1 .hero p { color: #64748b; }
+  #theme1 .btn-hero.primary { background: #7c3aed; color: #fff; border: none; box-shadow: 0 4px 14px rgba(124,58,237,0.3); }
+  #theme1 .btn-hero.secondary { background: #fff; color: #1e293b; border: 1.5px solid #e2e8f0; }
+  #theme1 .logos-label { color: #94a3b8; }
+  #theme1 .logo-item { color: rgba(30,41,59,0.2); }
+  #theme1 .section-alt { background: #f8fafc; }
+  #theme1 .section-eyebrow { color: #7c3aed; }
+  #theme1 .section-title { color: #1e293b; }
+  #theme1 .section-desc { color: #64748b; }
+  #theme1 .cap-label { color: #7c3aed; }
+  #theme1 .cap-title { color: #1e293b; }
+  #theme1 .cap-desc { color: #64748b; }
+  #theme1 .cap-link { color: #7c3aed; }
+  #theme1 .cap-visual { background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 1px solid rgba(124,58,237,0.08); }
+  #theme1 .cap-visual.v2 { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1px solid rgba(16,185,129,0.08); }
+  #theme1 .cap-visual.v3 { background: linear-gradient(135deg, #fff7ed, #fed7aa); border: 1px solid rgba(245,158,11,0.08); }
+  #theme1 .feat-card { background: #fff; border: 1px solid #e2e8f0; }
+  #theme1 .feat-card:hover { border-color: #7c3aed; box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+  #theme1 .feat-icon { background: rgba(124,58,237,0.08); }
+  #theme1 .feat-title { color: #1e293b; }
+  #theme1 .feat-desc { color: #64748b; }
+  #theme1 .stats-section { background: #1e293b; color: #fff; }
+  #theme1 .stat-number { background: linear-gradient(135deg, #a78bfa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #theme1 .stat-label { color: #94a3b8; }
+  #theme1 .stat { border-right: 1px solid rgba(255,255,255,0.1); }
+  #theme1 .stat:last-child { border-right: none; }
+  #theme1 .test-card { background: #fff; border: 1px solid #e2e8f0; }
+  #theme1 .test-stars { color: #f59e0b; }
+  #theme1 .test-quote { color: #475569; }
+  #theme1 .test-name { color: #1e293b; }
+  #theme1 .test-role { color: #94a3b8; }
+  #theme1 .cta-section { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; border-radius: 24px; max-width: 1200px; margin: 0 auto 80px; }
+  #theme1 .cta-section p { color: rgba(255,255,255,0.8); }
+  #theme1 .btn-cta { background: #fff; color: #7c3aed; border: none; padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 10px; cursor: pointer; }
+  #theme1 .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; }
+  #theme1 .footer-brand { color: #1e293b; }
+  #theme1 .footer-brand span { color: #7c3aed; }
+  #theme1 .footer-links a { color: #64748b; }
+  #theme1 .footer-copy { color: #94a3b8; }
+
+  /* ==================== THEME 2: Blue + White ==================== */
+  #theme2 { background: #fff; color: #0f172a; }
+  #theme2 .nav { background: rgba(255,255,255,0.92); border-bottom: 1px solid #e2e8f0; }
+  #theme2 .nav-brand { color: #0f172a; }
+  #theme2 .nav-brand span { color: #2563eb; }
+  #theme2 .nav-links a { color: #64748b; }
+  #theme2 .btn-sign-in { border: 1px solid #e2e8f0; color: #0f172a; }
+  #theme2 .btn-get-started { background: #2563eb; color: #fff; }
+  #theme2 .hero { background: linear-gradient(180deg, #eff6ff 0%, #fff 100%); }
+  #theme2 .hero::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 70%); }
+  #theme2 .hero-eyebrow { color: #2563eb; }
+  #theme2 .hero-eyebrow-line { background: #2563eb; }
+  #theme2 .hero h1 { color: #0f172a; }
+  #theme2 .hero h1 em { font-style: normal; background: linear-gradient(135deg, #2563eb, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #theme2 .hero p { color: #64748b; }
+  #theme2 .btn-hero.primary { background: #2563eb; color: #fff; border: none; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
+  #theme2 .btn-hero.secondary { background: #fff; color: #0f172a; border: 1.5px solid #e2e8f0; }
+  #theme2 .logos-label { color: #94a3b8; }
+  #theme2 .logo-item { color: rgba(15,23,42,0.2); }
+  #theme2 .section-alt { background: #f8fafc; }
+  #theme2 .section-eyebrow { color: #2563eb; }
+  #theme2 .section-title { color: #0f172a; }
+  #theme2 .section-desc { color: #64748b; }
+  #theme2 .cap-label { color: #2563eb; }
+  #theme2 .cap-title { color: #0f172a; }
+  #theme2 .cap-desc { color: #64748b; }
+  #theme2 .cap-link { color: #2563eb; }
+  #theme2 .cap-visual { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid rgba(37,99,235,0.08); }
+  #theme2 .cap-visual.v2 { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1px solid rgba(16,185,129,0.08); }
+  #theme2 .cap-visual.v3 { background: linear-gradient(135deg, #fefce8, #fef3c7); border: 1px solid rgba(234,179,8,0.08); }
+  #theme2 .feat-card { background: #fff; border: 1px solid #e2e8f0; }
+  #theme2 .feat-card:hover { border-color: #2563eb; box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+  #theme2 .feat-icon { background: rgba(37,99,235,0.08); }
+  #theme2 .feat-title { color: #0f172a; }
+  #theme2 .feat-desc { color: #64748b; }
+  #theme2 .stats-section { background: #0f172a; color: #fff; }
+  #theme2 .stat-number { background: linear-gradient(135deg, #60a5fa, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #theme2 .stat-label { color: #94a3b8; }
+  #theme2 .stat { border-right: 1px solid rgba(255,255,255,0.1); }
+  #theme2 .stat:last-child { border-right: none; }
+  #theme2 .test-card { background: #fff; border: 1px solid #e2e8f0; }
+  #theme2 .test-stars { color: #f59e0b; }
+  #theme2 .test-quote { color: #475569; }
+  #theme2 .test-name { color: #0f172a; }
+  #theme2 .test-role { color: #94a3b8; }
+  #theme2 .cta-section { background: linear-gradient(135deg, #1e40af, #2563eb); color: #fff; border-radius: 24px; max-width: 1200px; margin: 0 auto 80px; }
+  #theme2 .cta-section p { color: rgba(255,255,255,0.8); }
+  #theme2 .btn-cta { background: #fff; color: #2563eb; border: none; padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 10px; cursor: pointer; }
+  #theme2 .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; }
+  #theme2 .footer-brand { color: #0f172a; }
+  #theme2 .footer-brand span { color: #2563eb; }
+  #theme2 .footer-links a { color: #64748b; }
+  #theme2 .footer-copy { color: #94a3b8; }
+
+  /* ==================== THEME 3: Teal + White ==================== */
+  #theme3 { background: #fff; color: #0f172a; }
+  #theme3 .nav { background: rgba(255,255,255,0.92); border-bottom: 1px solid #e2e8f0; }
+  #theme3 .nav-brand { color: #0f172a; }
+  #theme3 .nav-brand span { color: #0d9488; }
+  #theme3 .nav-links a { color: #64748b; }
+  #theme3 .btn-sign-in { border: 1px solid #e2e8f0; color: #0f172a; }
+  #theme3 .btn-get-started { background: #0d9488; color: #fff; }
+  #theme3 .hero { background: linear-gradient(180deg, #f0fdfa 0%, #fff 100%); }
+  #theme3 .hero::before { content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, rgba(13,148,136,0.07) 0%, transparent 70%); }
+  #theme3 .hero-eyebrow { color: #0d9488; }
+  #theme3 .hero-eyebrow-line { background: #0d9488; }
+  #theme3 .hero h1 { color: #0f172a; }
+  #theme3 .hero h1 em { font-style: normal; background: linear-gradient(135deg, #0d9488, #14b8a6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #theme3 .hero p { color: #64748b; }
+  #theme3 .btn-hero.primary { background: #0d9488; color: #fff; border: none; box-shadow: 0 4px 14px rgba(13,148,136,0.3); }
+  #theme3 .btn-hero.secondary { background: #fff; color: #0f172a; border: 1.5px solid #e2e8f0; }
+  #theme3 .logos-label { color: #94a3b8; }
+  #theme3 .logo-item { color: rgba(15,23,42,0.2); }
+  #theme3 .section-alt { background: #f8fafc; }
+  #theme3 .section-eyebrow { color: #0d9488; }
+  #theme3 .section-title { color: #0f172a; }
+  #theme3 .section-desc { color: #64748b; }
+  #theme3 .cap-label { color: #0d9488; }
+  #theme3 .cap-title { color: #0f172a; }
+  #theme3 .cap-desc { color: #64748b; }
+  #theme3 .cap-link { color: #0d9488; }
+  #theme3 .cap-visual { background: linear-gradient(135deg, #f0fdfa, #ccfbf1); border: 1px solid rgba(13,148,136,0.08); }
+  #theme3 .cap-visual.v2 { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid rgba(37,99,235,0.08); }
+  #theme3 .cap-visual.v3 { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1px solid rgba(245,158,11,0.08); }
+  #theme3 .feat-card { background: #fff; border: 1px solid #e2e8f0; }
+  #theme3 .feat-card:hover { border-color: #0d9488; box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+  #theme3 .feat-icon { background: rgba(13,148,136,0.08); }
+  #theme3 .feat-title { color: #0f172a; }
+  #theme3 .feat-desc { color: #64748b; }
+  #theme3 .stats-section { background: #0f172a; color: #fff; }
+  #theme3 .stat-number { background: linear-gradient(135deg, #2dd4bf, #5eead4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  #theme3 .stat-label { color: #94a3b8; }
+  #theme3 .stat { border-right: 1px solid rgba(255,255,255,0.1); }
+  #theme3 .stat:last-child { border-right: none; }
+  #theme3 .test-card { background: #fff; border: 1px solid #e2e8f0; }
+  #theme3 .test-stars { color: #f59e0b; }
+  #theme3 .test-quote { color: #475569; }
+  #theme3 .test-name { color: #0f172a; }
+  #theme3 .test-role { color: #94a3b8; }
+  #theme3 .cta-section { background: linear-gradient(135deg, #0f766e, #0d9488); color: #fff; border-radius: 24px; max-width: 1200px; margin: 0 auto 80px; }
+  #theme3 .cta-section p { color: rgba(255,255,255,0.8); }
+  #theme3 .btn-cta { background: #fff; color: #0d9488; border: none; padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 10px; cursor: pointer; }
+  #theme3 .footer { background: #f8fafc; border-top: 1px solid #e2e8f0; }
+  #theme3 .footer-brand { color: #0f172a; }
+  #theme3 .footer-brand span { color: #0d9488; }
+  #theme3 .footer-links a { color: #64748b; }
+  #theme3 .footer-copy { color: #94a3b8; }
+
+  .tb-purple { background: #7c3aed; color: #fff; }
+  .tb-purple.active { box-shadow: 0 0 0 3px rgba(124,58,237,0.3); }
+  .tb-blue { background: #2563eb; color: #fff; }
+  .tb-blue.active { box-shadow: 0 0 0 3px rgba(37,99,235,0.3); }
+  .tb-teal { background: #0d9488; color: #fff; }
+  .tb-teal.active { box-shadow: 0 0 0 3px rgba(13,148,136,0.3); }
+</style>
+</head>
+<body>
+
+<!-- Theme Selector -->
+<div class="theme-selector">
+  <span>Theme:</span>
+  <button class="theme-btn tb-purple active" onclick="showTheme('theme1')">Purple + White</button>
+  <button class="theme-btn tb-blue" onclick="showTheme('theme2')">Blue + White</button>
+  <button class="theme-btn tb-teal" onclick="showTheme('theme3')">Teal + White</button>
+</div>
+
+<!-- ==================== THEME 1: Purple ==================== -->
+<div id="theme1" class="view active">
+  <nav class="nav"><div class="nav-inner">
+    <div class="nav-brand">Kyro<span>Academy</span></div>
+    <div class="nav-links"><a href="#">Courses</a><a href="#">Guides</a><a href="#">How It Works</a></div>
+    <div class="nav-actions"><button class="btn-sign-in">Log In</button><button class="btn-get-started">Get Started</button></div>
+  </div></nav>
+
+  <section class="hero"><div class="hero-content">
+    <div class="hero-eyebrow"><span class="hero-eyebrow-line"></span> The future of learning is live <span class="hero-eyebrow-line"></span></div>
+    <h1>Master any skill with<br><em>expert Kyro Guides.</em></h1>
+    <p>Interactive live classes, structured courses, and a global community of verified experts. Learn at your pace or join live.</p>
+    <div class="hero-ctas">
+      <button class="btn-hero primary">Start Learning Free &rarr;</button>
+      <button class="btn-hero secondary">Become a Guide</button>
+    </div>
+  </div></section>
+
+  <div class="logos">
+    <div class="logos-label">Trusted by learners from</div>
+    <div class="logos-row"><span class="logo-item">Google</span><span class="logo-item">Microsoft</span><span class="logo-item">Stanford</span><span class="logo-item">MIT</span><span class="logo-item">Amazon</span></div>
+  </div>
+
+  <section class="section section-alt"><div class="section-inner">
+    <div class="cap-row">
+      <div><div class="cap-label">Discover</div><h3 class="cap-title">Courses built by experts, structured for results</h3><p class="cap-desc">Browse hundreds of courses across every subject. Each one is organized into modules and lessons with quizzes and progress tracking.</p><a href="#" class="cap-link">Explore courses &rarr;</a></div>
+      <div class="cap-visual"><span class="cap-icon">&#128218;</span></div>
+    </div>
+    <div class="cap-row reverse">
+      <div><div class="cap-label">Learn Live</div><h3 class="cap-title">Join live sessions with real-time interaction</h3><p class="cap-desc">Attend live classes with HD video, screen sharing, chat, polls, and collaborative whiteboards. Learn directly from your Guide.</p><a href="#" class="cap-link">See upcoming sessions &rarr;</a></div>
+      <div class="cap-visual v2"><span class="cap-icon">&#127909;</span></div>
+    </div>
+    <div class="cap-row">
+      <div><div class="cap-label">Track Progress</div><h3 class="cap-title">Visualize your growth with every lesson</h3><p class="cap-desc">Track completion rates, quiz scores, and assignment grades. Earn certificates to showcase your achievements.</p><a href="#" class="cap-link">Start your journey &rarr;</a></div>
+      <div class="cap-visual v3"><span class="cap-icon">&#128200;</span></div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="section-inner" style="text-align:center;">
+    <div class="section-eyebrow">Platform</div>
+    <h2 class="section-title">Everything you need, nothing you don't</h2>
+    <p class="section-desc" style="margin:0 auto;">A complete learning platform for Kyro Learners and Guides.</p>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon">&#127909;</div><div class="feat-title">Live Classes</div><div class="feat-desc">Real-time video with chat, polls, hand raise, and screen sharing.</div></div>
+      <div class="feat-card"><div class="feat-icon">&#128218;</div><div class="feat-title">Structured Courses</div><div class="feat-desc">Modules, lessons, and progress tracking for optimal outcomes.</div></div>
+      <div class="feat-card"><div class="feat-icon">&#128221;</div><div class="feat-title">Quizzes & Assignments</div><div class="feat-desc">Auto-graded quizzes and personalized Guide feedback.</div></div>
+      <div class="feat-card"><div class="feat-icon">&#127942;</div><div class="feat-title">Certificates</div><div class="feat-desc">Earn verifiable certificates on course completion.</div></div>
+      <div class="feat-card"><div class="feat-icon">&#128172;</div><div class="feat-title">Discussion Forums</div><div class="feat-desc">Collaborate with peers and deepen understanding.</div></div>
+      <div class="feat-card"><div class="feat-icon">&#128197;</div><div class="feat-title">Smart Scheduling</div><div class="feat-desc">Calendar integration with session reminders.</div></div>
+    </div>
+  </div></section>
+
+  <section class="section stats-section"><div class="section-inner">
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-number">2,500+</div><div class="stat-label">Active Kyro Learners</div></div>
+      <div class="stat"><div class="stat-number">180+</div><div class="stat-label">Expert-Led Courses</div></div>
+      <div class="stat"><div class="stat-number">50+</div><div class="stat-label">Verified Guides</div></div>
+      <div class="stat"><div class="stat-number">4.8</div><div class="stat-label">Average Rating</div></div>
+    </div>
+  </div></section>
+
+  <section class="section section-alt"><div class="section-inner" style="text-align:center;">
+    <div class="section-eyebrow">Testimonials</div>
+    <h2 class="section-title">Loved by curious minds worldwide</h2>
+    <div class="test-grid">
+      <div class="test-card"><div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="test-quote">"The live sessions changed everything. Real-time feedback from my Guide is incredibly valuable."</p><div class="test-author"><div class="test-avatar" style="background:#7c3aed;">SK</div><div><div class="test-name">Sarah Kim</div><div class="test-role">Data Science Learner</div></div></div></div>
+      <div class="test-card"><div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="test-quote">"As a Guide, KyroAcademy gives me everything I need. Course builder, analytics, and payments are seamless."</p><div class="test-author"><div class="test-avatar" style="background:#059669;">JR</div><div><div class="test-name">James Rodriguez</div><div class="test-role">Web Dev Guide</div></div></div></div>
+      <div class="test-card"><div class="test-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="test-quote">"Progress tracking keeps me motivated. I can see exactly how far I've come in each course."</p><div class="test-author"><div class="test-avatar" style="background:#d97706;">AL</div><div><div class="test-name">Aisha Lawan</div><div class="test-role">UX Design Learner</div></div></div></div>
+    </div>
+  </div></section>
+
+  <div style="padding: 0 32px;"><section class="cta-section">
+    <h2>Ready to unlock your potential?</h2>
+    <p>Join thousands of learners mastering new skills with expert Guides.</p>
+    <button class="btn-cta">Get Started Free &rarr;</button>
+  </section></div>
+
+  <footer class="footer"><div class="footer-inner">
+    <div class="footer-brand">Kyro<span>Academy</span></div>
+    <div class="footer-links"><a href="#">Courses</a><a href="#">Guides</a><a href="#">About</a><a href="#">Privacy</a><a href="#">Terms</a></div>
+    <div class="footer-copy">&copy; 2026 KyroAcademy</div>
+  </div></footer>
+</div>
+
+<!-- ==================== THEME 2: Blue (clone with class swap) ==================== -->
+<div id="theme2" class="view"></div>
+
+<!-- ==================== THEME 3: Teal (clone with class swap) ==================== -->
+<div id="theme3" class="view"></div>
+
+<script>
+// Clone theme1 content into theme2 and theme3
+document.getElementById('theme2').innerHTML = document.getElementById('theme1').innerHTML;
+document.getElementById('theme3').innerHTML = document.getElementById('theme1').innerHTML;
+
+function showTheme(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

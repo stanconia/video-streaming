@@ -183,7 +183,7 @@ export const MessagesPage: React.FC = () => {
                   >
                     <div style={{
                       ...styles.pickerAvatar,
-                      backgroundColor: isTeacher ? '#28a745' : '#007bff',
+                      backgroundColor: isTeacher ? '#28a745' : '#0d9488',
                     }}>
                       {c.displayName.charAt(0).toUpperCase()}
                     </div>
@@ -258,7 +258,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   newMsgBtn: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

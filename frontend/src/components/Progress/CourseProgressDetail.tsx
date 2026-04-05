@@ -273,7 +273,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   backButton: {
     padding: '8px 16px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
@@ -327,7 +327,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   statValue: {
     fontSize: '20px',
     fontWeight: 'bold',
-    color: '#007bff',
+    color: '#0d9488',
   },
   statLabel: {
     fontSize: '11px',
@@ -416,7 +416,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   markCompleteButton: {
     padding: '6px 14px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
@@ -443,8 +443,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   courseButton: {
     padding: '12px 32px',
     backgroundColor: 'white',
-    color: '#007bff',
-    border: '2px solid #007bff',
+    color: '#0d9488',
+    border: '2px solid #0d9488',
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '16px',

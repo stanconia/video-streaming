@@ -164,7 +164,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
                   </div>
                 ))}
                 <div
-                  style={{ ...styles.dropdownItem, color: '#007bff', fontStyle: 'italic' }}
+                  style={{ ...styles.dropdownItem, color: '#0d9488', fontStyle: 'italic' }}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleCitySelect('__other__');

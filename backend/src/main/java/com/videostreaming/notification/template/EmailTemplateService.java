@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class EmailTemplateService {
 
     private static final String ACCENT_COLOR = "#8b5cf6";
-    private static final String ACCENT_DARK = "#7c3aed";
+    private static final String ACCENT_DARK = "#0d9488";
     private static final String BG_COLOR = "#f3f4f6";
     private static final String CARD_BG = "#ffffff";
     private static final String TEXT_COLOR = "#1f2937";

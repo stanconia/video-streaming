@@ -28,6 +28,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   title: { color: '#28a745', marginBottom: '16px' },
   message: { color: '#666', lineHeight: '1.6', marginBottom: '32px' },
   actions: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  primaryButton: { padding: '12px 32px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' },
-  secondaryButton: { padding: '12px 32px', backgroundColor: 'white', color: '#007bff', border: '1px solid #007bff', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' },
+  primaryButton: { padding: '12px 32px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' },
+  secondaryButton: { padding: '12px 32px', backgroundColor: 'white', color: '#0d9488', border: '1px solid #0d9488', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' },
 };

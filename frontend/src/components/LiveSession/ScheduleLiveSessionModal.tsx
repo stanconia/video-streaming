@@ -235,7 +235,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   submitButton: {
     padding: '10px 20px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

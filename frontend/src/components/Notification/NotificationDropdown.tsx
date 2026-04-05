@@ -12,7 +12,7 @@ interface NotificationDropdownProps {
 
 const typeColorMap: Record<string, string> = {
   WELCOME: '#28a745',
-  COURSE_ENROLLED: '#007bff',
+  COURSE_ENROLLED: '#0d9488',
   COURSE_COMPLETED: '#6f42c1',
   MESSAGE_RECEIVED: '#17a2b8',
   REVIEW_RECEIVED: '#fd7e14',
@@ -95,7 +95,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   dropdown: { position: 'absolute', top: '100%', right: 0, width: '340px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', zIndex: 1000, overflow: 'hidden', marginTop: '8px' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #eee' },
   headerTitle: { fontWeight: 'bold', fontSize: '14px' },
-  markAllButton: { background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '12px' },
+  markAllButton: { background: 'none', border: 'none', color: '#0d9488', cursor: 'pointer', fontSize: '12px' },
   loading: { padding: '20px', textAlign: 'center', color: '#666', fontSize: '14px' },
   empty: { padding: '20px', textAlign: 'center', color: '#666', fontSize: '14px' },
   list: { maxHeight: '320px', overflowY: 'auto' },
@@ -105,5 +105,5 @@ const styles: { [key: string]: React.CSSProperties } = {
   itemMessage: { fontSize: '12px', color: '#555', marginBottom: '4px', lineHeight: '1.4' },
   itemTime: { fontSize: '11px', color: '#999' },
   footer: { padding: '8px 16px', borderTop: '1px solid #eee', textAlign: 'center' },
-  viewAllButton: { background: 'none', border: 'none', color: '#007bff', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' },
+  viewAllButton: { background: 'none', border: 'none', color: '#0d9488', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' },
 };

@@ -237,7 +237,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   itemActions: { display: 'flex', gap: '8px' },
   editButton: {
     padding: '6px 16px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

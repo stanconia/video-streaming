@@ -124,6 +124,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   fileName: { fontSize: '14px', fontWeight: 'bold', color: '#333', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const },
   meta: { display: 'flex', gap: '16px', fontSize: '12px', color: '#666', marginTop: '4px' },
   actionsCol: { display: 'flex', gap: '8px', flexShrink: 0 },
-  downloadButton: { padding: '6px 14px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', textDecoration: 'none', display: 'inline-block' },
+  downloadButton: { padding: '6px 14px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px', textDecoration: 'none', display: 'inline-block' },
   deleteButton: { padding: '6px 14px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' },
 };

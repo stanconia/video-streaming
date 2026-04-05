@@ -220,7 +220,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   contentText: { margin: 0, fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' as const },
   fileRow: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' },
   fileLabel: { fontSize: '14px', fontWeight: 'bold', color: '#555' },
-  fileLink: { color: '#007bff', fontSize: '14px' },
+  fileLink: { color: '#0d9488', fontSize: '14px' },
   gradeForm: { borderTop: '1px solid #eee', paddingTop: '16px' },
   gradeRow: { display: 'flex', gap: '16px', marginBottom: '12px' },
   scoreField: { width: '120px', flexShrink: 0 },

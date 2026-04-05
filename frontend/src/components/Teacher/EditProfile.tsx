@@ -143,7 +143,7 @@ export const EditProfile: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: { padding: '20px', maxWidth: '700px', margin: '0 auto' },
   loading: { textAlign: 'center', padding: '40px', color: '#666' },
-  backButton: { padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', marginBottom: '20px' },
+  backButton: { padding: '8px 16px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', marginBottom: '20px' },
   formCard: { backgroundColor: 'white', borderRadius: '8px', padding: '24px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
   subtitle: { color: '#666', marginBottom: '24px' },
   error: { color: '#721c24', padding: '12px', marginBottom: '16px', backgroundColor: '#f8d7da', borderRadius: '4px' },

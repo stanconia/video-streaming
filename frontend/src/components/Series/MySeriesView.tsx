@@ -91,6 +91,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   list: { display: 'flex', flexDirection: 'column', gap: '12px' },
   listItem: { backgroundColor: 'white', border: '1px solid #eee', borderRadius: '8px', padding: '16px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' },
   listItemHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' },
-  itemTitle: { margin: 0, fontSize: '16px', color: '#007bff' },
+  itemTitle: { margin: 0, fontSize: '16px', color: '#0d9488' },
   itemDetails: { display: 'flex', gap: '20px', fontSize: '14px', color: '#666' },
 };

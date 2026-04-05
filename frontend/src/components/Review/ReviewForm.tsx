@@ -102,5 +102,5 @@ const styles: { [key: string]: React.CSSProperties } = {
   star: { fontSize: '28px', cursor: 'pointer', userSelect: 'none' as const },
   input: { width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', marginBottom: '12px', boxSizing: 'border-box' as const },
   textarea: { width: '100%', padding: '8px 12px', border: '1px solid #ddd', borderRadius: '4px', fontSize: '14px', marginBottom: '12px', boxSizing: 'border-box' as const },
-  submitButton: { padding: '8px 24px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
+  submitButton: { padding: '8px 24px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
 };

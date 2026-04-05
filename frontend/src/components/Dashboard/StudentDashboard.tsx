@@ -52,7 +52,7 @@ export const StudentDashboard: React.FC = () => {
       <h1 style={styles.pageTitle}>Kyro Dashboard</h1>
 
       <div style={styles.statsGrid} className="stats-grid">
-        <StatCard label="Total Enrollments" value={data.totalEnrollments} color="#007bff" />
+        <StatCard label="Total Enrollments" value={data.totalEnrollments} color="#0d9488" />
         <StatCard label="Active Courses" value={data.activeEnrollments} color="#28a745" />
         <StatCard label="Completed" value={data.completedCourses} color="#6f42c1" />
         <StatCard label="Total Spent" value={`$${data.totalSpent.toFixed(2)}`} color="#dc3545" />
@@ -142,20 +142,20 @@ const styles: { [key: string]: React.CSSProperties } = {
   error: { color: '#721c24', padding: '12px', backgroundColor: '#f8d7da', borderRadius: '4px' },
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '16px', marginBottom: '24px' },
   quickLinks: { display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' as const },
-  quickLinkButton: { padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
+  quickLinkButton: { padding: '10px 20px', backgroundColor: '#0d9488', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '14px' },
   section: { backgroundColor: 'white', borderRadius: '8px', padding: '20px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginBottom: '20px' },
   sectionTitle: { margin: '0 0 16px 0', fontSize: '18px' },
   empty: { color: '#666', textAlign: 'center', padding: '20px' },
   list: { display: 'flex', flexDirection: 'column', gap: '12px' },
   listItem: { padding: '12px 16px', border: '1px solid #eee', borderRadius: '8px', cursor: 'pointer' },
   listItemHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' },
-  listItemTitle: { fontWeight: 'bold', color: '#007bff' },
+  listItemTitle: { fontWeight: 'bold', color: '#0d9488' },
   badge: { fontSize: '12px', padding: '2px 10px', borderRadius: '12px', fontWeight: 'bold' },
   listItemDetails: { display: 'flex', gap: '16px', fontSize: '13px', color: '#666' },
   progressRow: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' },
   progressBarBg: { flex: 1, height: '8px', backgroundColor: '#e9ecef', borderRadius: '4px', overflow: 'hidden' },
-  progressBarFill: { height: '100%', backgroundColor: '#007bff', borderRadius: '4px', transition: 'width 0.3s ease' },
-  progressText: { fontSize: '13px', fontWeight: 'bold', color: '#007bff', minWidth: '35px' },
+  progressBarFill: { height: '100%', backgroundColor: '#0d9488', borderRadius: '4px', transition: 'width 0.3s ease' },
+  progressText: { fontSize: '13px', fontWeight: 'bold', color: '#0d9488', minWidth: '35px' },
   joinSessionButton: {
     marginTop: '8px',
     padding: '8px 20px',

@@ -199,7 +199,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   title: {
     textAlign: 'center',
     marginBottom: '4px',
-    color: '#007bff',
+    color: '#0d9488',
   },
   subtitle: {
     textAlign: 'center',
@@ -260,7 +260,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   button: {
     padding: '12px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
@@ -272,7 +272,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   backButton: {
     display: 'inline-block',
     padding: '12px 24px',
-    backgroundColor: '#007bff',
+    backgroundColor: '#0d9488',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
@@ -289,7 +289,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#666',
   },
   link: {
-    color: '#007bff',
+    color: '#0d9488',
     textDecoration: 'none',
   },
   strengthContainer: {
