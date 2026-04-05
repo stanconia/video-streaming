@@ -26,7 +26,7 @@ function LandingPage() {
       teacherApi.searchTeachers().then((t) => t.length).catch(() => 0),
     ]).then(([courseCount, proCount]) => {
       setStats({
-        learners: courseCount * 5, // estimate based on enrollments
+        learners: courseCount * 5,
         courses: courseCount,
         pros: proCount,
         rating: 4.8,
@@ -41,7 +41,12 @@ function LandingPage() {
       {/* Navbar */}
       <nav style={L.nav}>
         <div style={L.navInner}>
-          <span style={L.brand}>Kyro<span style={{ color: '#a78bfa' }}>Academy</span></span>
+          <span style={L.brand}>Kyro<span style={{ color: '#0d9488' }}>Academy</span></span>
+          <div style={L.navLinks} className="landing-nav-links">
+            {['Courses', 'Guides', 'Pricing'].map((t) => (
+              <span key={t} style={L.navLink}>{t}</span>
+            ))}
+          </div>
           <div style={L.navActions}>
             <button onClick={() => navigate('/login')} style={L.btnSignIn}>Log In</button>
             <button onClick={() => navigate('/register')} style={L.btnGetStarted}>Get Started</button>
@@ -52,7 +57,6 @@ function LandingPage() {
       {/* Hero */}
       <section style={L.hero}>
         <div style={L.heroGlow} />
-        <div style={L.heroGlow2} />
         <div style={L.heroContent}>
           <div style={L.eyebrow}>
             <span style={L.eyebrowLine} />
@@ -60,7 +64,7 @@ function LandingPage() {
             <span style={L.eyebrowLine} />
           </div>
           <h1 style={L.heroTitle}>
-            Master any skill with<br /><span style={L.gradientText}>expert Guides.</span>
+            Master any skill with<br /><span style={L.gradientText}>expert Kyro Guides.</span>
           </h1>
           <p style={L.heroSub}>
             Interactive live classes, structured courses, and a global community of verified experts.
@@ -89,10 +93,10 @@ function LandingPage() {
       <section style={L.sectionWrap}>
         <div style={L.inner}>
           {[
-            { label: 'Discover', title: 'Courses built by experts, structured for results', desc: 'Browse hundreds of courses across every subject. Each one is organized into modules and lessons with quizzes, assignments, and progress tracking built in.', link: 'Explore courses', icon: '\ud83d\udcda', bg: 'rgba(124,58,237,0.15), rgba(168,85,247,0.05)' },
-            { label: 'Learn Live', title: 'Join live sessions with real-time interaction', desc: 'Attend live classes with HD video, screen sharing, interactive chat, polls, hand raise, and collaborative whiteboards. Learn directly from your Guide.', link: 'See upcoming sessions', icon: '\ud83c\udfa5', bg: 'rgba(16,185,129,0.12), rgba(6,182,212,0.05)', reverse: true },
-            { label: 'Track Progress', title: 'Visualize your growth with every lesson completed', desc: 'Track completion rates, quiz scores, and assignment grades across all your courses. Earn certificates to showcase your achievements.', link: 'Start your journey', icon: '\ud83d\udcc8', bg: 'rgba(245,158,11,0.12), rgba(236,72,153,0.05)' },
-          ].map((cap, i) => (
+            { label: '01 \u2014 Discover', title: 'Courses built by experts, structured for results', desc: 'Browse hundreds of courses across every subject. Each one is organized into modules and lessons with quizzes, assignments, and progress tracking built in.', link: 'Explore courses', icon: '\ud83d\udcda', color: '#0d9488', bg: 'rgba(13,148,136,0.08)' },
+            { label: '02 \u2014 Learn Live', title: 'Join live sessions with real-time interaction', desc: 'Attend live classes with HD video, screen sharing, interactive chat, polls, hand raise, and collaborative whiteboards. Learn directly from your Guide.', link: 'See upcoming sessions', icon: '\ud83c\udfa5', color: '#16a34a', bg: 'rgba(22,163,74,0.08)', reverse: true },
+            { label: '03 \u2014 Track Progress', title: 'Visualize your growth with every lesson completed', desc: 'Track completion rates, quiz scores, and assignment grades across all your courses. Earn certificates to showcase your achievements.', link: 'Start your journey', icon: '\ud83d\udcc8', color: '#d97706', bg: 'rgba(217,119,6,0.08)' },
+          ].map((cap) => (
             <div key={cap.label} style={{ ...L.capRow, direction: cap.reverse ? 'rtl' as const : 'ltr' as const }}>
               <div style={{ direction: 'ltr' as const }}>
                 <div style={L.capLabel}>{cap.label}</div>
@@ -100,7 +104,7 @@ function LandingPage() {
                 <p style={L.capDesc}>{cap.desc}</p>
                 <span style={L.capLink}>{cap.link} &rarr;</span>
               </div>
-              <div style={{ ...L.capVisual, background: `linear-gradient(135deg, ${cap.bg})`, direction: 'ltr' as const }}>
+              <div style={{ ...L.capVisual, background: cap.bg, borderColor: `${cap.color}22`, direction: 'ltr' as const }}>
                 <span style={L.capIcon}>{cap.icon}</span>
               </div>
             </div>
@@ -109,7 +113,7 @@ function LandingPage() {
       </section>
 
       {/* Features */}
-      <section style={L.sectionWrap}>
+      <section style={{ ...L.sectionWrap, background: '#f8fafc' }}>
         <div style={L.inner}>
           <div style={{ textAlign: 'center' as const, marginBottom: '64px' }}>
             <div style={L.eyebrowSmall}>Platform</div>
@@ -155,7 +159,7 @@ function LandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section style={L.sectionWrap}>
+      <section style={{ ...L.sectionWrap, background: '#f8fafc' }}>
         <div style={L.inner}>
           <div style={{ textAlign: 'center' as const, marginBottom: '64px' }}>
             <div style={L.eyebrowSmall}>Testimonials</div>
@@ -163,9 +167,9 @@ function LandingPage() {
           </div>
           <div style={L.testGrid} className="landing-test-grid">
             {[
-              { quote: 'The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable.', name: 'Sarah Kim', role: 'Data Science Kyro', color: '#7c3aed' },
-              { quote: 'As a Guide, this platform gives me everything I need. The course builder, analytics, and payment system are all seamlessly integrated.', name: 'James Rodriguez', role: 'Web Dev Guide', color: '#059669' },
-              { quote: 'The progress tracking keeps me motivated every day. I can see exactly how far I\'ve come and what\'s ahead in each course.', name: 'Aisha Lawan', role: 'UX Design Kyro', color: '#d97706' },
+              { quote: 'The live sessions changed everything for me. Being able to ask questions in real-time and get immediate feedback is incredibly valuable.', name: 'Sarah Kim', role: 'Data Science Kyro', color: '#0d9488' },
+              { quote: 'As a Guide, this platform gives me everything I need. The course builder, analytics, and payment system are all seamlessly integrated.', name: 'James Rodriguez', role: 'Web Dev Guide', color: '#16a34a' },
+              { quote: 'The progress tracking keeps me motivated every day. I can see exactly how far I\'ve come and what\'s ahead in each course.', name: 'Aisha Lawan', role: 'UX Design Kyro', color: '#0f766e' },
             ].map((t) => (
               <div key={t.name} style={L.testCard}>
                 <div style={L.testStars}>{'\u2605\u2605\u2605\u2605\u2605'}</div>
@@ -184,19 +188,22 @@ function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section style={L.cta}>
-        <div style={L.ctaGlow} />
-        <h2 style={L.ctaTitle}>Ready to unlock your <span style={L.gradientText}>full potential?</span></h2>
-        <p style={L.ctaSub}>Join thousands of learners mastering new skills with expert Guides. Your journey starts with a single click.</p>
-        <button onClick={() => navigate('/register')} style={{ ...L.btnHeroPrimary, fontSize: '17px', padding: '18px 40px', position: 'relative' as const, zIndex: 1 }}>
-          Get Started Free <span style={{ marginLeft: '8px' }}>&rarr;</span>
-        </button>
+      <section style={L.ctaOuter}>
+        <div style={L.inner}>
+          <div style={L.cta}>
+            <h2 style={L.ctaTitle}>Ready to unlock your full potential?</h2>
+            <p style={L.ctaSub}>Join thousands of learners mastering new skills with expert Guides. Your journey starts with a single click.</p>
+            <button onClick={() => navigate('/register')} style={L.btnCtaWhite}>
+              Get Started Free <span style={{ marginLeft: '8px' }}>&rarr;</span>
+            </button>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
       <footer style={L.footer}>
         <div style={L.footerInner}>
-          <span style={L.brand}>Kyro<span style={{ color: '#a78bfa' }}>Academy</span></span>
+          <span style={L.brand}>Kyro<span style={{ color: '#0d9488' }}>Academy</span></span>
           <div style={L.footerLinks}>
             {['Courses', 'Guides', 'About', 'Privacy', 'Terms'].map((t) => (
               <span key={t} style={L.footerLink}>{t}</span>
@@ -553,90 +560,96 @@ export function HomePage() {
 // ──────────────────────────────────────────────
 // Landing page styles (Arthur.ai-inspired dark)
 // ──────────────────────────────────────────────
+// ──────────────────────────────────────────────
+// Landing page styles (Teal + White light theme)
+// ──────────────────────────────────────────────
 const landingStyles: { [key: string]: React.CSSProperties } = {
-  page: { background: '#0a0a14', color: '#fff', fontFamily: "'Inter', sans-serif", minHeight: '100vh' },
+  page: { background: '#fff', color: '#0f172a', fontFamily: "'Inter', sans-serif", minHeight: '100vh' },
 
   // Nav
-  nav: { position: 'fixed' as const, top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(10,10,20,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,0.06)' },
+  nav: { position: 'fixed' as const, top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid #e2e8f0' },
   navInner: { maxWidth: '1200px', margin: '0 auto', padding: '0 32px', height: '68px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
-  brand: { fontSize: '20px', fontWeight: 700, color: '#fff', letterSpacing: '-0.5px' },
+  brand: { fontSize: '20px', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.5px' },
+  navLinks: { display: 'flex', alignItems: 'center', gap: '32px' },
+  navLink: { fontSize: '14px', fontWeight: 500, color: '#64748b', cursor: 'pointer' },
   navActions: { display: 'flex', alignItems: 'center', gap: '16px' },
-  btnSignIn: { padding: '9px 20px', background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#fff', fontSize: '14px', fontWeight: 500, cursor: 'pointer', borderRadius: '8px' },
-  btnGetStarted: { padding: '9px 22px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', border: 'none', fontSize: '14px', fontWeight: 600, cursor: 'pointer', borderRadius: '8px' },
+  btnSignIn: { padding: '9px 20px', background: 'none', border: '1px solid #e2e8f0', color: '#0f172a', fontSize: '14px', fontWeight: 500, cursor: 'pointer', borderRadius: '8px' },
+  btnGetStarted: { padding: '9px 22px', background: '#0d9488', color: '#fff', border: 'none', fontSize: '14px', fontWeight: 600, cursor: 'pointer', borderRadius: '8px' },
 
   // Hero
-  hero: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const, padding: '140px 32px 80px', position: 'relative' as const, overflow: 'hidden' },
-  heroGlow: { position: 'absolute' as const, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '900px', height: '900px', background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, rgba(168,85,247,0.05) 40%, transparent 70%)', pointerEvents: 'none' as const },
-  heroGlow2: { position: 'absolute' as const, top: '30%', right: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%)', pointerEvents: 'none' as const },
+  hero: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' as const, padding: '140px 32px 80px', position: 'relative' as const, overflow: 'hidden', background: 'linear-gradient(180deg, #f0fdfa 0%, #fff 100%)' },
+  heroGlow: { position: 'absolute' as const, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '900px', height: '900px', background: 'radial-gradient(circle, rgba(13,148,136,0.07) 0%, transparent 70%)', pointerEvents: 'none' as const },
   heroContent: { position: 'relative' as const, zIndex: 1, maxWidth: '850px' },
-  eyebrow: { fontSize: '13px', fontWeight: 500, color: '#a78bfa', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px', display: 'inline-flex', alignItems: 'center', gap: '10px' },
-  eyebrowLine: { display: 'inline-block', width: '32px', height: '1px', background: '#a78bfa' },
-  heroTitle: { fontSize: '64px', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-2.5px', color: '#fff', marginBottom: '28px' },
-  gradientText: { background: 'linear-gradient(135deg, #a78bfa, #c084fc, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
-  heroSub: { fontSize: '19px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7, maxWidth: '580px', margin: '0 auto 44px', fontWeight: 400 },
+  eyebrow: { fontSize: '13px', fontWeight: 500, color: '#0d9488', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px', display: 'inline-flex', alignItems: 'center', gap: '10px' },
+  eyebrowLine: { display: 'inline-block', width: '32px', height: '1px', background: '#0d9488' },
+  heroTitle: { fontSize: '64px', fontWeight: 800, lineHeight: 1.05, letterSpacing: '-2.5px', color: '#0f172a', marginBottom: '28px' },
+  gradientText: { background: 'linear-gradient(135deg, #0d9488, #0f766e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  heroSub: { fontSize: '19px', color: '#64748b', lineHeight: 1.7, maxWidth: '580px', margin: '0 auto 44px', fontWeight: 400 },
   heroCtas: { display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' as const },
-  btnHeroPrimary: { padding: '16px 36px', background: 'linear-gradient(135deg, #7c3aed, #a855f7)', color: '#fff', border: 'none', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
-  btnHeroSecondary: { padding: '16px 36px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.12)', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
+  btnHeroPrimary: { padding: '16px 36px', background: '#0d9488', color: '#fff', border: 'none', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
+  btnHeroSecondary: { padding: '16px 36px', background: '#fff', color: '#0f172a', border: '1px solid #e2e8f0', fontSize: '16px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
 
   // Logos
   logos: { padding: '60px 32px 80px', textAlign: 'center' as const },
-  logosLabel: { fontSize: '12px', color: 'rgba(255,255,255,0.3)', fontWeight: 500, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px' },
+  logosLabel: { fontSize: '12px', color: '#94a3b8', fontWeight: 500, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '28px' },
   logosRow: { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '56px', flexWrap: 'wrap' as const },
-  logoItem: { fontSize: '20px', fontWeight: 700, color: 'rgba(255,255,255,0.2)', letterSpacing: '-0.3px' },
+  logoItem: { fontSize: '20px', fontWeight: 700, color: '#cbd5e1', letterSpacing: '-0.3px' },
 
   // Sections
   sectionWrap: { padding: '100px 32px' },
   inner: { maxWidth: '1200px', margin: '0 auto' },
-  eyebrowSmall: { fontSize: '12px', color: '#a78bfa', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '20px' },
-  sectionTitle: { fontSize: '44px', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', color: '#fff', marginBottom: '16px' },
-  sectionDesc: { fontSize: '17px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto' },
+  eyebrowSmall: { fontSize: '12px', color: '#0d9488', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '20px' },
+  sectionTitle: { fontSize: '44px', fontWeight: 800, lineHeight: 1.1, letterSpacing: '-1.5px', color: '#0f172a', marginBottom: '16px' },
+  sectionDesc: { fontSize: '17px', color: '#64748b', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto' },
 
   // Capabilities
   capRow: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center', marginBottom: '120px' },
-  capLabel: { fontSize: '12px', color: '#a78bfa', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '16px', fontWeight: 600 },
-  capTitle: { fontSize: '34px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: '20px', color: '#fff' },
-  capDesc: { fontSize: '16px', color: 'rgba(255,255,255,0.45)', lineHeight: 1.7, marginBottom: '28px' },
-  capLink: { color: '#a78bfa', fontWeight: 600, fontSize: '15px', cursor: 'pointer' },
-  capVisual: { borderRadius: '20px', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.06)' },
+  capLabel: { fontSize: '12px', color: '#0d9488', textTransform: 'uppercase' as const, letterSpacing: '3px', marginBottom: '16px', fontWeight: 600 },
+  capTitle: { fontSize: '34px', fontWeight: 700, lineHeight: 1.2, letterSpacing: '-0.5px', marginBottom: '20px', color: '#0f172a' },
+  capDesc: { fontSize: '16px', color: '#64748b', lineHeight: 1.7, marginBottom: '28px' },
+  capLink: { color: '#0d9488', fontWeight: 600, fontSize: '15px', cursor: 'pointer' },
+  capVisual: { borderRadius: '20px', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0' },
   capIcon: { fontSize: '80px', opacity: 0.5 },
 
   // Features
   featGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' },
-  featCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '32px', transition: 'all 0.3s' },
-  featIcon: { width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '20px', background: 'rgba(167,139,250,0.1)' },
-  featTitle: { fontSize: '18px', fontWeight: 700, color: '#fff', marginBottom: '10px' },
-  featDesc: { fontSize: '14px', color: 'rgba(255,255,255,0.4)', lineHeight: 1.7 },
+  featCard: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '32px', transition: 'all 0.3s' },
+  featIcon: { width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '20px', background: 'rgba(13,148,136,0.08)' },
+  featTitle: { fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '10px' },
+  featDesc: { fontSize: '14px', color: '#64748b', lineHeight: 1.7 },
 
   // Stats
-  statsSection: { borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 32px' },
+  statsSection: { background: '#0f172a', padding: '0 32px' },
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', maxWidth: '1200px', margin: '0 auto' },
-  statItem: { padding: '56px 32px', textAlign: 'center' as const, borderRight: '1px solid rgba(255,255,255,0.06)' },
-  statNumber: { fontSize: '52px', fontWeight: 700, letterSpacing: '-2px', marginBottom: '8px', background: 'linear-gradient(135deg, #a78bfa, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
-  statLabel: { fontSize: '14px', color: 'rgba(255,255,255,0.35)', fontWeight: 500 },
+  statItem: { padding: '56px 32px', textAlign: 'center' as const, borderRight: '1px solid rgba(255,255,255,0.08)' },
+  statNumber: { fontSize: '52px', fontWeight: 700, letterSpacing: '-2px', marginBottom: '8px', background: 'linear-gradient(135deg, #2dd4bf, #0d9488)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
+  statLabel: { fontSize: '14px', color: 'rgba(255,255,255,0.5)', fontWeight: 500 },
 
   // Testimonials
   testGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' },
-  testCard: { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '32px' },
+  testCard: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '32px' },
   testStars: { color: '#f59e0b', fontSize: '16px', marginBottom: '20px', letterSpacing: '3px' },
-  testQuote: { fontSize: '15px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.8, marginBottom: '28px', fontStyle: 'italic' as const },
+  testQuote: { fontSize: '15px', color: '#64748b', lineHeight: 1.8, marginBottom: '28px', fontStyle: 'italic' as const },
   testAuthor: { display: 'flex', alignItems: 'center', gap: '14px' },
   testAvatar: { width: '42px', height: '42px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 700, color: '#fff' },
-  testName: { fontSize: '14px', fontWeight: 600, color: '#fff' },
-  testRole: { fontSize: '13px', color: 'rgba(255,255,255,0.3)', marginTop: '2px' },
+  testName: { fontSize: '14px', fontWeight: 600, color: '#0f172a' },
+  testRole: { fontSize: '13px', color: '#94a3b8', marginTop: '2px' },
 
   // CTA
-  cta: { padding: '140px 32px', textAlign: 'center' as const, position: 'relative' as const, overflow: 'hidden' },
-  ctaGlow: { position: 'absolute' as const, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%)', pointerEvents: 'none' as const },
-  ctaTitle: { fontSize: '52px', fontWeight: 800, color: '#fff', letterSpacing: '-1.5px', marginBottom: '20px', position: 'relative' as const, zIndex: 1 },
-  ctaSub: { fontSize: '18px', color: 'rgba(255,255,255,0.4)', maxWidth: '550px', margin: '0 auto 40px', lineHeight: 1.7, position: 'relative' as const, zIndex: 1 },
+  ctaOuter: { padding: '100px 32px' },
+  cta: { background: 'linear-gradient(135deg, #0f766e, #0d9488)', borderRadius: '24px', padding: '80px 48px', textAlign: 'center' as const, position: 'relative' as const, overflow: 'hidden' },
+  ctaTitle: { fontSize: '44px', fontWeight: 800, color: '#fff', letterSpacing: '-1.5px', marginBottom: '20px' },
+  ctaSub: { fontSize: '18px', color: 'rgba(255,255,255,0.8)', maxWidth: '550px', margin: '0 auto 40px', lineHeight: 1.7 },
+  btnCtaWhite: { padding: '18px 40px', background: '#fff', color: '#0f766e', border: 'none', fontSize: '17px', fontWeight: 600, borderRadius: '10px', cursor: 'pointer' },
 
   // Footer
-  footer: { borderTop: '1px solid rgba(255,255,255,0.06)', padding: '48px 32px' },
+  footer: { background: '#f8fafc', borderTop: '1px solid #e2e8f0', padding: '48px 32px' },
   footerInner: { maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '20px' },
   footerLinks: { display: 'flex', gap: '28px' },
-  footerLink: { color: 'rgba(255,255,255,0.35)', fontSize: '14px', cursor: 'pointer' },
-  footerCopy: { fontSize: '13px', color: 'rgba(255,255,255,0.25)' },
+  footerLink: { color: '#64748b', fontSize: '14px', cursor: 'pointer' },
+  footerCopy: { fontSize: '13px', color: '#94a3b8' },
 };
+
 
 const styles: { [key: string]: React.CSSProperties } = {
   // Hero
