@@ -254,7 +254,7 @@ export class BackendStack extends cdk.Stack {
           GOOGLE_CLIENT_ID: '991479117309-7896ulfi3hl2318ia17lq3007c3e85oj.apps.googleusercontent.com',
           GOOGLE_CLIENT_SECRET: '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',
           // Frontend URL for email links
-          APP_FRONTEND_URL: 'https://d2mv0p0scx4qgr.cloudfront.net',
+          APP_FRONTEND_URL: 'https://dev.kyroacademy.com',
           // SES
           SES_SENDER_EMAIL: 'stanley.opara6@gmail.com',
           // Logging

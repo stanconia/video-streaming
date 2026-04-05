@@ -134,7 +134,7 @@ public class SesEmailService implements EmailService {
                     variables.getOrDefault("duration", ""),
                     variables.getOrDefault("calendarLink", ""));
             case "live_session_starting" -> String.format(
-                    "Hi %s,\n\nThe live session \"%s\" for \"%s\" is starting now!\n\nJoin here: https://d2mv0p0scx4qgr.cloudfront.net/room/%s/view\n\nBest,\nThe KyroAcademy Team",
+                    "Hi %s,\n\nThe live session \"%s\" for \"%s\" is starting now!\n\nJoin here: https://dev.kyroacademy.com/room/%s/view\n\nBest,\nThe KyroAcademy Team",
                     variables.getOrDefault("studentName", "there"),
                     variables.getOrDefault("sessionTitle", ""),
                     variables.getOrDefault("courseTitle", ""),

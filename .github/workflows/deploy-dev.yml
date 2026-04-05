@@ -155,7 +155,7 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*" > /dev/null
-          echo "CloudFront invalidation started for https://d2mv0p0scx4qgr.cloudfront.net"
+          echo "CloudFront invalidation started for https://dev.kyroacademy.com"
 
   # ─── Deploy Infrastructure ───
   deploy-infra:
@@ -205,4 +205,4 @@ jobs:
           echo "| Media Server | ${{ needs.changes.outputs.media }} | ${{ needs.deploy-media.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Infrastructure | ${{ needs.changes.outputs.infra }} | ${{ needs.deploy-infra.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Frontend URL:** https://d2mv0p0scx4qgr.cloudfront.net" >> $GITHUB_STEP_SUMMARY
+          echo "**Frontend URL:** https://dev.kyroacademy.com" >> $GITHUB_STEP_SUMMARY
