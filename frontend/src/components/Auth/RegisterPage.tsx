@@ -161,18 +161,32 @@ export function RegisterPage() {
               </h1>
               <p style={styles.brandTagline}>Where curious minds find expert guidance</p>
               <div style={styles.featureList}>
-                <div style={styles.featureItem}>
-                  <span style={styles.featureCheck}>{'\u2713'}</span>
-                  <span>Learn from verified expert guides</span>
+                <div style={styles.featureCard}>
+                  <div style={styles.featureIconBox}>{'\uD83C\uDF93'}</div>
+                  <div>
+                    <div style={styles.featureCardTitle}>Expert-Led Courses</div>
+                    <div style={styles.featureCardDesc}>Structured learning from verified Kyro Guides</div>
+                  </div>
                 </div>
-                <div style={styles.featureItem}>
-                  <span style={styles.featureCheck}>{'\u2713'}</span>
-                  <span>Interactive live video sessions</span>
+                <div style={styles.featureCard}>
+                  <div style={styles.featureIconBox}>{'\uD83C\uDFA5'}</div>
+                  <div>
+                    <div style={styles.featureCardTitle}>Live Interactive Classes</div>
+                    <div style={styles.featureCardDesc}>Real-time video sessions with chat & collaboration</div>
+                  </div>
                 </div>
-                <div style={styles.featureItem}>
-                  <span style={styles.featureCheck}>{'\u2713'}</span>
-                  <span>Personalized learning paths</span>
+                <div style={styles.featureCard}>
+                  <div style={styles.featureIconBox}>{'\uD83D\uDCC8'}</div>
+                  <div>
+                    <div style={styles.featureCardTitle}>Track Your Progress</div>
+                    <div style={styles.featureCardDesc}>Quizzes, assignments, and certificates</div>
+                  </div>
                 </div>
+              </div>
+              <div style={styles.statsRow}>
+                <div style={styles.statItem}><span style={styles.statValue}>2,500+</span><span style={styles.statLabel}>Learners</span></div>
+                <div style={styles.statItem}><span style={styles.statValue}>180+</span><span style={styles.statLabel}>Courses</span></div>
+                <div style={styles.statItem}><span style={styles.statValue}>4.8</span><span style={styles.statLabel}>Rating</span></div>
               </div>
             </div>
           </div>
@@ -230,19 +244,33 @@ export function RegisterPage() {
             </h1>
             <p style={styles.brandTagline}>Where curious minds find expert guidance</p>
             <div style={styles.featureList}>
-              <div style={styles.featureItem}>
-                <span style={styles.featureCheck}>{'\u2713'}</span>
-                <span>Learn from verified expert guides</span>
+                <div style={styles.featureCard}>
+                  <div style={styles.featureIconBox}>{'\uD83C\uDF93'}</div>
+                  <div>
+                    <div style={styles.featureCardTitle}>Expert-Led Courses</div>
+                    <div style={styles.featureCardDesc}>Structured learning from verified Kyro Guides</div>
+                  </div>
+                </div>
+                <div style={styles.featureCard}>
+                  <div style={styles.featureIconBox}>{'\uD83C\uDFA5'}</div>
+                  <div>
+                    <div style={styles.featureCardTitle}>Live Interactive Classes</div>
+                    <div style={styles.featureCardDesc}>Real-time video sessions with chat & collaboration</div>
+                  </div>
+                </div>
+                <div style={styles.featureCard}>
+                  <div style={styles.featureIconBox}>{'\uD83D\uDCC8'}</div>
+                  <div>
+                    <div style={styles.featureCardTitle}>Track Your Progress</div>
+                    <div style={styles.featureCardDesc}>Quizzes, assignments, and certificates</div>
+                  </div>
+                </div>
               </div>
-              <div style={styles.featureItem}>
-                <span style={styles.featureCheck}>{'\u2713'}</span>
-                <span>Interactive live video sessions</span>
+              <div style={styles.statsRow}>
+                <div style={styles.statItem}><span style={styles.statValue}>2,500+</span><span style={styles.statLabel}>Learners</span></div>
+                <div style={styles.statItem}><span style={styles.statValue}>180+</span><span style={styles.statLabel}>Courses</span></div>
+                <div style={styles.statItem}><span style={styles.statValue}>4.8</span><span style={styles.statLabel}>Rating</span></div>
               </div>
-              <div style={styles.featureItem}>
-                <span style={styles.featureCheck}>{'\u2713'}</span>
-                <span>Personalized learning paths</span>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -252,7 +280,7 @@ export function RegisterPage() {
             <h1 style={styles.formBrand}>
               Kyro<span style={{ color: '#0d9488' }}>Academy</span>
             </h1>
-            <h2 style={styles.formTitle}>Create Account</h2>
+            <h2 style={styles.formTitle}>Create your account</h2>
 
             {error && <div style={styles.error}>{error}</div>}
 
@@ -265,7 +293,9 @@ export function RegisterPage() {
             </div>
 
             <div style={styles.dividerLine}>
+              <hr style={styles.dividerHr} />
               <span style={styles.dividerLineText}>or register with email</span>
+              <hr style={styles.dividerHr} />
             </div>
 
             <form onSubmit={handleSubmit} style={styles.form}>
@@ -339,6 +369,7 @@ export function RegisterPage() {
                       onChange={() => setRole('STUDENT')}
                       style={styles.srOnly}
                     />
+                    <span style={styles.rolePillEmoji}>{'\uD83D\uDCD6'}</span>
                     Kyro Learner
                   </label>
                   <label
@@ -355,6 +386,7 @@ export function RegisterPage() {
                       onChange={() => setRole('TEACHER')}
                       style={styles.srOnly}
                     />
+                    <span style={styles.rolePillEmoji}>{'\uD83C\uDF93'}</span>
                     Kyro Guide
                   </label>
                 </div>
@@ -486,7 +518,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   /* ── Split layout ── */
   splitLayout: {
     display: 'grid',
-    gridTemplateColumns: '420px 1fr',
+    gridTemplateColumns: '1fr 1fr',
     minHeight: '100vh',
   },
 
@@ -495,6 +527,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     background: `radial-gradient(ellipse at 30% 50%, rgba(13,148,136,0.1) 0%, #0f172a 70%)`,
     backgroundColor: '#0f172a',
     display: 'flex',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
     padding: '48px 40px',
@@ -502,7 +535,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   brandContent: {
     color: '#fff',
-    maxWidth: '320px',
+    maxWidth: '360px',
+    width: '100%',
   },
   brandTitle: {
     fontSize: '32px',
@@ -520,27 +554,60 @@ const styles: { [key: string]: React.CSSProperties } = {
   featureList: {
     display: 'flex',
     flexDirection: 'column' as const,
-    gap: '16px',
+    gap: '14px',
   },
-  featureItem: {
+  featureCard: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '14px',
+    padding: '14px 16px',
+    borderRadius: '12px',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.06)',
+  },
+  featureIconBox: {
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
-    fontSize: '14px',
-    color: '#cbd5e1',
-  },
-  featureCheck: {
-    display: 'inline-flex',
-    alignItems: 'center',
     justifyContent: 'center',
-    width: '22px',
-    height: '22px',
-    borderRadius: '50%',
+    width: '40px',
+    height: '40px',
+    borderRadius: '10px',
     backgroundColor: 'rgba(13,148,136,0.15)',
-    color: '#0d9488',
-    fontSize: '12px',
-    fontWeight: 700,
+    fontSize: '20px',
     flexShrink: 0,
+  },
+  featureCardTitle: {
+    fontSize: '14px',
+    fontWeight: 600,
+    color: '#f1f5f9',
+    marginBottom: '2px',
+  },
+  featureCardDesc: {
+    fontSize: '13px',
+    color: '#94a3b8',
+    lineHeight: '1.4',
+  },
+  statsRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+    marginTop: '32px',
+    paddingTop: '24px',
+  },
+  statItem: {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    alignItems: 'center',
+    gap: '2px',
+  },
+  statValue: {
+    fontSize: '20px',
+    fontWeight: 700,
+    color: '#0d9488',
+  },
+  statLabel: {
+    fontSize: '12px',
+    color: '#94a3b8',
   },
 
   /* ── Right form panel ── */
@@ -595,17 +662,19 @@ const styles: { [key: string]: React.CSSProperties } = {
   dividerLine: {
     display: 'flex',
     alignItems: 'center',
+    gap: '12px',
     marginBottom: '24px',
-    position: 'relative' as const,
+  },
+  dividerHr: {
+    flex: 1,
+    border: 'none',
+    borderTop: '1px solid #e2e8f0',
+    margin: 0,
   },
   dividerLineText: {
     fontSize: '13px',
     color: '#94a3b8',
-    backgroundColor: '#fff',
-    padding: '0 12px',
-    margin: '0 auto',
-    position: 'relative' as const,
-    zIndex: 1,
+    whiteSpace: 'nowrap' as const,
   },
 
   /* ── Form ── */
@@ -637,10 +706,10 @@ const styles: { [key: string]: React.CSSProperties } = {
   input: {
     padding: '12px',
     border: '1px solid #e2e8f0',
-    borderRadius: '8px',
+    borderRadius: '10px',
     fontSize: '14px',
     outline: 'none',
-    transition: 'border-color 0.2s',
+    transition: 'all 0.2s',
     color: '#1e293b',
     backgroundColor: '#fff',
   },
@@ -658,8 +727,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: '4px 8px',
   },
   passwordHints: {
-    display: 'flex',
-    flexDirection: 'column' as const,
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
     gap: '4px',
     marginTop: '8px',
   },
@@ -672,10 +741,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   rolePill: {
     display: 'inline-flex',
+    flexDirection: 'column' as const,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '10px 20px',
-    borderRadius: '999px',
+    padding: '12px 20px',
+    borderRadius: '12px',
     border: '1.5px solid #e2e8f0',
     fontSize: '14px',
     fontWeight: 500,
@@ -685,12 +755,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     flex: 1,
     textAlign: 'center' as const,
     backgroundColor: '#fff',
+    gap: '4px',
   },
   rolePillActive: {
     backgroundColor: '#0d9488',
     borderColor: '#0d9488',
     color: '#fff',
     fontWeight: 600,
+  },
+  rolePillEmoji: {
+    fontSize: '20px',
+    lineHeight: 1,
   },
 
   /* ── COPPA info box ── */
@@ -724,7 +799,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     background: 'linear-gradient(135deg, #0f766e, #0d9488)',
     color: 'white',
     border: 'none',
-    borderRadius: '8px',
+    borderRadius: '10px',
     fontSize: '16px',
     fontWeight: 600,
     cursor: 'pointer',
@@ -732,6 +807,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: 'center' as const,
     textDecoration: 'none',
     display: 'block',
+    transition: 'all 0.2s',
   },
 
   /* ── Footer link ── */
