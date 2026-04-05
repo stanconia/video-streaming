@@ -159,7 +159,7 @@ fi
 echo ""
 log "Deployment complete!"
 echo ""
-echo "  Frontend:    https://d2mv0p0scx4qgr.cloudfront.net"
+echo "  Frontend:    https://dev.kyroacademy.com"
 echo "  API Gateway: https://f4g42xym3i.execute-api.us-east-1.amazonaws.com/dev/"
 echo "  ALB:         http://EduLiv-Backe-TmYqrx0oOOdb-1671434199.us-east-1.elb.amazonaws.com"
 echo ""

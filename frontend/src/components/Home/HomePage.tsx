@@ -199,11 +199,6 @@ function LandingPage() {
       <footer style={L.footer}>
         <div style={L.footerInner}>
           <span style={L.brand}>Kyro<span style={{ color: '#0d9488' }}>Academy</span></span>
-          <div style={L.footerLinks}>
-            {['Courses', 'Guides', 'About', 'Privacy', 'Terms'].map((t) => (
-              <span key={t} style={L.footerLink}>{t}</span>
-            ))}
-          </div>
           <span style={L.footerCopy}>&copy; 2026 KyroAcademy</span>
         </div>
       </footer>

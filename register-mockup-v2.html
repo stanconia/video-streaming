@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KyroAcademy - Register Page Panel Options</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+
+  /* Toggle */
+  .toggle-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 200; background: #fff; border-bottom: 2px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; gap: 12px; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .toggle-bar span { font-size: 14px; font-weight: 600; color: #334155; }
+  .toggle-btn { padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+  .toggle-btn.active { transform: scale(1.05); box-shadow: 0 0 0 3px rgba(0,0,0,0.1); }
+
+  .view { display: none; padding-top: 56px; }
+  .view.active { display: block; }
+
+  /* === SHARED === */
+  .page { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+  .left { display: flex; align-items: center; justify-content: center; padding: 48px; position: relative; overflow: hidden; }
+  .left-content { position: relative; z-index: 1; max-width: 400px; }
+  .left h1 { font-size: 36px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+  .left .tagline { font-size: 18px; line-height: 1.6; margin-bottom: 48px; }
+  .feature { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .feature-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .feature-text { font-size: 14px; line-height: 1.5; }
+  .feature-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+  .stats-row { display: flex; gap: 32px; margin-top: 48px; padding-top: 32px; }
+  .stat-val { font-size: 24px; font-weight: 800; }
+  .stat-lab { font-size: 12px; margin-top: 2px; }
+
+  .right { background: #fff; display: flex; align-items: flex-start; justify-content: center; padding: 40px 32px; overflow-y: auto; }
+  .form-wrap { width: 100%; max-width: 420px; padding: 20px 0 40px; }
+  .form-brand { text-align: center; font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+  .form-brand span { color: #0d9488; }
+  .form-subtitle { text-align: center; font-size: 15px; color: #64748b; margin-bottom: 28px; }
+  .google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 500; color: #1e293b; cursor: pointer; background: #fff; width: 100%; margin-bottom: 24px; }
+  .divider { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .divider-line { flex: 1; height: 1px; background: #e2e8f0; }
+  .divider-text { font-size: 13px; color: #94a3b8; white-space: nowrap; }
+  .field { margin-bottom: 20px; }
+  .field label { display: block; font-size: 14px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }
+  .field label .opt { font-weight: 400; color: #94a3b8; font-size: 12px; }
+  .field input, .field select, .field textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 14px; color: #1e293b; outline: none; transition: all 0.2s; background: #fff; font-family: inherit; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.08); }
+  .pw-wrap { position: relative; }
+  .pw-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #0d9488; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .pw-hints { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; margin-top: 8px; }
+  .pw-hint { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #0d9488; }
+  .pw-dot { width: 14px; height: 14px; border-radius: 50%; background: #0d9488; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 9px; flex-shrink: 0; }
+  .role-group { display: flex; gap: 10px; }
+  .role-pill { flex: 1; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 500; color: #64748b; cursor: pointer; background: #fff; }
+  .role-pill.active { background: #0d9488; border-color: #0d9488; color: #fff; font-weight: 600; }
+  .role-pill .role-emoji { font-size: 20px; display: block; margin-bottom: 4px; }
+  .dob-row { display: grid; grid-template-columns: 2fr 1fr 1.2fr; gap: 8px; }
+  .submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #0f766e, #0d9488); color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+  .footer-text { text-align: center; margin-top: 24px; font-size: 14px; color: #64748b; }
+  .footer-text a { color: #0d9488; text-decoration: none; font-weight: 600; }
+
+  /* === OPTION A: Dark Navy === */
+  #optA .left { background: #0f172a; }
+  #optA .left::before { content: ''; position: absolute; top: 30%; left: 20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(13,148,136,0.12) 0%, transparent 70%); pointer-events: none; }
+  #optA .left h1 { color: #fff; }
+  #optA .left h1 span { color: #2dd4bf; }
+  #optA .left .tagline { color: #94a3b8; }
+  #optA .feature-icon { background: rgba(13,148,136,0.12); }
+  #optA .feature-text { color: #cbd5e1; }
+  #optA .feature-text strong { color: #f1f5f9; }
+  #optA .stats-row { border-top: 1px solid rgba(255,255,255,0.08); }
+  #optA .stat-val { color: #2dd4bf; }
+  #optA .stat-lab { color: #64748b; }
+
+  /* === OPTION B: Teal Gradient === */
+  #optB .left { background: linear-gradient(160deg, #0f766e 0%, #0d9488 50%, #14b8a6 100%); }
+  #optB .left::before { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); pointer-events: none; }
+  #optB .left::after { content: ''; position: absolute; bottom: -50px; left: -50px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none; }
+  #optB .left h1 { color: #fff; }
+  #optB .left h1 span { color: rgba(255,255,255,0.85); }
+  #optB .left .tagline { color: rgba(255,255,255,0.75); }
+  #optB .feature-icon { background: rgba(255,255,255,0.15); }
+  #optB .feature-text { color: rgba(255,255,255,0.8); }
+  #optB .feature-text strong { color: #fff; }
+  #optB .stats-row { border-top: 1px solid rgba(255,255,255,0.15); }
+  #optB .stat-val { color: #fff; }
+  #optB .stat-lab { color: rgba(255,255,255,0.6); }
+
+  /* === OPTION C: Soft Mint === */
+  #optC .left { background: linear-gradient(180deg, #f0fdfa 0%, #ccfbf1 100%); }
+  #optC .left::before { content: ''; position: absolute; top: 20%; right: 10%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(13,148,136,0.06) 0%, transparent 70%); pointer-events: none; }
+  #optC .left h1 { color: #0f172a; }
+  #optC .left h1 span { color: #0d9488; }
+  #optC .left .tagline { color: #475569; }
+  #optC .feature-icon { background: rgba(13,148,136,0.1); }
+  #optC .feature-text { color: #475569; }
+  #optC .feature-text strong { color: #0f172a; }
+  #optC .stats-row { border-top: 1px solid rgba(13,148,136,0.12); }
+  #optC .stat-val { color: #0d9488; }
+  #optC .stat-lab { color: #64748b; }
+
+  @media (max-width: 768px) {
+    .page { grid-template-columns: 1fr; }
+    .left { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toggle-bar">
+  <span>Left Panel:</span>
+  <button class="toggle-btn active" style="background:#0f172a;color:#fff;" onclick="show('optA')">Dark Navy</button>
+  <button class="toggle-btn" style="background:linear-gradient(135deg,#0f766e,#0d9488);color:#fff;" onclick="show('optB')">Teal Gradient</button>
+  <button class="toggle-btn" style="background:#ccfbf1;color:#0f172a;" onclick="show('optC')">Soft Mint</button>
+</div>
+
+<!-- OPTION A: Dark -->
+<div id="optA" class="view active">
+<div class="page">
+  <div class="left"><div class="left-content">
+    <h1>Kyro<span>Academy</span></h1>
+    <p class="tagline">Where curious minds find expert guidance</p>
+    <div class="feature"><div class="feature-icon">&#127891;</div><div class="feature-text"><strong>Expert-Led Courses</strong>Structured learning from verified Kyro Guides</div></div>
+    <div class="feature"><div class="feature-icon">&#127909;</div><div class="feature-text"><strong>Live Interactive Classes</strong>Real-time video sessions with chat & collaboration</div></div>
+    <div class="feature"><div class="feature-icon">&#128200;</div><div class="feature-text"><strong>Track Your Progress</strong>Quizzes, assignments, and certificates</div></div>
+    <div class="stats-row"><div><div class="stat-val">2,500+</div><div class="stat-lab">Learners</div></div><div><div class="stat-val">180+</div><div class="stat-lab">Courses</div></div><div><div class="stat-val">4.8</div><div class="stat-lab">Rating</div></div></div>
+  </div></div>
+  <div class="right"><div class="form-wrap">
+    <div class="form-brand">Kyro<span>Academy</span></div>
+    <div class="form-subtitle">Create your account</div>
+    <button class="google-btn"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg> Sign up with Google</button>
+    <div class="divider"><div class="divider-line"></div><span class="divider-text">or register with email</span><div class="divider-line"></div></div>
+    <form>
+      <div class="field"><label>Full Name</label><input type="text" placeholder="Enter your full name" value="Stanley Opara"></div>
+      <div class="field"><label>Email Address</label><input type="email" placeholder="you@example.com" value="stanley@test.com"></div>
+      <div class="field"><label>Password</label><div class="pw-wrap"><input type="password" placeholder="Min 8 characters" value="Test1234" style="padding-right:60px;"><button type="button" class="pw-toggle">Show</button></div><div class="pw-hints"><span class="pw-hint"><span class="pw-dot">&#10003;</span> 8+ characters</span><span class="pw-hint"><span class="pw-dot">&#10003;</span> Lowercase</span><span class="pw-hint"><span class="pw-dot">&#10003;</span> Uppercase</span><span class="pw-hint"><span class="pw-dot">&#10003;</span> Number</span></div></div>
+      <div class="field"><label>I want to</label><div class="role-group"><div class="role-pill active"><span class="role-emoji">&#128214;</span>Kyro Learner</div><div class="role-pill"><span class="role-emoji">&#127891;</span>Kyro Guide</div></div></div>
+      <div class="field"><label>Date of Birth</label><div class="dob-row"><select><option>January</option></select><select><option>15</option></select><select><option>2000</option></select></div></div>
+      <div class="field"><label>Location <span class="opt">(optional)</span></label><select><option selected>Nigeria</option></select></div>
+      <div class="field"><label>Bio <span class="opt">(optional)</span></label><textarea placeholder="Tell us about yourself"></textarea></div>
+      <button type="button" class="submit-btn">Create Account</button>
+    </form>
+    <p class="footer-text">Already have an account? <a href="#">Sign In</a></p>
+  </div></div>
+</div>
+</div>
+
+<!-- OPTION B: Teal Gradient -->
+<div id="optB" class="view"></div>
+
+<!-- OPTION C: Soft Mint -->
+<div id="optC" class="view"></div>
+
+<script>
+document.getElementById('optB').innerHTML = document.getElementById('optA').innerHTML;
+document.getElementById('optC').innerHTML = document.getElementById('optA').innerHTML;
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
