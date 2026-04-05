@@ -67,8 +67,8 @@ describe('RegisterPage', () => {
     expect(screen.getByPlaceholderText('Your name')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Min 8 characters')).toBeInTheDocument();
-    expect(screen.getByLabelText('Kyro Guide')).toBeInTheDocument();
-    expect(screen.getByLabelText('Kyro Learner')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Kyro Guide/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Kyro Learner/)).toBeInTheDocument();
   });
 
   it('submits registration with form data', async () => {
@@ -116,7 +116,7 @@ describe('RegisterPage', () => {
     expect(screen.queryByPlaceholderText('e.g. Math tutor with 10 years experience')).not.toBeInTheDocument();
 
     // Select Teacher role
-    await user.click(screen.getByLabelText('Kyro Guide'));
+    await user.click(screen.getByLabelText(/Kyro Guide/));
 
     // Now teacher-specific fields should appear
     expect(screen.getByText('Kyro Guide Details')).toBeInTheDocument();
@@ -144,7 +144,7 @@ describe('RegisterPage', () => {
     await user.selectOptions(selects2[2], '1985'); // 1985
 
     // Select Teacher role
-    await user.click(screen.getByLabelText('Kyro Guide'));
+    await user.click(screen.getByLabelText(/Kyro Guide/));
 
     // Fill teacher-specific fields
     await user.type(
@@ -239,7 +239,7 @@ describe('RegisterPage', () => {
     expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
 
     // Switch to TEACHER
-    await user.click(screen.getByLabelText('Kyro Guide'));
+    await user.click(screen.getByLabelText(/Kyro Guide/));
 
     // Both roles have subject selectors (interests for students, subjects for teachers)
     expect(screen.getByTestId('multi-subject-selector')).toBeInTheDocument();
