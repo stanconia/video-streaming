@@ -192,10 +192,10 @@ public class CourseEnrollmentService {
 
             try {
                 User studentUser = userRepository.findById(studentUserId).orElse(null);
-                String teacherName = "EduLive Teacher";
+                String teacherName = "KyroAcademy Teacher";
                 if (course.getTeacherUserId() != null) {
                     teacherName = userRepository.findById(course.getTeacherUserId())
-                            .map(User::getDisplayName).orElse("EduLive Teacher");
+                            .map(User::getDisplayName).orElse("KyroAcademy Teacher");
                 }
 
                 List<CourseEnrollmentResponse.SessionCalendarLink> sessionLinks = buildSessionCalendarLinks(courseId, course.getTitle());
@@ -286,10 +286,10 @@ public class CourseEnrollmentService {
 
         // Send enrollment email and generate calendar link
         try {
-            String teacherName = "EduLive Teacher";
+            String teacherName = "KyroAcademy Teacher";
             if (course.getTeacherUserId() != null) {
                 teacherName = userRepository.findById(course.getTeacherUserId())
-                        .map(User::getDisplayName).orElse("EduLive Teacher");
+                        .map(User::getDisplayName).orElse("KyroAcademy Teacher");
             }
 
             List<CourseEnrollmentResponse.SessionCalendarLink> sessionLinks = buildSessionCalendarLinks(courseId, course.getTitle());
